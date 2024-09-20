@@ -27,7 +27,7 @@
                             </p>
                         </div>
                         <div class="col-md-4 text-end">
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createDepartment"><i
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createUserModal"><i
                                 class="fas fa-plus-circle me-1"></i> Create Users</button>
                         </div>
                     </div>
@@ -79,6 +79,47 @@
             </div>
         </div> <!-- end col -->
     </div> <!-- end row -->
+
+    <div class="modal fade" id="createUserModal" data-bs-backdrop="static" tabindex="-1" role="dialog"
+        aria-labelledby="createUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold text-uppercase" id="createUserModalLabel">Create User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="#" id="createUserValidateForm">
+                        @csrf
+
+                        <div class="row mb-3">
+                            <div class="col-md-5">
+                                <div class="mt form-group">
+                                    <label>Total Quantity</label>
+                                    <input id="totalQuantity" name="quantity" class="form-control Quantity" type="text"
+                                        placeholder="Total Quantity" readonly>
+                                </div>
+                            </div>
+
+                            <div class="col-md-7">
+                                <label for="example-text-input" class="col-md-2 col-form-label">Remarks</label>
+                                <div class="form-group col-md-12">
+                                    <textarea name="notes" class="form-control" rows="7" style="resize: none;"
+                                            minlength="0" maxlength="300"
+                                            placeholder="We would like to hear from you what other details you would like to include in this transfer"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 @endsection

@@ -8,6 +8,10 @@
 <link href="{{ URL::asset('assets/css/app.min.css') }}" rel="stylesheet" type="text/css" />
 <link href="{{ URL::asset('assets/css/loaders.css') }}" rel="stylesheet" type="text/css" />
 
+{{-- Additional Design such as Modal Size, Button styling and etc. --}}
+<link href="{{ URL::asset('assets/css/add_style.min.css') }}" rel="stylesheet" type="text/css" />
+
+
 
 <link href="{{ URL::asset('assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
 <link href="{{ URL::asset('assets/libs/datatables/datatable_style.css') }}" rel="stylesheet" type="text/css" />

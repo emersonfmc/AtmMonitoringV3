@@ -24,6 +24,12 @@ class RedirectIfAuthenticated
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
                 return redirect(RouteServiceProvider::HOME);
+
+                $user = Auth::user();
+                // Update the user's session status to 'Offline'
+                $user->update([
+                    'session' => 'Offline',
+                ]);
             }
         }
 

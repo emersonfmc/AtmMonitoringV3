@@ -97,8 +97,8 @@
                 </li>
 
 
-                <li>
-                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                <li class="mm-active">
+                    <a href="javascript: void(0);" class="has-arrow waves-effect" aria-expanded="true">
                         <i class="far fa-credit-card" style="color: #3787FD;"></i>
                         <span key="atm_monitoring">ATM Monitoring</span>
                     </a>
@@ -161,30 +161,36 @@
                             </ul>
                         </li>
 
-                        <li>
+                        <li class="mm-active">
                             <a href="javascript: void(0);" class="has-arrow"
                                 key="pb_for_collection"><i class="fas fa-book" style="color: #cc2424;"></i>PB For Collection</a>
                             <ul class="sub-menu" aria-expanded="true">
                                 <li>
                                     <a href="#" key="pb_setup">
-                                        <i class="far fa-dot-circle" style="color: #0400ff;"></i>SETUP
+                                        <i class="fas fa-plus-circle fs-6 text-primary"></i>SETUP
                                     </a>
                                 </li>
                                 <li>
                                     <a href="#" key="pb_for_receiving">
-                                        <i class="far fa-dot-circle" style="color: #0400ff;"></i>
+                                        <i class="fas fa-undo fs-6 text-success"></i>
                                         For Receiving
                                     </a>
                                 </li>
                                 <li>
                                     <a href="#" key="pb_for_returning">
-                                        <i class="far fa-dot-circle" style="color: #0400ff;"></i>
+                                        <i class="fas fa-redo fs-6 text-danger"></i>
+                                        For Releasing
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" key="pb_for_returning">
+                                        <i class="fas fa-sync fs-6 text-warning"></i>
                                         For Returning
                                     </a>
                                 </li>
                                 <li>
                                     <a href="#" key="pb_transaction">
-                                        <i class="far fa-dot-circle" style="color: #0400ff;"></i>
+                                        <i class="fas fa-desktop fs-6 text-info"></i>
                                         PB Transaction
                                     </a>
                                 </li>
