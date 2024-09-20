@@ -39,7 +39,6 @@ class CreateUsersTable extends Migration
             $table->foreign('district_code_id')->references('id')->on('tbl_districts')->onDelete('restrict')->onUpdate('cascade');
             $table->foreign('area_code_id')->references('id')->on('tbl_areas')->onDelete('restrict')->onUpdate('cascade');
 
-
             $table->softDeletes();
             $table->timestamps();
         });
