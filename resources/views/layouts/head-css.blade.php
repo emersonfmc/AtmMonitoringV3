@@ -18,3 +18,5 @@
 <link href="{{ URL::asset('assets/libs/datatables/datatables.min.css') }}" rel="stylesheet" type="text/css" />
 <link href="{{ URL::asset('assets/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
 
+<link href="{{ URL::asset('assets/libs/select2/select2_style.css') }}" rel="stylesheet" type="text/css" />
+

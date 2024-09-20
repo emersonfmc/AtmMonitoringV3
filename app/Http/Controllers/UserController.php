@@ -13,7 +13,11 @@ class UserController extends Controller
 {
     public function users_page()
     {
-        return view('pages.pages_backend.settings.users_page');
+        $user_groups = TblUserGroup::whereNull('deleted_at')
+            ->where('status','Active')
+            ->get();
+
+        return view('pages.pages_backend.settings.users_page',compact('user_groups'));
     }
 
     public function users_data()

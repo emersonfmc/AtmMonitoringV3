@@ -46,6 +46,12 @@
     });
 </script>
 
+<script>
+    $(document).ready(function(){
+        $('.select2_dropdown').select2();
+    });
+</script>
+
 @yield('script')
 
 <!-- App js -->
@@ -55,5 +61,8 @@
 <script src="{{ URL::asset('assets/js/pages/datatable-server-side.init.js')}}"></script>
 <script src="{{ URL::asset('assets/js/pages/datatables.init.js') }}"></script>
 <script src="{{ URL::asset('assets/js/app.min.js')}}"></script>
+
+<script src="{{ URL::asset('assets/libs/select2/select2.min.js') }}"></script>
+<script src="{{ URL::asset('assets/libs/select2/select2.init.js') }}"></script>
 
 @yield('script-bottom')
