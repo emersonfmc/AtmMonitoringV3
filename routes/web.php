@@ -48,6 +48,9 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => 'settings'], functio
 
         Route::get('/users_group_page', 'users_group_page')->name('settings.users.group.page');
         Route::get('/users_group_data', 'users_group_data')->name('settings.users.group.data');
+        Route::get('/users/group/get/{id}', 'users_group_get')->name('settings.users.group.get');
+        Route::post('/users_group_create', 'users_group_create')->name('settings.users.group.create');
+        Route::post('/users_group_update', 'users_group_update')->name('settings.users.group.update');
 
         Route::get('/area_page', 'area_page')->name('settings.area.page');
         Route::get('/area_data', 'area_data')->name('settings.area.data');
