@@ -42,6 +42,9 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => 'settings'], functio
     Route::controller(SettingsController::class)->group(function () {
         Route::get('/districts', 'districts_page')->name('settings.district.page');
         Route::get('/districts/data', 'districts_data')->name('settings.district.data');
+        Route::get('/districts/get/data/{id}', 'districtsfetchdata')->name('settings.district.get.data');
+        Route::post('/districts/create', 'districtsCreate')->name('settings.district.create');
+        Route::post('/districts/update', 'districtsUpdate')->name('settings.district.update');
 
         Route::get('/users_group_page', 'users_group_page')->name('settings.users.group.page');
         Route::get('/users_group_data', 'users_group_data')->name('settings.users.group.data');
