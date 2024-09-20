@@ -42,7 +42,7 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => 'settings'], functio
     Route::controller(SettingsController::class)->group(function () {
         Route::get('/districts', 'districts_page')->name('settings.district.page');
         Route::get('/districts/data', 'districts_data')->name('settings.district.data');
-        Route::get('/districts/get/data/{id}', 'districtsfetchdata')->name('settings.district.get.data');
+        Route::get('/districts/get/{id}', 'districtsGet')->name('settings.district.get');
         Route::post('/districts/create', 'districtsCreate')->name('settings.district.create');
         Route::post('/districts/update', 'districtsUpdate')->name('settings.district.update');
 
@@ -54,15 +54,27 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => 'settings'], functio
 
         Route::get('/area_page', 'area_page')->name('settings.area.page');
         Route::get('/area_data', 'area_data')->name('settings.area.data');
+        Route::get('/area/get/{id}', 'areaGet')->name('settings.area.get');
+        Route::post('/area_create', 'areaCreate')->name('settings.area.create');
+        Route::post('/area_update', 'areaUpdate')->name('settings.area.update');
 
         Route::get('/branch_page', 'branch_page')->name('settings.branch.page');
         Route::get('/branch_data', 'branch_data')->name('settings.branch.data');
+        Route::get('/branch/get/{id}', 'branchGet')->name('settings.branch.get');
+        Route::post('/branch/create', 'branchCreate')->name('settings.branch.create');
+        Route::post('/branch/update', 'branchUpdate')->name('settings.branch.update');
 
         Route::get('/bank_page', 'bank_page')->name('settings.bank.page');
         Route::get('/bank_data', 'bank_data')->name('settings.bank.data');
+        Route::get('/bank/get/{id}', 'bankGet')->name('settings.bank.get');
+        Route::post('/bank/create', 'bankCreate')->name('settings.bank.create');
+        Route::post('/bank/update', 'bankUpdate')->name('settings.bank.update');
 
         Route::get('/pension_types/page', 'pension_types_page')->name('settings.pension.types.page');
         Route::get('/pension_types/data', 'pension_types_data')->name('settings.pension.types.data');
+        Route::get('/pension_types/get/{id}', 'pension_typesGet')->name('settings.pension.types.get');
+        Route::post('/pension_types/create', 'pension_typesCreate')->name('settings.pension.types.create');
+        Route::post('/pension_types/update', 'pension_typesUpdate')->name('settings.pension.types.update');
     });
 });
 

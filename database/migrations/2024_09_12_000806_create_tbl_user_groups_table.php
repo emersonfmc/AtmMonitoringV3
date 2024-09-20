@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreign('company_id')->references('id')->on('tbl_companies')->onDelete('restrict')->onUpdate('cascade');
             $table->timestamps();
             $table->softDeletes();
-            $table->string('status')->default(1);
+            $table->enum('status',[['Active','Inactive']])->default('Active');
         });
     }
 
