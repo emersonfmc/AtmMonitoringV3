@@ -34,6 +34,48 @@ class UserController extends Controller
         ->make(true);
     }
 
+    public function users_create(Request $request)
+    {
+        if($request->user_type === 'Head_Office')
+        {
+            dd('headoffice');
+        }
+        else if($request->user_type === 'District')
+        {
+            dd('District');
+        }
+        else if($request->user_type === 'Area')
+        {
+            dd('Area');
+        }
+        else if($request->user_type === 'Branch')
+        {
+            dd('Branch');
+        }
+        else{
+
+        }
+
+
+
+
+        // return response()->json($user);
+    }
+
+    public function users_update($id)
+    {
+        $update_user = User::findOrFail($id)->whereNull('deleted_at')->get();
+        return response()->json($update_user);
+
+        $update_user->update([
+            'quantity' => $request->quantity_received,
+            'status' => 'Completed',
+            'received_by_id' => Auth::user()->id,
+            'loss_quantity' =>  $request->loss_quantity,
+            'damage_quantity' =>  $request->damage_quantity,
+        ]);
+    }
+
 
 
 }
