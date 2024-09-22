@@ -35,6 +35,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::controller(UserController::class)->group(function () {
         Route::get('/users/page', 'users_page')->name('users.page');
         Route::get('/users/data', 'users_data')->name('users.data');
+        Route::get('/users/get/{id}', 'users_get')->name('users.get');
+        Route::post('/users/create', 'users_create')->name('users.create');
+        Route::post('/users/update', 'users_update')->name('users.update');
     });
 });
 
