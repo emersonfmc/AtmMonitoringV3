@@ -65,4 +65,48 @@
 <script src="{{ URL::asset('assets/libs/select2/select2.min.js') }}"></script>
 <script src="{{ URL::asset('assets/libs/select2/select2.init.js') }}"></script>
 
+<script src="{{ URL::asset('assets/libs/jquery-validation/jquery-validation.min.js') }}"></script>
+
+<script src="{{ URL::asset('/assets/js/pages/ecommerce-select2.init.js') }}"></script>
+
+
+
+
+@if (session('success'))
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: '{{ session('success') }}',
+        });
+    });
+</script>
+@endif
+
+@if (session('message'))
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: '{{ session('message') }}',
+        });
+    });
+</script>
+@endif
+
+@if (session('error'))
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        Swal.fire({
+            icon: 'error',
+            title: 'Something Wrong',
+            text: '{{ session('error') }}',
+        });
+    });
+</script>
+@endif
+
+
 @yield('script-bottom')

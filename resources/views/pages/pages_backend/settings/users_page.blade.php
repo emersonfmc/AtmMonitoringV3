@@ -248,7 +248,7 @@
 
                                     <div class="form-group mb-2">
                                         <label class="fw-bold h6">User Group</label>
-                                        <select id="user_group_id" name="user_group_id" class="form-select">
+                                        <select id="user_group_id" name="user_group_id" class="form-select select2">
                                             <option value="" selected disabled>Select User Type</option>
                                             @foreach ($user_groups as $user_group)
                                                 <option value="{{ $user_group->id }}">{{ $user_group->group_name }}</option>
@@ -360,12 +360,12 @@
         //     dropdownParent: $('#createUserModal')
         // });
 
+        $('#user_group_id').select2({
+            dropdownParent: $('#createUserModal')
+        });
+
         $('#userTypeSelect').on('change', function() {
             var selectedUserType = $(this).val();
-
-            // <option value="District">District</option>
-            //                         <option value="Area">Area</option>
-            //                         <option value="Branch">Branch</option>
 
             if(selectedUserType === 'Head_Office')
             {
