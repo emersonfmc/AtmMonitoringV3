@@ -37,7 +37,7 @@
                                                     <div class="owl-carousel owl-theme auth-review-carousel" id="auth-review-carousel">
                                                         <div class="item">
                                                             <div class="py-3">
-                                                                <p class="font-size-16 mb-4">" Fantastic theme with a
+                                                                <p class="font-size-16 mb-4">" Fanssssstastic theme with a
                                                                     ton of options. If you just want the HTML to
                                                                     integrate with your project, then this is the
                                                                     package. You can find the files in the 'dist'
