@@ -62,7 +62,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title fw-bold text-uppercase" id="createUserModalLabel">Create User Group</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close closeUserGroupModal" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form method="post" action="{{ route('settings.users.group.create')  }}" id="createValidateForm">
@@ -70,7 +70,7 @@
 
                         <div class="form-group mb-3">
                             <label class="fw-bold h6">User Group</label>
-                            <input type="text" name="user_group" class="form-control" placeholder="Enter User Group" minlength="0" maxlength="50" required>
+                            <input type="text" name="user_group" class="form-control" id="user_group" placeholder="Enter User Group" minlength="0" maxlength="50" required>
                         </div>
 
                         <div class="modal-footer">
@@ -84,6 +84,8 @@
     </div>
 
     <script>
+         var usersGroupPageTableBody = $('#usersGroupPageTable tbody');
+
         $(document).ready(function () {
             const dataTable = new ServerSideDataTable('#usersGroupPageTable');
             var url = '{!! route('settings.users.group.data') !!}';
@@ -163,9 +165,19 @@
                 columns: columns,
                 buttons: buttons
             });
-        });
 
-        $(document).ready(function () {
+            function closeUserGroupModal() {
+                $('#createUserGroupModal').modal('hide');
+                $('#user_group').empty();
+                $('#usersGroupPageTable tbody').empty();
+                $('#usersGroupPageTable').addClass('d-none');
+            }
+
+            $('.closeUserGroupModal').on('click', function(e) {
+                e.preventDefault();
+                closeUserGroupModal();
+            });
+
             $('#createValidateForm').validate({
                 rules: {
                     user_group: {
@@ -184,55 +196,139 @@
                     $(element).removeClass('is-invalid');
                 },
                 submitHandler: function(form) {
-                    Swal.fire({
-                        title: 'Are you sure?',
-                        text: 'You want to submit the form',
-                        icon: 'question',
-                        showCancelButton: true,
-                        confirmButtonText: 'Submit',
-                        cancelButtonText: 'Cancel'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            // If user clicks "Submit", send the form data via AJAX
-                            $.ajax({
-                                url: form.action, // Use the form's action attribute
-                                type: 'POST',
-                                data: $(form).serialize(), // Serialize the form data
-                                success: function(response) {
-                                    if (response.status === 'success') {
-                                        Swal.fire({
-                                            icon: 'success',
-                                            title: response.status,
-                                            text: response.message,
-                                            showConfirmButton: false
-                                        });
-                                        // Optionally, reset the form after success
-                                        form.reset();
-                                        $('#createUserGroupModal').modal('hide'); // Replace with your modal ID
-                                    } else {
-                                        Swal.fire({
-                                            icon: 'error',
-                                            title: 'Error',
-                                            text: 'Something went wrong! Please try again.',
-                                        });
-                                        $('#createUserGroupModal').modal('hide'); // Replace with your modal ID
-                                    }
-                                },
-                                error: function(xhr) {
-                                    // Handle error, display a SweetAlert with error info
-                                    Swal.fire({
-                                        icon: 'error',
-                                        title: 'Error',
-                                        text: 'There was a problem submitting the form. Please try again.',
-                                    });
+                    var hasRows = usersGroupPageTableBody.children('tr').length > 0;
+                    if (hasRows) {
+                        Swal.fire({
+                            title: 'Are you sure?',
+                            text: 'You want to submit the form',
+                            icon: 'question',
+                            showCancelButton: true,
+                            confirmButtonText: 'Submit',
+                            cancelButtonText: 'Cancel'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    // const currentPage = dataTable.table.page();
+                                    $.ajax({
+                                        url: form.action,
+                                        type: form.method,
+                                        data: $(form).serialize(),
+                                        success: function(response) {
+                                            closeUserGroupModal();
+                                            Swal.fire({
+                                                title: 'Successfully Transaction!',
+                                                text: 'User Group is successfully added!',
+                                                icon: 'success',
+                                                showCancelButton: false,
+                                                showConfirmButton: true,
+                                                confirmButtonText: 'OK',
+                                                preConfirm: () => {
+                                                    return new Promise(( resolve
+                                                    ) => {
+                                                        Swal.fire({
+                                                            title: 'Please Wait...',
+                                                            allowOutsideClick: false,
+                                                            allowEscapeKey: false,
+                                                            showConfirmButton: false,
+                                                            showCancelButton: false,
+                                                            didOpen: () => { Swal.showLoading();
+                                                                // here the reload of datatable
+                                                                dataTable.table.ajax.reload(() => {
+                                                                    Swal.close();
+                                                                        $(form)[0].reset();
+                                                                        dataTable.table.page( currentPage ).draw(false);
+                                                                }, false );
+                                                            }
+                                                        })
+                                                    });
+                                                }
+                                            });
+                                        },
+                                        error: function(xhr, status, error) {
+                                            var errorMessage =
+                                                'An error occurred. Please try again later.';
+                                            if (xhr.responseJSON && xhr.responseJSON
+                                                .error) {
+                                                errorMessage = xhr.responseJSON.error;
+                                            }
+                                            Swal.fire({
+                                                title: 'Error!',
+                                                text: errorMessage,
+                                                icon: 'error',
+                                            });
+                                        }
+                                    })
                                 }
-                            });
-                        }
-                    });
+                        })
+                    }
+                    else
+                    {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Empty Record!',
+                            text: 'Table is empty, add row to proceed!',
+                        });
+                    }
                 }
             });
         });
 
+
+
+                    // confirmButtonText: "Yes, Save it!"
+                    //     }).then((result) => {
+                    //         if (result.isConfirmed) {
+                    //             const currentPage = dataTable.table.page();
+                    //             $.ajax({
+                    //                 url: form.action,
+                    //                 type: form.method,
+                    //                 data: $(form).serialize(),
+                    //                 success: function(response) {
+                    //                     $('#createUserGroupModal').modal('hide'); // Replace with your modal ID
+                    //                     Swal.fire({
+                    //                         title: 'Successfully Transaction!',
+                    //                         text: 'User Group is successfully added!',
+                    //                         icon: 'success',
+                    //                         showCancelButton: false,
+                    //                         showConfirmButton: true,
+                    //                         confirmButtonText: 'OK',
+                    //                         preConfirm: () => {
+                    //                             return new Promise(( resolve
+                    //                             ) => {
+                    //                                 Swal.fire({
+                    //                                     title: 'Please Wait...',
+                    //                                     allowOutsideClick: false,
+                    //                                     allowEscapeKey: false,
+                    //                                     showConfirmButton: false,
+                    //                                     showCancelButton: false,
+                    //                                     didOpen: () => { Swal.showLoading();
+                    //                                         // here the reload of datatable
+                    //                                         dataTable.table.ajax.reload(() => {
+                    //                                             Swal.close();
+                    //                                                 $(form)[0].reset();
+                    //                                                 dataTable.table.page( currentPage ).draw(false);
+                    //                                         }, false );
+                    //                                     }
+                    //                                 })
+                    //                             });
+                    //                         }
+                    //                     });
+                    //                 },
+                    //                 error: function(xhr, status, error) {
+                    //                     var errorMessage =
+                    //                         'An error occurred. Please try again later.';
+                    //                     if (xhr.responseJSON && xhr.responseJSON
+                    //                         .error) {
+                    //                         errorMessage = xhr.responseJSON.error;
+                    //                     }
+                    //                     Swal.fire({
+                    //                         title: 'Error!',
+                    //                         text: errorMessage,
+                    //                         icon: 'error',
+                    //                     });
+                    //                 }
+                    //             })
+                    //         }
+                    //     })
     </script>
 
 

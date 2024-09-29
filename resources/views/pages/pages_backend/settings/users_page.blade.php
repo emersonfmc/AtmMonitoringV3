@@ -290,14 +290,14 @@
 
                                     <div class="form-group mb-2">
                                         <label class="fw-bold h6">Area Supervisor</label>
-                                        <select id="area_supervisor_id" name="area_supervisor_id" class="form-select">
+                                        <select id="area_supervisor_id" name="area_supervisor_id" class="form-select" disabled>
                                             <option value="" selected disabled>Select Area Supervisor</option>
                                         </select>
                                     </div>
 
                                     <div class="form-group mb-2">
                                         <label class="fw-bold h6">District | Area</label>
-                                        <select id="district_area_id" name="district_area_id" class="form-select">
+                                        <select id="district_area_id" name="district_area_id" class="form-select" disabled>
                                             <option value="" selected disabled>District | Area</option>
                                         </select>
                                     </div>
