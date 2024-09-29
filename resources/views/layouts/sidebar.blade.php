@@ -105,25 +105,31 @@
                     <ul class="sub-menu" aria-expanded="true">
                         <li>
                             <a href="#" key="atm_ho_lists">
-                                <span class="badge rounded-pill bg-success float-start me-2 fw-bold" key="t-new">20</span>
+                                <span class="badge rounded-pill bg-success float-start me-2 fw-bold text-dark">20</span>
                                 H.O. ATM Lists
                             </a>
                         </li>
                         <li>
                             <a href="#" key="atm_branch_lists">
-                                <span class="badge rounded-pill bg-primary float-start me-2" key="t-new">20</span>
+                                <span class="badge rounded-pill bg-primary float-start me-2">20</span>
                                 Branch ATM Lists
                             </a>
                         </li>
                         <li>
                             <a href="#" key="atm_receiving_transaction">
-                                <span class="badge rounded-pill bg-danger float-start me-2" key="t-new">20</span>
+                                <span class="badge rounded-pill bg-info float-start me-2">20</span>
                                 Receiving of Transaction
                             </a>
                         </li>
                         <li>
+                            <a href="#" key="atm_releasing_transaction">
+                                <span class="badge rounded-pill bg-danger float-start me-2">20</span>
+                                Releasing of Transaction
+                            </a>
+                        </li>
+                        <li>
                             <a href="#" key="atm_branch_transaction">
-                                <span class="badge rounded-pill float-start me-2 text-dark" style="background: #FFC0CB;">20</span>
+                                <span class="badge rounded-pill float-start me-2 text-white" style="background: #000000;">20</span>
                                 Branch Transaction
                             </a>
                         </li>

@@ -160,6 +160,14 @@ class SettingsController extends Controller
         ->make(true);
     }
 
+    public function login_page()
+    {
+        return view('auth.login_page');
+    }
+
+
+
+
 
 
 
