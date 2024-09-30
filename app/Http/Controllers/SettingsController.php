@@ -28,35 +28,15 @@ class SettingsController extends Controller
             ->get();
 
         return DataTables::of($user_group)
-        ->addColumn('password', function($user) {
-            // Return the hashed password for display (Not recommended for security reasons)
-            return $user->password;
-        })
         ->setRowId('id')
         ->make(true);
     }
 
     public function users_group_create(Request $request)
     {
-        DB::beginTransaction();
-        try
-        {
-            // Validate input make usre its unique
-            $request->validate([
-                'user_group' => [
-                    'required',
-                    'string',
-                    function ($attribute, $value, $fail) {
-                        // Normalize the input (trim spaces and convert to lowercase)
-                        $normalizedGroupName = strtolower(preg_replace('/\s+/', '', $value));
-
-                        // Check for duplicate ignoring case and spaces
-                        if (TblUserGroup::whereRaw('LOWER(REPLACE(group_name, " ", "")) = ?', [$normalizedGroupName])->exists()) {
-                            $fail('The group name already exists.');
-                        }
-                    }
-                ]
-            ]);
+        // DB::beginTransaction();
+        // try
+        // {
             // Proceed with inserting if validation passes
             TblUserGroup::create([
                 'group_name' => $request->user_group,
@@ -64,16 +44,16 @@ class SettingsController extends Controller
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]);
-        }
-        catch (\Exception $e)
-        {
-            DB::rollBack();
-            return response()->json([
-                'status' => 'error',
-                'message' => 'An Error Occurs, Please Check and Repeat!'
-            ]);
-            throw $e;
-        }
+        // }
+        // catch (\Exception $e)
+        // {
+        //     DB::rollBack();
+        //     return response()->json([
+        //         'status' => 'error',
+        //         'message' => 'An Error Occurs, Please Check and Repeat!'
+        //     ]);
+        //     throw $e;
+        // }
 
         return response()->json([
             'status' => 'success',

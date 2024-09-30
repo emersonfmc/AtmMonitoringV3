@@ -150,21 +150,23 @@
 
             ];
 
+
             // Log data sent from server
-            $('#usersGroupPageTable').DataTable({
+            const dataTableInstance = $('#usersGroupPageTable').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: {
                     url: url,
                     type: 'GET',
                     dataSrc: function (json) {
-                        console.log('Data returned from the server:', json); // Logs entire response
-                        return json.data; // Return the actual data array to DataTables
+                        console.log('Data returned from the server:', json);
+                        return json.data;
                     }
                 },
                 columns: columns,
                 buttons: buttons
             });
+
 
             function closeUserGroupModal() {
                 $('#createUserGroupModal').modal('hide');
@@ -195,7 +197,8 @@
                 unhighlight: function(element, errorClass, validClass) {
                     $(element).removeClass('is-invalid');
                 },
-                submitHandler: function(form) {
+                submitHandler: function(form)
+                {
                     var hasRows = usersGroupPageTableBody.children('tr').length > 0;
                     if (hasRows) {
                         Swal.fire({
@@ -205,63 +208,66 @@
                             showCancelButton: true,
                             confirmButtonText: 'Submit',
                             cancelButtonText: 'Cancel'
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    // const currentPage = dataTable.table.page();
-                                    $.ajax({
-                                        url: form.action,
-                                        type: form.method,
-                                        data: $(form).serialize(),
-                                        success: function(response) {
-                                            closeUserGroupModal();
-                                            Swal.fire({
-                                                title: 'Successfully Transaction!',
-                                                text: 'User Group is successfully added!',
-                                                icon: 'success',
-                                                showCancelButton: false,
-                                                showConfirmButton: true,
-                                                confirmButtonText: 'OK',
-                                                preConfirm: () => {
-                                                    return new Promise(( resolve
-                                                    ) => {
-                                                        Swal.fire({
-                                                            title: 'Please Wait...',
-                                                            allowOutsideClick: false,
-                                                            allowEscapeKey: false,
-                                                            showConfirmButton: false,
-                                                            showCancelButton: false,
-                                                            didOpen: () => { Swal.showLoading();
-                                                                // here the reload of datatable
-                                                                dataTable.table.ajax.reload(() => {
-                                                                    Swal.close();
-                                                                        $(form)[0].reset();
-                                                                        dataTable.table.page( currentPage ).draw(false);
-                                                                }, false );
-                                                            }
-                                                        })
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                const currentPage = dataTableInstance.page();
+
+                                $.ajax({
+                                    url: form.action,
+                                    type: form.method,
+                                    data: $(form).serialize(),
+                                    success: function(response) {
+                                        closeUserGroupModal();  // Close the modal
+                                        Swal.fire({
+                                            title: 'Successfully Transaction!',
+                                            text: 'User Group is successfully added!',
+                                            icon: 'success',
+                                            showCancelButton: false,
+                                            showConfirmButton: true,
+                                            confirmButtonText: 'OK',
+                                            preConfirm: () => {
+                                                return new Promise((resolve) => {
+                                                    Swal.fire({
+                                                        title: 'Please Wait...',
+                                                        allowOutsideClick: false,
+                                                        allowEscapeKey: false,
+                                                        showConfirmButton: false,
+                                                        showCancelButton: false,
+                                                        didOpen: () => {
+                                                            Swal.showLoading();
+
+                                                            // Clear the DataTable (optional)
+                                                            dataTableInstance.clear();
+
+                                                            // Reload the DataTable with the updated URL
+                                                            dataTableInstance.ajax.url(url).load(() => {
+                                                                Swal.close();  // Close the Swal dialog
+                                                                $(form)[0].reset();  // Reset the form
+
+                                                                // Go back to the original page and redraw the table
+                                                                dataTableInstance.page(currentPage).draw(false);
+                                                            });
+                                                        }
                                                     });
-                                                }
-                                            });
-                                        },
-                                        error: function(xhr, status, error) {
-                                            var errorMessage =
-                                                'An error occurred. Please try again later.';
-                                            if (xhr.responseJSON && xhr.responseJSON
-                                                .error) {
-                                                errorMessage = xhr.responseJSON.error;
+                                                });
                                             }
-                                            Swal.fire({
-                                                title: 'Error!',
-                                                text: errorMessage,
-                                                icon: 'error',
-                                            });
+                                        });
+                                    },
+                                    error: function(xhr, status, error) {
+                                        var errorMessage = 'An error occurred. Please try again later.';
+                                        if (xhr.responseJSON && xhr.responseJSON.error) {
+                                            errorMessage = xhr.responseJSON.error;
                                         }
-                                    })
-                                }
-                        })
-                    }
-                    else
-                    {
+                                        Swal.fire({
+                                            title: 'Error!',
+                                            text: errorMessage,
+                                            icon: 'error',
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    } else {
                         Swal.fire({
                             icon: 'warning',
                             title: 'Empty Record!',
