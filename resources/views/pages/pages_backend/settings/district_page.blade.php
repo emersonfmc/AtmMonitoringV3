@@ -57,6 +57,85 @@
         </div> <!-- end col -->
     </div> <!-- end row -->
 
+    <div class="modal fade" id="createDistrictModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="createDistrictLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold text-uppercase" id="createDistrictLabel">Create District</h5>
+                    <button type="button" class="btn-close closeDistrictModal" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{{ route('settings.districts.create')  }}"  id="addDistrictForm">
+                        @csrf
+
+                        <div class="form-group mb-2">
+                            <label class="fw-bold h6">District Number</label>
+                            <input type="text" name="district_number" id="district_number" class="form-control" placeholder="District Number" required>
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <label class="fw-bold h6">District Name</label>
+                            <input type="text" name="district_name" id="district_name" class="form-control" placeholder="District Name" required>
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <label class="fw-bold h6">Email</label>
+                            <input type="text" name="email" id="email" class="form-control" placeholder="Email" required>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger closeDistrictModal" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="updateDistrictModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="createDistrictLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold text-uppercase" id="createDistrictLabel">Update District</h5>
+                    <button type="button" class="btn-close closeDistrictModal" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{{ route('settings.districts.update')  }}"  id="updateDistrictForm">
+                        @csrf
+                        <input type="hidden" id="item_id" name="item_id">
+
+                        <div class="form-group mb-2">
+                            <label class="fw-bold h6">District Number</label>
+                            <input type="text" name="district_number" id="update_district_number" class="form-control" placeholder="District Number" required>
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <label class="fw-bold h6">District Name</label>
+                            <input type="text" name="district_name" id="update_district_name" class="form-control" placeholder="District Name" required>
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <label class="fw-bold h6">Email</label>
+                            <input type="text" name="email" id="update_email" class="form-control" placeholder="Email" required>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-success">Update</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
     <script>
         $(document).ready(function () {
             var SettingsDistrictTableBody = $('#SettingsDistrictTable tbody');
@@ -123,42 +202,32 @@
                     data: null,
                     name: 'action',
                     render: function(data, type, row) {
-                        return '<a href="#" class="text-danger deleteUserBtn me-2" data-id="' + row.id +'" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete User"><i class="fas fa-trash-alt me-2"></i></a>' +
-                               '<a href="#" class="text-warning editUserBtn me-2" data-id="' + row.id +'" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit User"><i class="fas fa-pencil-alt me-2"></i></a>';
+                        return `
+                            <a href="#" class="text-danger deleteBtn me-2" data-id="${row.id}"
+                                data-bs-toggle="tooltip" data-bs-placement="top" title="Delete User">
+                                <i class="fas fa-trash-alt me-2"></i>
+                            </a>
+
+                            <a href="#" class="text-warning editBtn me-2" data-id="${row.id}"
+                                data-bs-toggle="tooltip" data-bs-placement="top" title="Edit User">
+                                <i class="fas fa-pencil-alt me-2"></i>
+                            </a>`;
                     },
                     orderable: false,
                     searchable: false,
                 }
             ];
-
-            // Log data sent from server
-            $('#SettingsDistrictTable').DataTable({
-                processing: true,
-                serverSide: true,
-                ajax: {
-                    url: url,
-                    type: 'GET',
-                    dataSrc: function (json) {
-                        console.log('Data returned from the server:', json); // Logs entire response
-                        return json.data; // Return the actual data array to DataTables
-                    }
-                },
-                columns: columns,
-                buttons: buttons
-            });
-
-            console.log(dataTable);
+            dataTable.initialize(url, columns);
 
             function closeAddDistrictModal() {
                 $('#createDistrictModal').modal('hide');
                 $('#SettingsDistrictTable tbody').empty();
-                $('#SettingsDistrictTable').addClass('d-none');
             }
 
-            $('.closeDistrictModal').on('click', function(e) {
-                e.preventDefault();
-                closeAddDistrictModal();
-            });
+            function closeUpdateDistrictModal() {
+                $('#updateDistrictModal').modal('hide');
+                $('#SettingsDistrictTable tbody').empty();
+            }
 
             $('#addDistrictForm').validate({
                 rules: {
@@ -190,12 +259,12 @@
                             text: 'Are you sure you want to save this?',
                             icon: 'question',
                             showCancelButton: true,
-                            confirmButtonColor: "#3085d6",
-                            cancelButtonColor: "#d33",
+                            confirmButtonColor: "#007BFF",
+                            cancelButtonColor: "#6C757D",
                             confirmButtonText: "Yes, Save it!"
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                // const currentPage = dataTable.page();  // Get correct page reference
+                                const currentPage = dataTable.table.page();
                                 $.ajax({
                                     url: form.action,
                                     type: form.method,
@@ -204,32 +273,41 @@
                                         closeAddDistrictModal();
                                         Swal.fire({
                                             title: 'Successfully Added!',
-                                            text: 'District is successfully added!',
+                                            text: 'District is successfully Created!',
                                             icon: 'success',
+                                            showCancelButton: false,
+                                            showConfirmButton: true,
                                             confirmButtonText: 'OK',
                                             preConfirm: () => {
-                                                return new Promise((resolve) => {
+                                                return new Promise(( resolve
+                                                ) => {
                                                     Swal.fire({
                                                         title: 'Please Wait...',
                                                         allowOutsideClick: false,
                                                         allowEscapeKey: false,
                                                         showConfirmButton: false,
+                                                        showCancelButton: false,
                                                         didOpen: () => {
                                                             Swal.showLoading();
-                                                            dataTable.ajax.reload(() => {
+                                                            // here the reload of datatable
+                                                            dataTable.table.ajax.reload( () =>
+                                                            {
                                                                 Swal.close();
                                                                 $(form)[0].reset();
-                                                                dataTable.page(currentPage).draw(false);
-                                                            }, false);
+                                                                dataTable.table.page(currentPage).draw( false );
+                                                            },
+                                                            false );
                                                         }
-                                                    });
+                                                    })
                                                 });
                                             }
                                         });
                                     },
                                     error: function(xhr, status, error) {
-                                        var errorMessage = 'An error occurred. Please try again later.';
-                                        if (xhr.responseJSON && xhr.responseJSON.error) {
+                                        var errorMessage =
+                                            'An error occurred. Please try again later.';
+                                        if (xhr.responseJSON && xhr.responseJSON
+                                            .error) {
                                             errorMessage = xhr.responseJSON.error;
                                         }
                                         Swal.fire({
@@ -238,10 +316,11 @@
                                             icon: 'error',
                                         });
                                     }
-                                });
+                                })
                             }
-                        });
+                        })
                     } else {
+
                         Swal.fire({
                             icon: 'warning',
                             title: 'Empty Record!',
@@ -250,46 +329,131 @@
                     }
                 }
             });
+
+            $('#updateDistrictForm').validate({
+                rules: {
+                    district_number: { required: true },
+                    district_name: { required: true },
+                    email: { required: true }
+                },
+                messages: {
+                    district_number: { required: 'Please Enter District Number' },
+                    district_name: { required: 'Please Enter District Name' },
+                    email: { required: 'Please Enter Email' }
+                },
+                errorElement: 'span',
+                errorPlacement: function(error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function(element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function(element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                },
+                submitHandler: function(form) {
+                    var hasRows = SettingsDistrictTableBody.children('tr').length > 0;
+                    if (hasRows) {
+                        Swal.fire({
+                            title: 'Confirmation',
+                            text: 'Are you sure you want to save this?',
+                            icon: 'question',
+                            showCancelButton: true,
+                            confirmButtonColor: "#007BFF",
+                            cancelButtonColor: "#6C757D",
+                            confirmButtonText: "Yes, Save it!"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                const currentPage = dataTable.table.page();
+                                $.ajax({
+                                    url: form.action,
+                                    type: form.method,
+                                    data: $(form).serialize(),
+                                    success: function(response) {
+                                        closeUpdateDistrictModal();
+                                        Swal.fire({
+                                            title: 'Successfully Updated!',
+                                            text: 'Disrict is successfully Updated!',
+                                            icon: 'success',
+                                            showCancelButton: false,
+                                            showConfirmButton: true,
+                                            confirmButtonText: 'OK',
+                                            preConfirm: () => {
+                                                return new Promise(( resolve
+                                                ) => {
+                                                    Swal.fire({
+                                                        title: 'Please Wait...',
+                                                        allowOutsideClick: false,
+                                                        allowEscapeKey: false,
+                                                        showConfirmButton: false,
+                                                        showCancelButton: false,
+                                                        didOpen: () => {
+                                                            Swal.showLoading();
+                                                            // here the reload of datatable
+                                                            dataTable.table.ajax.reload( () =>
+                                                            {
+                                                                Swal.close();
+                                                                $(form)[0].reset();
+                                                                dataTable.table.page(currentPage).draw( false );
+                                                            },
+                                                            false );
+                                                        }
+                                                    })
+                                                });
+                                            }
+                                        });
+                                    },
+                                    error: function(xhr, status, error) {
+                                        var errorMessage =
+                                            'An error occurred. Please try again later.';
+                                        if (xhr.responseJSON && xhr.responseJSON
+                                            .error) {
+                                            errorMessage = xhr.responseJSON.error;
+                                        }
+                                        Swal.fire({
+                                            title: 'Error!',
+                                            text: errorMessage,
+                                            icon: 'error',
+                                        });
+                                    }
+                                })
+                            }
+                        })
+                    } else {
+
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Empty Record!',
+                            text: 'Table is empty, add row to proceed!',
+                        });
+                    }
+                }
+            });
+
+            $('#SettingsDistrictTable').on('click', '.editBtn', function(e) {
+                e.preventDefault();
+                var itemID = $(this).data('id');
+                console.log(itemID);
+
+                var url = "/settings/districts/get/" + itemID;
+
+                $.get(url, function(data) {
+                    console.log(data);
+                    $('#item_id').val(data.id);
+                    $('#update_district_number').val(data.district_number);
+                    $('#update_district_name').val(data.district_name);
+                    $('#update_email').val(data.email);
+
+                    $('#updateDistrictModal').modal('show');
+                });
+            });
+
+
         });
     </script>
 
-    <div class="modal fade" id="createDistrictModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="createDistrictLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title fw-bold text-uppercase" id="createDistrictLabel">Create District</h5>
-                    <button type="button" class="btn-close closeDistrictModal" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form action="{{ route('district.create')  }}" method="POST" enctype="multipart/form-data" id="addDistrictForm">
-                        @csrf
 
-                        <div class="form-group mb-2">
-                            <label class="fw-bold h6">District Number</label>
-                            <input type="text" name="district_number" id="district_number" class="form-control" placeholder="District Number" required>
-                        </div>
-
-                        <div class="form-group mb-2">
-                            <label class="fw-bold h6">District Name</label>
-                            <input type="text" name="district_name" id="district_name" class="form-control" placeholder="District Name" required>
-                        </div>
-
-                        <div class="form-group mb-2">
-                            <label class="fw-bold h6">Email</label>
-                            <input type="text" name="email" id="email" class="form-control" placeholder="Email" required>
-                        </div>
-
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-danger closeDistrictModal" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 
 
 
