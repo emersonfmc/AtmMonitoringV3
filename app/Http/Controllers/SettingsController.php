@@ -113,6 +113,51 @@ class SettingsController extends Controller
         ->make(true);
     }
 
+    public function districtsGet($id)
+    {
+        $TblDistrict = TblDistrict::with('Company')->findOrFail($id);
+        return response()->json($TblDistrict);
+    }
+
+    public function districtsCreate(Request $request)
+    {
+
+        // Proceed with inserting if validation passes
+        TblDistrict::create([
+            'district_name' => $request->district_name,
+            'district_number' => $request->district_number,
+            'email' => $request->email,
+            'company_id' => 2,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'District created successfully!'
+        ]);
+    }
+
+    public function districtsUpdate(Request $request)
+    {
+        // Find the user group by ID
+        $TblDistrict = TblDistrict::findOrFail($request->item_id);
+
+        // Proceed with update if validation passes
+        $TblDistrict->update([  // Update the instance instead of using the class method
+            'district_name' => $request->district_name,
+            'district_number' => $request->district_number,
+            'email' => $request->email,
+            'updated_at' => Carbon::now(),  // Updated timestamp
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'District updated successfully!'  // Changed message to reflect update action
+        ]);
+    }
+
+
     public function area_page()
     {
         return view('pages.pages_backend.settings.area_page');
