@@ -33,7 +33,7 @@
                     <hr>
 
 
-                    <div class="table-responsive">
+
                         <table id="usersGroupPageTable" class="table table-border dt-responsive wrap table-design" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                             <thead class="table-light">
                                 <tr>
@@ -49,7 +49,7 @@
                             </tbody>
                         </table>
 
-                    </div>
+
 
                 </div>
             </div>
@@ -76,6 +76,35 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="updateUserGroupModal" data-bs-backdrop="static" tabindex="-1" role="dialog"
+        aria-labelledby="updateUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold text-uppercase">Update User Group</h5>
+                    <button type="button" class="btn-close closeUpdateUserGroupModal" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{{ route('settings.users.group.update')  }}" id="UpdateValidateForm">
+                        @csrf
+                        <input type="hidden" id="item_id" name="item_id">
+
+                        <div class="form-group mb-3">
+                            <label class="fw-bold h6">User Group</label>
+                            <input type="text" name="user_group" class="form-control" id="update_group_name"
+                                   placeholder="Enter User Group" minlength="0" maxlength="50" required>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-success">Update</button>
                         </div>
                     </form>
                 </div>
@@ -140,8 +169,16 @@
                     data: null,
                     name: 'action',
                     render: function(data, type, row) {
-                        return '<a href="#" class="text-danger deleteUserBtn me-2" data-id="' + row.id +'" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete User"><i class="fas fa-trash-alt me-2"></i></a>' +
-                               '<a href="#" class="text-warning editUserBtn me-2" data-id="' + row.id +'" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit User"><i class="fas fa-pencil-alt me-2"></i></a>';
+                        return `
+                            <a href="#" class="text-warning editUserBtn me-2" data-id="${row.id}"
+                                data-bs-toggle="tooltip" data-bs-placement="top" title="Edit User">
+                                <i class="fas fa-pencil-alt me-2"></i>
+                            </a>
+
+                            <a href="#" class="text-danger deleteUserBtn me-2" data-id="${row.id}"
+                                data-bs-toggle="tooltip" data-bs-placement="top" title="Delete User">
+                                <i class="fas fa-trash-alt me-2"></i>
+                            </a>`;
                     },
                     orderable: false,
                     searchable: false,
@@ -149,36 +186,7 @@
                 // <a href="" data-bs-toggle="tooltip" data-bs-placement="top" title="test">Test</a>
 
             ];
-
-
-            // Log data sent from server
-            const dataTableInstance = $('#usersGroupPageTable').DataTable({
-                processing: true,
-                serverSide: true,
-                ajax: {
-                    url: url,
-                    type: 'GET',
-                    dataSrc: function (json) {
-                        console.log('Data returned from the server:', json);
-                        return json.data;
-                    }
-                },
-                columns: columns,
-                buttons: buttons
-            });
-
-
-            function closeUserGroupModal() {
-                $('#createUserGroupModal').modal('hide');
-                $('#user_group').empty();
-                $('#usersGroupPageTable tbody').empty();
-                $('#usersGroupPageTable').addClass('d-none');
-            }
-
-            $('.closeUserGroupModal').on('click', function(e) {
-                e.preventDefault();
-                closeUserGroupModal();
-            });
+            dataTable.initialize(url, columns);
 
             $('#createValidateForm').validate({
                 rules: {
@@ -197,36 +205,36 @@
                 unhighlight: function(element, errorClass, validClass) {
                     $(element).removeClass('is-invalid');
                 },
-                submitHandler: function(form)
-                {
+                submitHandler: function(form) {
                     var hasRows = usersGroupPageTableBody.children('tr').length > 0;
                     if (hasRows) {
                         Swal.fire({
-                            title: 'Are you sure?',
-                            text: 'You want to submit the form',
+                            title: 'Confirmation',
+                            text: 'Are you sure you want to save this?',
                             icon: 'question',
                             showCancelButton: true,
-                            confirmButtonText: 'Submit',
-                            cancelButtonText: 'Cancel'
+                            confirmButtonColor: "#007BFF",
+                            cancelButtonColor: "#6C757D",
+                            confirmButtonText: "Yes, Save it!"
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                const currentPage = dataTableInstance.page();
-
+                                const currentPage = dataTable.table.page();
                                 $.ajax({
                                     url: form.action,
                                     type: form.method,
                                     data: $(form).serialize(),
                                     success: function(response) {
-                                        closeUserGroupModal();  // Close the modal
+                                        closeUserGroupModal();
                                         Swal.fire({
-                                            title: 'Successfully Transaction!',
+                                            title: 'Successfully Added!',
                                             text: 'User Group is successfully added!',
                                             icon: 'success',
                                             showCancelButton: false,
                                             showConfirmButton: true,
                                             confirmButtonText: 'OK',
                                             preConfirm: () => {
-                                                return new Promise((resolve) => {
+                                                return new Promise(( resolve
+                                                ) => {
                                                     Swal.fire({
                                                         title: 'Please Wait...',
                                                         allowOutsideClick: false,
@@ -235,27 +243,25 @@
                                                         showCancelButton: false,
                                                         didOpen: () => {
                                                             Swal.showLoading();
-
-                                                            // Clear the DataTable (optional)
-                                                            dataTableInstance.clear();
-
-                                                            // Reload the DataTable with the updated URL
-                                                            dataTableInstance.ajax.url(url).load(() => {
-                                                                Swal.close();  // Close the Swal dialog
-                                                                $(form)[0].reset();  // Reset the form
-
-                                                                // Go back to the original page and redraw the table
-                                                                dataTableInstance.page(currentPage).draw(false);
-                                                            });
+                                                            // here the reload of datatable
+                                                            dataTable.table.ajax.reload( () =>
+                                                            {
+                                                                Swal.close();
+                                                                $(form)[0].reset();
+                                                                dataTable.table.page(currentPage).draw( false );
+                                                            },
+                                                            false );
                                                         }
-                                                    });
+                                                    })
                                                 });
                                             }
                                         });
                                     },
                                     error: function(xhr, status, error) {
-                                        var errorMessage = 'An error occurred. Please try again later.';
-                                        if (xhr.responseJSON && xhr.responseJSON.error) {
+                                        var errorMessage =
+                                            'An error occurred. Please try again later.';
+                                        if (xhr.responseJSON && xhr.responseJSON
+                                            .error) {
                                             errorMessage = xhr.responseJSON.error;
                                         }
                                         Swal.fire({
@@ -264,10 +270,11 @@
                                             icon: 'error',
                                         });
                                     }
-                                });
+                                })
                             }
-                        });
+                        })
                     } else {
+
                         Swal.fire({
                             icon: 'warning',
                             title: 'Empty Record!',
@@ -276,65 +283,146 @@
                     }
                 }
             });
+
+            $('#UpdateValidateForm').validate({
+                rules: {
+                    user_group: {
+                        required: true,
+                    },
+                },
+                errorElement: 'span',
+                errorPlacement: function(error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function(element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function(element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                },
+                submitHandler: function(form) {
+                    var hasRows = usersGroupPageTableBody.children('tr').length > 0;
+                    if (hasRows) {
+                        Swal.fire({
+                            title: 'Confirmation',
+                            text: 'Are you sure you want to Update this?',
+                            icon: 'question',
+                            showCancelButton: true,
+                            confirmButtonColor: "#28A745",
+                            cancelButtonColor: "#6C757D",
+                            confirmButtonText: "Yes, Update it!"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                const currentPage = dataTable.table.page();
+                                $.ajax({
+                                    url: form.action,
+                                    type: form.method,
+                                    data: $(form).serialize(),
+                                    success: function(response) {
+                                        closeUpdateUserGroupModal();
+                                        Swal.fire({
+                                            title: 'Successfully Updated!',
+                                            text: 'User Group successfully Updated!',
+                                            icon: 'success',
+                                            showCancelButton: false,
+                                            showConfirmButton: true,
+                                            confirmButtonText: 'OK',
+                                            preConfirm: () => {
+                                                return new Promise(( resolve
+                                                ) => {
+                                                    Swal.fire({
+                                                        title: 'Please Wait...',
+                                                        allowOutsideClick: false,
+                                                        allowEscapeKey: false,
+                                                        showConfirmButton: false,
+                                                        showCancelButton: false,
+                                                        didOpen: () => {
+                                                            Swal.showLoading();
+                                                            // here the reload of datatable
+                                                            dataTable.table.ajax.reload( () =>
+                                                            {
+                                                                Swal.close();
+                                                                $(form)[0].reset();
+                                                                dataTable.table.page(currentPage).draw( false );
+                                                            },
+                                                            false );
+                                                        }
+                                                    })
+                                                });
+                                            }
+                                        });
+                                    },
+                                    error: function(xhr, status, error) {
+                                        var errorMessage =
+                                            'An error occurred. Please try again later.';
+                                        if (xhr.responseJSON && xhr.responseJSON
+                                            .error) {
+                                            errorMessage = xhr.responseJSON.error;
+                                        }
+                                        Swal.fire({
+                                            title: 'Error!',
+                                            text: errorMessage,
+                                            icon: 'error',
+                                        });
+                                    }
+                                })
+                            }
+                        })
+                    } else {
+
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Empty Record!',
+                            text: 'Table is empty, add row to proceed!',
+                        });
+                    }
+                }
+            });
+
+            $('#usersGroupPageTable').on('click', '.editUserBtn', function(e) {
+                e.preventDefault();
+                var itemID = $(this).data('id');
+                console.log(itemID);
+
+                var url = "/settings/users/group/get/" + itemID;
+
+                $.get(url, function(data) {
+                    console.log(data);
+                    $('#item_id').val(data.id);
+                    $('#update_group_name').val(data.group_name);
+
+                    $('#updateUserGroupModal').modal('show');
+                });
+            });
+
+
+            function closeUserGroupModal() {
+                $('#createUserGroupModal').modal('hide');
+                $('#user_group').empty();
+                $('#usersGroupPageTable tbody').empty();
+                // $('#usersGroupPageTable').addClass('d-none');
+            }
+
+            function closeUpdateUserGroupModal() {
+                $('#updateUserGroupModal').modal('hide');
+                $('#user_group').empty();
+                $('#usersGroupPageTable tbody').empty();
+                // $('#usersGroupPageTable').addClass('d-none');
+            }
+
+            // $('.closeUserGroupModal').on('click', function(e) {
+            //     e.preventDefault();
+            //     closeUserGroupModal();
+            // });
+
+            // $('.closeUpdateUserGroupModal').on('click', function(e) {
+            //     e.preventDefault();
+            //     closeUpdateUserGroupModal();
+            // });
         });
 
 
-
-                    // confirmButtonText: "Yes, Save it!"
-                    //     }).then((result) => {
-                    //         if (result.isConfirmed) {
-                    //             const currentPage = dataTable.table.page();
-                    //             $.ajax({
-                    //                 url: form.action,
-                    //                 type: form.method,
-                    //                 data: $(form).serialize(),
-                    //                 success: function(response) {
-                    //                     $('#createUserGroupModal').modal('hide'); // Replace with your modal ID
-                    //                     Swal.fire({
-                    //                         title: 'Successfully Transaction!',
-                    //                         text: 'User Group is successfully added!',
-                    //                         icon: 'success',
-                    //                         showCancelButton: false,
-                    //                         showConfirmButton: true,
-                    //                         confirmButtonText: 'OK',
-                    //                         preConfirm: () => {
-                    //                             return new Promise(( resolve
-                    //                             ) => {
-                    //                                 Swal.fire({
-                    //                                     title: 'Please Wait...',
-                    //                                     allowOutsideClick: false,
-                    //                                     allowEscapeKey: false,
-                    //                                     showConfirmButton: false,
-                    //                                     showCancelButton: false,
-                    //                                     didOpen: () => { Swal.showLoading();
-                    //                                         // here the reload of datatable
-                    //                                         dataTable.table.ajax.reload(() => {
-                    //                                             Swal.close();
-                    //                                                 $(form)[0].reset();
-                    //                                                 dataTable.table.page( currentPage ).draw(false);
-                    //                                         }, false );
-                    //                                     }
-                    //                                 })
-                    //                             });
-                    //                         }
-                    //                     });
-                    //                 },
-                    //                 error: function(xhr, status, error) {
-                    //                     var errorMessage =
-                    //                         'An error occurred. Please try again later.';
-                    //                     if (xhr.responseJSON && xhr.responseJSON
-                    //                         .error) {
-                    //                         errorMessage = xhr.responseJSON.error;
-                    //                     }
-                    //                     Swal.fire({
-                    //                         title: 'Error!',
-                    //                         text: errorMessage,
-                    //                         icon: 'error',
-                    //                     });
-                    //                 }
-                    //             })
-                    //         }
-                    //     })
     </script>
 
 

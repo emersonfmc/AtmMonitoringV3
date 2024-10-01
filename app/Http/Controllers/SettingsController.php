@@ -32,6 +32,12 @@ class SettingsController extends Controller
         ->make(true);
     }
 
+    public function users_group_get($id)
+    {
+        $TblUserGroup = TblUserGroup::with('Company')->findOrFail($id);
+        return response()->json($TblUserGroup);
+    }
+
     public function users_group_create(Request $request)
     {
         // DB::beginTransaction();
@@ -60,6 +66,35 @@ class SettingsController extends Controller
             'message' => 'User group created successfully!'
         ]);
     }
+
+    public function users_group_update(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            // Find the user group by ID
+            $TblUserGroup = TblUserGroup::findOrFail($request->item_id);
+
+            // Proceed with update if validation passes
+            $TblUserGroup->update([  // Update the instance instead of using the class method
+                'group_name' => $request->user_group,
+                'updated_at' => Carbon::now(),  // Updated timestamp
+            ]);
+
+            DB::commit();  // Commit the transaction if successful
+        } catch (\Exception $e) {
+            DB::rollBack();  // Roll back the transaction on error
+            return response()->json([
+                'status' => 'error',
+                'message' => 'An Error Occurred, Please Check and Repeat!'
+            ]);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'User group updated successfully!'  // Changed message to reflect update action
+        ]);
+    }
+
 
 
     public function districts_page()

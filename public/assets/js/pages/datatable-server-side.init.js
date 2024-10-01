@@ -18,8 +18,8 @@ class ServerSideDataTable {
             language: {
                 searchPlaceholder: "Enter to search ...",
                 paginate: {
-                    previous: "<button class='btn btn-light'>Previous</button>",
-                    next: "<button class='btn btn-light'>Next</button>",
+                    previous: "<i class='fas fa-chevron-left text-dark'></i>",
+                    next: "<i class='fas fa-chevron-right text-dark'></i>",
                 },
                 processing: function () {
                     Swal.fire({
