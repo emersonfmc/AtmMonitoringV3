@@ -421,13 +421,7 @@
             //     closeUpdateUserGroupModal();
             // });
         });
-
-
     </script>
-
-
-
-
 
 
 @endsection
