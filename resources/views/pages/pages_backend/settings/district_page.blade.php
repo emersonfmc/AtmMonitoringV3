@@ -59,6 +59,8 @@
 
     <script>
         $(document).ready(function () {
+            var SettingsDistrictTableBody = $('#SettingsDistrictTable tbody');
+
             const dataTable = new ServerSideDataTable('#SettingsDistrictTable');
             var url = '{!! route('settings.district.data') !!}';
             const buttons = [{
@@ -145,28 +147,29 @@
                 buttons: buttons
             });
 
+            console.log(dataTable);
+
+            function closeAddDistrictModal() {
+                $('#createDistrictModal').modal('hide');
+                $('#SettingsDistrictTable tbody').empty();
+                $('#SettingsDistrictTable').addClass('d-none');
+            }
+
+            $('.closeDistrictModal').on('click', function(e) {
+                e.preventDefault();
+                closeAddDistrictModal();
+            });
+
             $('#addDistrictForm').validate({
                 rules: {
-                    district_number: {
-                        required: true
-                    },
-                    district_name: {
-                        required: true
-                    },
-                    email: {
-                        required: true
-                    }
+                    district_number: { required: true },
+                    district_name: { required: true },
+                    email: { required: true }
                 },
                 messages: {
-                    district_number: {
-                        required: 'Please Enter District Number',
-                    },
-                    district_name: {
-                        required: 'Please Enter District Name',
-                    },
-                    email: {
-                        required: 'Please Enter Email',
-                    }
+                    district_number: { required: 'Please Enter District Number' },
+                    district_name: { required: 'Please Enter District Name' },
+                    email: { required: 'Please Enter Email' }
                 },
                 errorElement: 'span',
                 errorPlacement: function(error, element) {
@@ -180,7 +183,7 @@
                     $(element).removeClass('is-invalid');
                 },
                 submitHandler: function(form) {
-                    var hasRows = attendaceTableBody.children('tr').length > 0;
+                    var hasRows = SettingsDistrictTableBody.children('tr').length > 0;
                     if (hasRows) {
                         Swal.fire({
                             title: 'Confirmation',
@@ -192,67 +195,41 @@
                             confirmButtonText: "Yes, Save it!"
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                const currentPage = dataTable.table.page();
+                                // const currentPage = dataTable.page();  // Get correct page reference
                                 $.ajax({
                                     url: form.action,
                                     type: form.method,
                                     data: $(form).serialize(),
                                     success: function(response) {
-                                        closeAddAttendanceModal();
+                                        closeAddDistrictModal();
                                         Swal.fire({
                                             title: 'Successfully Added!',
-                                            text: 'Attendance is successfully added!',
+                                            text: 'District is successfully added!',
                                             icon: 'success',
-                                            showCancelButton: false,
-                                            showConfirmButton: true,
                                             confirmButtonText: 'OK',
                                             preConfirm: () => {
-                                                return new Promise((
-                                                    resolve
-                                                ) => {
+                                                return new Promise((resolve) => {
                                                     Swal.fire({
                                                         title: 'Please Wait...',
                                                         allowOutsideClick: false,
                                                         allowEscapeKey: false,
                                                         showConfirmButton: false,
-                                                        showCancelButton: false,
                                                         didOpen: () => {
-                                                            Swal
-                                                                .showLoading();
-                                                            // here the reload of datatable
-                                                            dataTable
-                                                                .table
-                                                                .ajax
-                                                                .reload(
-                                                                    () => {
-                                                                        Swal
-                                                                            .close();
-                                                                        $(form)[
-                                                                                0
-                                                                            ]
-                                                                            .reset();
-                                                                        dataTable
-                                                                            .table
-                                                                            .page(
-                                                                                currentPage
-                                                                            )
-                                                                            .draw(
-                                                                                false
-                                                                            );
-                                                                    },
-                                                                    false
-                                                                );
+                                                            Swal.showLoading();
+                                                            dataTable.ajax.reload(() => {
+                                                                Swal.close();
+                                                                $(form)[0].reset();
+                                                                dataTable.page(currentPage).draw(false);
+                                                            }, false);
                                                         }
-                                                    })
+                                                    });
                                                 });
                                             }
                                         });
                                     },
                                     error: function(xhr, status, error) {
-                                        var errorMessage =
-                                            'An error occurred. Please try again later.';
-                                        if (xhr.responseJSON && xhr.responseJSON
-                                            .error) {
+                                        var errorMessage = 'An error occurred. Please try again later.';
+                                        if (xhr.responseJSON && xhr.responseJSON.error) {
                                             errorMessage = xhr.responseJSON.error;
                                         }
                                         Swal.fire({
@@ -261,11 +238,10 @@
                                             icon: 'error',
                                         });
                                     }
-                                })
+                                });
                             }
-                        })
+                        });
                     } else {
-
                         Swal.fire({
                             icon: 'warning',
                             title: 'Empty Record!',
@@ -286,20 +262,21 @@
                     <button type="button" class="btn-close closeDistrictModal" data-bs-dismiss="modal"
                         aria-label="Close"></button>
                 </div>
-                    <div class="modal-body">
-                    <form action="#" method="POST" enctype="multipart/form-data" id="addDistrictForm">
+                <div class="modal-body">
+                    <form action="{{ route('district.create')  }}" method="POST" enctype="multipart/form-data" id="addDistrictForm">
                         @csrf
-                        <div class="form-group mb-3">
+
+                        <div class="form-group mb-2">
                             <label class="fw-bold h6">District Number</label>
                             <input type="text" name="district_number" id="district_number" class="form-control" placeholder="District Number" required>
                         </div>
 
-                        <div class="form-group mb-3">
+                        <div class="form-group mb-2">
                             <label class="fw-bold h6">District Name</label>
                             <input type="text" name="district_name" id="district_name" class="form-control" placeholder="District Name" required>
                         </div>
 
-                        <div class="form-group mb-3">
+                        <div class="form-group mb-2">
                             <label class="fw-bold h6">Email</label>
                             <input type="text" name="email" id="email" class="form-control" placeholder="Email" required>
                         </div>
