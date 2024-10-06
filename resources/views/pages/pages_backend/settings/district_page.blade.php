@@ -86,7 +86,7 @@
                         </div>
 
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-danger closeDistrictModal" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-secondary closeDistrictModal" data-bs-dismiss="modal">Cancel</button>
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </div>
                     </form>
@@ -125,7 +125,7 @@
                         </div>
 
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                             <button type="submit" class="btn btn-success">Update</button>
                         </div>
                     </form>
@@ -133,7 +133,6 @@
             </div>
         </div>
     </div>
-
 
 
     <script>
@@ -204,12 +203,12 @@
                     render: function(data, type, row) {
                         return `
                             <a href="#" class="text-danger deleteBtn me-2" data-id="${row.id}"
-                                data-bs-toggle="tooltip" data-bs-placement="top" title="Delete User">
+                                data-bs-toggle="tooltip" data-bs-placement="top" title="Delete">
                                 <i class="fas fa-trash-alt me-2"></i>
                             </a>
 
                             <a href="#" class="text-warning editBtn me-2" data-id="${row.id}"
-                                data-bs-toggle="tooltip" data-bs-placement="top" title="Edit User">
+                                data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
                                 <i class="fas fa-pencil-alt me-2"></i>
                             </a>`;
                     },
@@ -360,7 +359,7 @@
                             text: 'Are you sure you want to save this?',
                             icon: 'question',
                             showCancelButton: true,
-                            confirmButtonColor: "#007BFF",
+                            confirmButtonColor: "#28A745",
                             cancelButtonColor: "#6C757D",
                             confirmButtonText: "Yes, Save it!"
                         }).then((result) => {

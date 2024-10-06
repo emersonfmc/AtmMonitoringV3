@@ -205,6 +205,45 @@ class SettingsController extends Controller
         ->make(true);
     }
 
+    public function bankGet($id)
+    {
+        $AtmBankLists = AtmBankLists::findOrFail($id);
+        return response()->json($AtmBankLists);
+    }
+
+    public function bankCreate(Request $request)
+    {
+
+        // Proceed with inserting if validation passes
+        AtmBankLists::create([
+            'bank_name' => $request->bank_name,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Bank created successfully!'
+        ]);
+    }
+
+    public function bankUpdate(Request $request)
+    {
+        // Find the user group by ID
+        $AtmBankLists = AtmBankLists::findOrFail($request->item_id);
+
+        // Proceed with update if validation passes
+        $AtmBankLists->update([  // Update the instance instead of using the class method
+            'bank_name' => $request->bank_name,
+            'updated_at' => Carbon::now(),  // Updated timestamp
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'District updated successfully!'  // Changed message to reflect update action
+        ]);
+    }
+
     public function pension_types_page()
     {
         return view('pages.pages_backend.settings.pension_types_page');
