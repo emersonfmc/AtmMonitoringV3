@@ -402,8 +402,6 @@
                 $('#AreaDisplay').hide();
                 $('#BranchDisplay').hide();
             }
-
-
         });
     });
 </script>
