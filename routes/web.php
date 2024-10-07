@@ -69,7 +69,7 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => 'settings'], functio
         Route::post('/pension_types/update', 'pension_typesUpdate')->name('settings.pension.types.update');
 
 
-        Route::get('/login_get_test', 'login_page')->name('login.page.test');
+        // Route::get('/login_get_test', 'login_page')->name('login.page.test');
     });
 });
 
