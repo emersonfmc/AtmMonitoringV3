@@ -68,7 +68,7 @@
                     <button type="button" class="btn-close closeCreateModal" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form method="post" action="#" id="createValidateForm">
+                    <form method="post" action="{{ route('settings.pension.types.create') }}" id="createValidateForm">
                         @csrf
 
                         <div class="form-group mb-3">
@@ -105,8 +105,9 @@
                     <button type="button" class="btn-close closeUpdateModal" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form method="post" action="#" id="updateValidateForm">
+                    <form method="post" action="{{ route('settings.pension.types.update') }}" id="updateValidateForm">
                         @csrf
+                        <input type="hidden" name="item_id" id="item_id">
 
                         <div class="form-group mb-3">
                             <label class="fw-bold h6">Pension Number Types</label>
@@ -121,6 +122,16 @@
                             <label class="fw-bold h6">Pension Types</label>
                             <input type="text" name="pension_name" class="form-control" id="update_pension_name"
                                 placeholder="Enter Pension Name" minlength="0" maxlength="50" required>
+                        </div>
+
+
+                        <div class="form-group mb-3">
+                            <label class="fw-bold h6">Status</label>
+                            <select name="status" id="update_status" class="form-select" required>
+                                <option value="" selected disabled>Pension Number Types</option>
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                            </select>
                         </div>
 
                         <div class="modal-footer">
@@ -418,19 +429,17 @@
             $('#FetchingDatatable').on('click', '.editBtn', function(e) {
                 e.preventDefault();
                 var itemID = $(this).data('id');
-                console.log(itemID);
 
-                // var url = "/settings/users/group/get/" + itemID;
+                var url = "/settings/pension/types/get/" + itemID;
 
-                // $.get(url, function(data) {
-                //     console.log(data);
-                //     $('#item_id').val(data.id);
-                //     $('#update_group_name').val(data.group_name);
+                $.get(url, function(data) {
+                    $('#item_id').val(data.id);
+                    $('#update_types').val(data.types);
+                    $('#update_pension_name').val(data.pension_name);
+                    $('#update_status').val(data.status);
 
-                //     $('#updateUserGroupModal').modal('show');
-                // });
-
-                $('#updatePensionTypesModal').modal('show');
+                    $('#updatePensionTypesModal').modal('show');
+                });
             });
 
             function closeCreateModal() {

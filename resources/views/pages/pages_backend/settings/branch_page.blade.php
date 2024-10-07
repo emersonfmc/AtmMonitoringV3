@@ -65,13 +65,13 @@
                     <button type="button" class="btn-close closeCreateModal" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form method="post" action="#" id="createValidateForm">
+                    <form method="post" action="{{ route('settings.branch.create') }}" id="createValidateForm">
                         @csrf
 
                         <div class="form-group mb-3">
                             <label class="fw-bold h6">Location</label>
-                            <input type="text" name="location" class="form-control" id="location"
-                                   placeholder="Enter Location" minlength="0" maxlength="50" required>
+                            <input type="text" name="branch_location" class="form-control" id="branch_location"
+                                   placeholder="Enter Branch Location" minlength="0" maxlength="50" required>
                         </div>
 
                         <div class="form-group mb-3">
@@ -84,15 +84,16 @@
                             <label class="fw-bold h6">District Manager</label>
                             <select name="district_id" id="district_id" class="form-select" required>
                                 <option value="" selected disabled>Select District Manager</option>
-                                <option value="Sample">Sample</option>
+                                @foreach ($TblDistrict as $item)
+                                    <option value="{{ $item->id }}">{{ $item->district_number .' - '. $item->district_name}}</option>
+                                @endforeach
                             </select>
                         </div>
 
                         <div class="form-group mb-3">
                             <label class="fw-bold h6">Area Supervisor</label>
                             <select name="area_id" id="area_id" class="form-select" required disabled>
-                                <option value="" selected disabled>Select Area Supervisor</option>
-                                <option value="Sample">Sample</option>
+                                <option value="" selected disabled>Area Supervisor</option>
                             </select>
                         </div>
 
@@ -134,7 +135,9 @@
                             <label class="fw-bold h6">District Manager</label>
                             <select name="district_id" id="update_district_id" class="form-select" required>
                                 <option value="" selected disabled>Select District Manager</option>
-                                <option value="Sample">Sample</option>
+                                @foreach ($TblDistrict as $item)
+                                    <option value="{{ $item->id }}">{{ $item->district_number .' '. $item->district_name}}</option>
+                                @endforeach
                             </select>
                         </div>
 
@@ -212,7 +215,7 @@
                     data: 'area_id',
                     name: 'district.area',
                     render: function(data, type, row, meta) {
-                        return row.area ? '<span>' + row.area.area_name + '</span>' : '';
+                        return row.area ? '<span>' + row.area.area_supervisor + '</span>' : '';
                     },
                     orderable: true,
                     searchable: true,
@@ -238,6 +241,29 @@
 
             ];
             dataTable.initialize(url, columns);
+
+            $(function() {
+                $(document).on('change', '#district_id', function() {
+                    var district_id = $(this).val();
+
+                    $.ajax({
+                        url: "{{ route('settings.area.using.district') }}",
+                        type: "GET",
+                        data: { district_id: district_id },
+                        success: function(data) {
+                            console.log(data);
+                            var html = '<option value="" selected disabled>Select Area Supervisor</option>';
+                            // Loop through the array of areas
+                            $.each(data, function(index, area) {
+                                html += '<option value="' + area.id + '">' + area.area_no + ' - ' + area.area_supervisor + '</option>';
+                            });
+
+                            $('#area_id').html(html);
+                            $('#area_id').removeAttr('disabled');
+                        }
+                    });
+                });
+            });
 
             $('#createValidateForm').validate({
                 rules: {
