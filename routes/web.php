@@ -27,7 +27,6 @@ Route::post('/update-password/{id}', [App\Http\Controllers\HomeController::class
 
 // Route::get('{any}', [App\Http\Controllers\HomeController::class, 'index'])->name('index');
 
-//Language Translation
 Route::get('index/{locale}', [App\Http\Controllers\HomeController::class, 'lang']);
 
 
@@ -78,7 +77,6 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => 'settings'], functio
         Route::get('/pension_types/get/{id}', 'pension_typesGet')->name('settings.pension.types.get');
         Route::post('/pension_types/create', 'pension_typesCreate')->name('settings.pension.types.create');
         Route::post('/pension_types/update', 'pension_typesUpdate')->name('settings.pension.types.update');
-
 
         Route::get('/login_get_test', 'login_page')->name('login.page.test');
     });
