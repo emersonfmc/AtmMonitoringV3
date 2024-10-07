@@ -41,7 +41,7 @@
                                     <th>Area No.</th>
                                     <th>Area Name</th>
                                     <th>District</th>
-                                    <th>Email</th>
+                                    {{-- <th>Email</th> --}}
                                     <th>Created Date</th>
                                     <th>Action</th>
                                 </tr>
@@ -58,7 +58,7 @@
         </div> <!-- end col -->
     </div> <!-- end row -->
 
-    <div class="modal fade" id="createAreaModal" data-bs-backdrop="static" tabindex="-1" role="dialog"
+    <div class="modal fade" id="createAreaModal" data-bs-backdrop="static" tabindex="-1" role="dialog"district_id
         aria-labelledby="createAreaModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -67,13 +67,13 @@
                     <button type="button" class="btn-close closeCreateModal" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form method="post" action="#" id="createValidateForm">
+                    <form method="post" action="{{ route('settings.area.create') }}" id="createValidateForm">
                         @csrf
 
                         <div class="form-group mb-3">
                             <label class="fw-bold h6">Area</label>
-                            <input type="text" name="area" class="form-control" id="area"
-                                placeholder="Enter Area" minlength="0" maxlength="50" required>
+                            <input type="text" name="area_no" class="form-control" id="area_no"
+                                placeholder="Enter Area No" minlength="0" maxlength="50" required>
                         </div>
 
                         <div class="form-group mb-3">
@@ -84,7 +84,7 @@
 
                         <div class="form-group mb-3">
                             <label class="fw-bold h6">District Manager</label>
-                            <select name="district_id" id="district_id" class="form-select" required>
+                            <select name="district_id" id="district_id" class="form-select select2" required>
                                 <option value="" selected disabled>Select District Manager</option>
                                 @foreach ($districts as $district)
                                     <option value="{{ $district->id }}">{{  $district->district_number .' / '. $district->district_name }}</option>
@@ -102,7 +102,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="updateAreaModal" data-bs-backdrop="static" tabindex="-1" role="dialog"
+    <div class="modal fade" id="updateAreaModal" data-bs-backdrop="static" tabindex="-1" role="dialog"update_district_id
         aria-labelledby="updateAreaModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -111,12 +111,13 @@
                     <button type="button" class="btn-close closeUpdateModal" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form method="post" action="#" id="updateValidateForm">
+                    <form method="post" action="{{ route('settings.area.update') }}" id="updateValidateForm">
                         @csrf
+                        <input type="hidden" id="item_id" name="item_id">
 
                         <div class="form-group mb-3">
                             <label class="fw-bold h6">Area</label>
-                            <input type="text" name="area" class="form-control" id="update_area"
+                            <input type="text" name="area_no" class="form-control" id="update_area_no"
                                 placeholder="Enter Area" minlength="0" maxlength="50" required>
                         </div>
 
@@ -128,11 +129,19 @@
 
                         <div class="form-group mb-3">
                             <label class="fw-bold h6">District Manager</label>
-                            <select name="district_id" id="update_district_id" class="form-select" required>
-                                <option value="" selected disabled>Select District Manager</option>
+                            <select name="district_id" id="update_district_id" class="form-select select2" required>
                                 @foreach ($districts as $district)
                                     <option value="{{ $district->id }}">{{  $district->district_number .' / '. $district->district_name }}</option>
                                 @endforeach
+                            </select>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label class="fw-bold h6">Status</label>
+                            <select name="status" id="update_status" class="form-select" required>
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+
                             </select>
                         </div>
 
@@ -148,6 +157,9 @@
 
     <script>
         $(document).ready(function () {
+            $('#district_id').select2({ dropdownParent: $('#createAreaModal') });
+            $('#update_district_id').select2({ dropdownParent: $('#updateAreaModal') });
+
             var FetchingDatatableBody = $('#FetchingDatatable tbody');
 
             const dataTable = new ServerSideDataTable('#FetchingDatatable');
@@ -179,8 +191,8 @@
                     searchable: true,
                 },
                 {
-                    data: 'area_name',
-                    name: 'area_name',
+                    data: 'area_supervisor',
+                    name: 'area_supervisor',
                     render: function(data, type, row, meta) {
                         return '<span class="fw-bold h6">' + data + '</span>';
                     },
@@ -196,15 +208,15 @@
                     orderable: true,
                     searchable: true,
                 },
-                {
-                    data: 'email',
-                    name: 'email',
-                    render: function(data, type, row, meta) {
-                        return '<span">' + data + '</span>';
-                    },
-                    orderable: true,
-                    searchable: true,
-                },
+                // {
+                //     data: 'email',
+                //     name: 'email',
+                //     render: function(data, type, row, meta) {
+                //         return '<span">' + data + '</span>';
+                //     },
+                //     orderable: true,
+                //     searchable: true,
+                // },
                 {
                     data: 'created_at',
                     name: 'created_at',
@@ -435,17 +447,16 @@
                 var itemID = $(this).data('id');
                 console.log(itemID);
 
-                // var url = "/settings/users/group/get/" + itemID;
+                var url = "/settings/area/get/" + itemID;
 
-                // $.get(url, function(data) {
-                //     console.log(data);
-                //     $('#item_id').val(data.id);
-                //     $('#update_group_name').val(data.group_name);
-
-                //     $('#updateUserGroupModal').modal('show');
-                // });
-
-                $('#updateAreaModal').modal('show');
+                $.get(url, function(data) {
+                    $('#item_id').val(data.id);
+                    $('#update_area_no').val(data.area_no);
+                    $('#update_area_supervisor').val(data.area_supervisor);
+                    $('#update_district_id').val(data.district_id);
+                    $('#update_status').val(data.status);
+                    $('#updateAreaModal').modal('show');
+                });
             });
 
             function closeCreateModal() {

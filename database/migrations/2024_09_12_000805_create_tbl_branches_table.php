@@ -28,7 +28,7 @@ return new class extends Migration
             $table->foreign('area_id')->references('id')->on('tbl_areas')->onDelete('restrict')->onUpdate('cascade');
             $table->foreign('company_id')->references('id')->on('tbl_companies')->onDelete('restrict')->onUpdate('cascade');
 
-            $table->string('status');
+            $table->enum('status',['Active','Inactive'])->nullable();
 
             $table->softDeletes();
             $table->timestamps();
