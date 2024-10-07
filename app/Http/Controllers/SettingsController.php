@@ -12,6 +12,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\AtmPensionTypesLists;
+use App\Models\Branch;
 use Yajra\DataTables\Facades\DataTables;
 
 class SettingsController extends Controller
@@ -176,9 +177,56 @@ class SettingsController extends Controller
         ->make(true);
     }
 
+    public function areaGet($id)
+    {
+        $TblArea = TblArea::findOrFail($id);
+        return response()->json($TblArea);
+    }
+
+    public function areaCreate(Request $request)
+    {
+
+        // Proceed with inserting if validation passes
+        TblArea::create([
+            'area_no' => $request->area_no,
+            'area_supervisor' => $request->area_supervisor,
+            'district_id' => $request->district_id,
+            'status' => 'Active',
+            'company_id' => 2,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Area created successfully!'
+        ]);
+    }
+
+    public function areaUpdate(Request $request)
+    {
+        // Find the user group by ID
+        $TblArea = TblArea::findOrFail($request->item_id);
+        $TblArea->update([  // Update the instance instead of using the class method
+            'area_no' => $request->area_no,
+            'area_supervisor' => $request->area_supervisor,
+            'district_id' => $request->district_id,
+            'status' => $request->status,
+            'updated_at' => Carbon::now(),
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Area updated successfully!'  // Changed message to reflect update action
+        ]);
+    }
+
     public function branch_page()
     {
-        return view('pages.pages_backend.settings.branch_page');
+        $TblDistrict = TblDistrict::latest('updated_at')
+            ->get();
+
+        return view('pages.pages_backend.settings.branch_page', compact('TblDistrict'));
     }
 
     public function branch_data()
@@ -190,6 +238,58 @@ class SettingsController extends Controller
         return DataTables::of($branch)
         ->setRowId('id')
         ->make(true);
+    }
+
+    public function areaGetBydistrict(Request $request)
+    {
+        // $district_id = $request->district_id;
+        $TblArea = TblArea::where('district_id', $request->district_id)->get(); // get() instead of first()
+        return response()->json($TblArea);
+    }
+
+    public function branchCreate(Request $request)
+    {
+        // Extract the first two letters of branch_location and convert to uppercase
+        $branchAbbreviation = strtoupper(substr($request->branch_location, 0, 2));
+
+        // Proceed with inserting if validation passes
+        TblBranch::create([
+            'district_id' => $request->district_id,
+            'area_id' => $request->area_id,
+            'branch_location' => $request->branch_location,
+            'branch_head' => $request->branch_head,
+            'branch_abbreviation' => $branchAbbreviation,
+            'company_id' => 2,
+            'status' => 'Active',
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Branch created successfully!'
+        ]);
+    }
+
+    public function branchUpdate(Request $request)
+    {
+        // Find the user group by ID
+        $AtmBankLists = TblBranch::findOrFail($request->item_id);
+
+        // Proceed with update if validation passes
+        $AtmBankLists->update([  // Update the instance instead of using the class method
+            'district_id' => $request->district_id,
+            'area_id' => $request->area_id,
+            'branch_location' => $request->branch_location,
+            'branch_head' => $request->branch_head,
+            'status' => $request->status,
+            'updated_at' => Carbon::now(),
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Branch updated successfully!'  // Changed message to reflect update action
+        ]);
     }
 
     public function bank_page()
@@ -260,6 +360,48 @@ class SettingsController extends Controller
         ->setRowId('id')
         ->make(true);
     }
+
+    public function pension_typesGet($id)
+    {
+        $AtmPensionTypesLists = AtmPensionTypesLists::findOrFail($id);
+        return response()->json($AtmPensionTypesLists);
+    }
+
+    public function pension_typesCreate(Request $request)
+    {
+        AtmPensionTypesLists::create([
+            'pension_name' => $request->pension_name,
+            'types' => $request->types,
+            'status' => 'Active',
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Pension Types Created successfully!'
+        ]);
+    }
+
+    public function pension_typesUpdate(Request $request)
+    {
+        // Find the user group by ID
+        $AtmPensionTypesLists = AtmPensionTypesLists::findOrFail($request->item_id);
+
+        // Proceed with update if validation passes
+        $AtmPensionTypesLists->update([  // Update the instance instead of using the class method
+            'pension_name' => $request->pension_name,
+            'types' => $request->types,
+            'status' => $request->status,
+            'updated_at' => Carbon::now(),
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Pension Types updated successfully!'  // Changed message to reflect update action
+        ]);
+    }
+
 
     public function login_page()
     {

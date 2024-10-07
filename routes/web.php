@@ -53,6 +53,7 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => 'settings'], functio
         Route::get('/branch_page', 'branch_page')->name('settings.branch.page');
         Route::get('/branch_data', 'branch_data')->name('settings.branch.data');
         Route::get('/branch/get/{id}', 'branchGet')->name('settings.branch.get');
+        Route::get('/area/using/district', 'areaGetBydistrict')->name('settings.area.using.district');
         Route::post('/branch/create', 'branchCreate')->name('settings.branch.create');
         Route::post('/branch/update', 'branchUpdate')->name('settings.branch.update');
 
@@ -64,7 +65,7 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => 'settings'], functio
 
         Route::get('/pension_types/page', 'pension_types_page')->name('settings.pension.types.page');
         Route::get('/pension_types/data', 'pension_types_data')->name('settings.pension.types.data');
-        Route::get('/pension_types/get/{id}', 'pension_typesGet')->name('settings.pension.types.get');
+        Route::get('/pension/types/get/{id}', 'pension_typesGet')->name('settings.pension.types.get');
         Route::post('/pension_types/create', 'pension_typesCreate')->name('settings.pension.types.create');
         Route::post('/pension_types/update', 'pension_typesUpdate')->name('settings.pension.types.update');
 

@@ -356,8 +356,8 @@
                                     success: function(response) {
                                         closeUpdateBankModal();
                                         Swal.fire({
-                                            title: 'Successfully Added!',
-                                            text: 'Bank is successfully Created!',
+                                            title: 'Successfully Updated!',
+                                            text: 'Bank is successfully Updated!',
                                             icon: 'success',
                                             showCancelButton: false,
                                             showConfirmButton: true,
