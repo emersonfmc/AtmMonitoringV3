@@ -180,7 +180,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="fw-bold h6">User type</label>
-                                    <select id="userTypeSelect" name="user_type" class="form-select">
+                                    <select id="userTypeSelect" name="user_type" class="form-select select2">
                                         <option value="">Select User Type</option>
                                         <option value="Head_Office">Head Office</option>
                                         <option value="District">District</option>
@@ -356,9 +356,7 @@
 
 <script>
     $(document).ready(function(){
-        // $('#userTypeSelect').select2({
-        //     dropdownParent: $('#createUserModal')
-        // });
+        $('#userTypeSelect').select2({ dropdownParent: $('#createUserModal') });
 
         $('#user_group_id').select2({
             dropdownParent: $('#createUserModal')
@@ -402,6 +400,8 @@
                 $('#AreaDisplay').hide();
                 $('#BranchDisplay').hide();
             }
+
+
         });
     });
 </script>

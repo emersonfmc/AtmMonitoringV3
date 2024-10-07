@@ -25,7 +25,7 @@
                             </p>
                         </div>
                         <div class="col-md-4 text-end">
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createDepartment"><i
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createBranchModal"><i
                                 class="fas fa-plus-circle me-1"></i> Create Branch</button>
                         </div>
                     </div>
@@ -56,8 +56,110 @@
         </div> <!-- end col -->
     </div> <!-- end row -->
 
+    <div class="modal fade" id="createBranchModal" data-bs-backdrop="static" tabindex="-1" role="dialog"
+        aria-labelledby="createBranchModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold text-uppercase">Create Branch</h5>
+                    <button type="button" class="btn-close closeCreateModal" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="#" id="createValidateForm">
+                        @csrf
+
+                        <div class="form-group mb-3">
+                            <label class="fw-bold h6">Location</label>
+                            <input type="text" name="location" class="form-control" id="location"
+                                   placeholder="Enter Location" minlength="0" maxlength="50" required>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label class="fw-bold h6">Branch Head</label>
+                            <input type="text" name="branch_head" class="form-control" id="branch_head"
+                                   placeholder="Enter Branch Head" minlength="0" maxlength="50" required>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label class="fw-bold h6">District Manager</label>
+                            <select name="district_id" id="district_id" class="form-select" required>
+                                <option value="" selected disabled>Select District Manager</option>
+                                <option value="Sample">Sample</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label class="fw-bold h6">Area Supervisor</label>
+                            <select name="area_id" id="area_id" class="form-select" required disabled>
+                                <option value="" selected disabled>Select Area Supervisor</option>
+                                <option value="Sample">Sample</option>
+                            </select>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary closeCreateModal" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="updateBranchModal" data-bs-backdrop="static" tabindex="-1" role="dialog"
+        aria-labelledby="updateBranchModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold text-uppercase">Update Branch</h5>
+                    <button type="button" class="btn-close closeUpdateModal" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="#" id="updateValidateForm">
+                        @csrf
+
+                        <div class="form-group mb-3">
+                            <label class="fw-bold h6">Location</label>
+                            <input type="text" name="location" class="form-control" id="update_location"
+                                placeholder="Enter Location" minlength="0" maxlength="50" required>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label class="fw-bold h6">Branch Head</label>
+                            <input type="text" name="branch_head" class="form-control" id="update_branch_head"
+                                placeholder="Enter Branch Head" minlength="0" maxlength="50" required>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label class="fw-bold h6">District Manager</label>
+                            <select name="district_id" id="update_district_id" class="form-select" required>
+                                <option value="" selected disabled>Select District Manager</option>
+                                <option value="Sample">Sample</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label class="fw-bold h6">Area Supervisor</label>
+                            <select name="area_id" id="update_area_id" class="form-select" required disabled>
+                                <option value="" selected disabled>Select Area Supervisor</option>
+                                <option value="Sample">Sample</option>
+                            </select>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary closeUpdateModal" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-success">Update</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         $(document).ready(function () {
+            var FetchingDatatableBody = $('#FetchingDatatable tbody');
+
             const dataTable = new ServerSideDataTable('#FetchingDatatable');
             var url = '{!! route('settings.branch.data') !!}';
             const buttons = [{
@@ -119,31 +221,248 @@
                     data: null,
                     name: 'action',
                     render: function(data, type, row) {
-                        return '<a href="#" class="text-danger deleteUserBtn me-2" data-id="' + row.id +'" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete User"><i class="fas fa-trash-alt me-2"></i></a>' +
-                               '<a href="#" class="text-warning editUserBtn me-2" data-id="' + row.id +'" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit User"><i class="fas fa-pencil-alt me-2"></i></a>';
+                        return `
+                            <a href="#" class="text-warning editBtn me-2" data-id="${row.id}"
+                                data-bs-toggle="tooltip" data-bs-placement="top" title="Edit ">
+                                <i class="fas fa-pencil-alt me-2"></i>
+                            </a>
+
+                            <a href="#" class="text-danger deleteBtn me-2" data-id="${row.id}"
+                                data-bs-toggle="tooltip" data-bs-placement="top" title="Delete ">
+                                <i class="fas fa-trash-alt me-2"></i>
+                            </a>`;
                     },
                     orderable: false,
                     searchable: false,
                 }
-                // <a href="" data-bs-toggle="tooltip" data-bs-placement="top" title="test">Test</a>
 
             ];
+            dataTable.initialize(url, columns);
 
-            // Log data sent from server
-            $('#FetchingDatatable').DataTable({
-                processing: true,
-                serverSide: true,
-                ajax: {
-                    url: url,
-                    type: 'GET',
-                    dataSrc: function (json) {
-                        console.log('Data returned from the server:', json); // Logs entire response
-                        return json.data; // Return the actual data array to DataTables
-                    }
+            $('#createValidateForm').validate({
+                rules: {
+                    location: { required: true, },
+                    branch_head: { required: true, },
+                    district_id: { required: true, },
+                    area_id: { required: true, },
                 },
-                columns: columns,
-                buttons: buttons
+                errorElement: 'span',
+                errorPlacement: function(error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function(element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function(element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                },
+                submitHandler: function(form) {
+                    var hasRows = FetchingDatatableBody.children('tr').length > 0;
+                    if (hasRows) {
+                        Swal.fire({
+                            title: 'Confirmation',
+                            text: 'Are you sure you want to save this?',
+                            icon: 'question',
+                            showCancelButton: true,
+                            confirmButtonColor: "#007BFF",
+                            cancelButtonColor: "#6C757D",
+                            confirmButtonText: "Yes, Save it!"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                const currentPage = dataTable.table.page();
+                                $.ajax({
+                                    url: form.action,
+                                    type: form.method,
+                                    data: $(form).serialize(),
+                                    success: function(response) {
+                                        closeCreateModal();
+                                        Swal.fire({
+                                            title: 'Successfully Added!',
+                                            text: 'Branch is successfully added!',
+                                            icon: 'success',
+                                            showCancelButton: false,
+                                            showConfirmButton: true,
+                                            confirmButtonText: 'OK',
+                                            preConfirm: () => {
+                                                return new Promise(( resolve
+                                                ) => {
+                                                    Swal.fire({
+                                                        title: 'Please Wait...',
+                                                        allowOutsideClick: false,
+                                                        allowEscapeKey: false,
+                                                        showConfirmButton: false,
+                                                        showCancelButton: false,
+                                                        didOpen: () => {
+                                                            Swal.showLoading();
+                                                            // here the reload of datatable
+                                                            dataTable.table.ajax.reload( () =>
+                                                            {
+                                                                Swal.close();
+                                                                $(form)[0].reset();
+                                                                dataTable.table.page(currentPage).draw( false );
+                                                            },
+                                                            false );
+                                                        }
+                                                    })
+                                                });
+                                            }
+                                        });
+                                    },
+                                    error: function(xhr, status, error) {
+                                        var errorMessage =
+                                            'An error occurred. Please try again later.';
+                                        if (xhr.responseJSON && xhr.responseJSON
+                                            .error) {
+                                            errorMessage = xhr.responseJSON.error;
+                                        }
+                                        Swal.fire({
+                                            title: 'Error!',
+                                            text: errorMessage,
+                                            icon: 'error',
+                                        });
+                                    }
+                                })
+                            }
+                        })
+                    } else {
+
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Empty Record!',
+                            text: 'Table is empty, add row to proceed!',
+                        });
+                    }
+                }
             });
+
+            $('#updateValidateForm').validate({
+                rules: {
+                    location: { required: true, },
+                    branch_head: { required: true, },
+                    district_id: { required: true, },
+                    area_id: { required: true, },
+                },
+                errorElement: 'span',
+                errorPlacement: function(error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function(element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function(element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                },
+                submitHandler: function(form) {
+                    var hasRows = FetchingDatatableBody.children('tr').length > 0;
+                    if (hasRows) {
+                        Swal.fire({
+                            title: 'Confirmation',
+                            text: 'Are you sure you want to save this?',
+                            icon: 'question',
+                            showCancelButton: true,
+                            confirmButtonColor: "#28A745",
+                            cancelButtonColor: "#6C757D",
+                            confirmButtonText: "Yes, Save it!"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                const currentPage = dataTable.table.page();
+                                $.ajax({
+                                    url: form.action,
+                                    type: form.method,
+                                    data: $(form).serialize(),
+                                    success: function(response) {
+                                        closeUpdateModal();
+                                        Swal.fire({
+                                            title: 'Successfully Updated!',
+                                            text: 'Branch is successfully Updated!',
+                                            icon: 'success',
+                                            showCancelButton: false,
+                                            showConfirmButton: true,
+                                            confirmButtonText: 'OK',
+                                            preConfirm: () => {
+                                                return new Promise(( resolve
+                                                ) => {
+                                                    Swal.fire({
+                                                        title: 'Please Wait...',
+                                                        allowOutsideClick: false,
+                                                        allowEscapeKey: false,
+                                                        showConfirmButton: false,
+                                                        showCancelButton: false,
+                                                        didOpen: () => {
+                                                            Swal.showLoading();
+                                                            // here the reload of datatable
+                                                            dataTable.table.ajax.reload( () =>
+                                                            {
+                                                                Swal.close();
+                                                                $(form)[0].reset();
+                                                                dataTable.table.page(currentPage).draw( false );
+                                                            },
+                                                            false );
+                                                        }
+                                                    })
+                                                });
+                                            }
+                                        });
+                                    },
+                                    error: function(xhr, status, error) {
+                                        var errorMessage =
+                                            'An error occurred. Please try again later.';
+                                        if (xhr.responseJSON && xhr.responseJSON
+                                            .error) {
+                                            errorMessage = xhr.responseJSON.error;
+                                        }
+                                        Swal.fire({
+                                            title: 'Error!',
+                                            text: errorMessage,
+                                            icon: 'error',
+                                        });
+                                    }
+                                })
+                            }
+                        })
+                    } else {
+
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Empty Record!',
+                            text: 'Table is empty, add row to proceed!',
+                        });
+                    }
+                }
+            });
+
+            $('#FetchingDatatable').on('click', '.editBtn', function(e) {
+                e.preventDefault();
+                var itemID = $(this).data('id');
+                console.log(itemID);
+
+                // var url = "/settings/users/group/get/" + itemID;
+
+                // $.get(url, function(data) {
+                //     console.log(data);
+                //     $('#item_id').val(data.id);
+                //     $('#update_group_name').val(data.group_name);
+
+                //     $('#updateUserGroupModal').modal('show');
+                // });
+
+                $('#updateBranchModal').modal('show');
+            });
+
+            function closeCreateModal() {
+                $('#createBranchModal').modal('hide');
+                $('#FetchingDatatable tbody').empty();
+                // $('#FetchingDatatable').addClass('d-none');
+            }
+
+            function closeUpdateModal() {
+                $('#updateBranchModal').modal('hide');
+                $('#FetchingDatatable tbody').empty();
+                // $('#usersGroupPageTable').addClass('d-none');
+            }
+
         });
     </script>
 

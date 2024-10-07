@@ -58,12 +58,12 @@
 
 
     <div class="modal fade" id="createBankModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="createDistrictLabel" aria-hidden="true">
+        aria-labelledby="createBankLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title fw-bold text-uppercase" id="createDistrictLabel">Create Bank</h5>
-                    <button type="button" class="btn-close closeDistrictModal" data-bs-dismiss="modal"
+                    <h5 class="modal-title fw-bold text-uppercase" id="createBankLabel">Create Bank</h5>
+                    <button type="button" class="btn-close closeCreateBankModal" data-bs-dismiss="modal"
                         aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -76,7 +76,7 @@
                         </div>
 
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary closeDistrictModal" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-secondary closeCreateBankModal" data-bs-dismiss="modal">Cancel</button>
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </div>
                     </form>
@@ -86,12 +86,12 @@
     </div>
 
     <div class="modal fade" id="updateBankModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="createDistrictLabel" aria-hidden="true">
+        aria-labelledby="createBankLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title fw-bold text-uppercase" id="createDistrictLabel">Update District</h5>
-                    <button type="button" class="btn-close closeDistrictModal" data-bs-dismiss="modal"
+                    <h5 class="modal-title fw-bold text-uppercase">Update Bank</h5>
+                    <button type="button" class="btn-close closeUpdateBankModal" data-bs-dismiss="modal"
                         aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -105,7 +105,7 @@
                         </div>
 
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-secondary closeUpdateBankModal" data-bs-dismiss="modal">Cancel</button>
                             <button type="submit" class="btn btn-success">Update</button>
                         </div>
                     </form>
@@ -177,8 +177,16 @@
                     data: null,
                     name: 'action',
                     render: function(data, type, row) {
-                        return '<a href="#" class="text-danger deleteBtn me-2" data-id="' + row.id +'" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete User"><i class="fas fa-trash-alt me-2"></i></a>' +
-                               '<a href="#" class="text-warning editBtn me-2" data-id="' + row.id +'" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit User"><i class="fas fa-pencil-alt me-2"></i></a>';
+                        return `
+                            <a href="#" class="text-warning editBtn me-2" data-id="${row.id}"
+                                data-bs-toggle="tooltip" data-bs-placement="top" title="Edit ">
+                                <i class="fas fa-pencil-alt me-2"></i>
+                            </a>
+
+                            <a href="#" class="text-danger deleteBtn me-2" data-id="${row.id}"
+                                data-bs-toggle="tooltip" data-bs-placement="top" title="Delete ">
+                                <i class="fas fa-trash-alt me-2"></i>
+                            </a>`;
                     },
                     orderable: false,
                     searchable: false,
@@ -236,7 +244,7 @@
                                         closeAddBankModal();
                                         Swal.fire({
                                             title: 'Successfully Added!',
-                                            text: 'Bank is successfully Created!',
+                                            text: 'Bank is successfully Updated!',
                                             icon: 'success',
                                             showCancelButton: false,
                                             showConfirmButton: true,

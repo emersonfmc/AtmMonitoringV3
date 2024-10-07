@@ -32,24 +32,20 @@
                     </div>
                     <hr>
 
+                    <table id="usersGroupPageTable" class="table table-border dt-responsive wrap table-design" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Sl</th>
+                                <th>Name</th>
+                                <th>Company</th>
+                                <th>Created Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
 
-
-                        <table id="usersGroupPageTable" class="table table-border dt-responsive wrap table-design" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Sl</th>
-                                    <th>Name</th>
-                                    <th>Company</th>
-                                    <th>Created Date</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-
-                            </tbody>
-                        </table>
-
-
+                        </tbody>
+                    </table>
 
                 </div>
             </div>
@@ -62,7 +58,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title fw-bold text-uppercase" id="createUserModalLabel">Create User Group</h5>
-                    <button type="button" class="btn-close closeUserGroupModal" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close closeCreateUserGroupModal" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form method="post" action="{{ route('settings.users.group.create')  }}" id="createValidateForm">
@@ -74,7 +70,7 @@
                         </div>
 
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-secondary closeCreateUserGroupModal" data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </div>
                     </form>
@@ -103,7 +99,7 @@
                         </div>
 
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-secondary closeUpdateUserGroupModal" data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-success">Update</button>
                         </div>
                     </form>
@@ -170,13 +166,13 @@
                     name: 'action',
                     render: function(data, type, row) {
                         return `
-                            <a href="#" class="text-warning editUserBtn me-2" data-id="${row.id}"
-                                data-bs-toggle="tooltip" data-bs-placement="top" title="Edit User">
+                            <a href="#" class="text-warning editBtn me-2" data-id="${row.id}"
+                                data-bs-toggle="tooltip" data-bs-placement="top" title="Edit ">
                                 <i class="fas fa-pencil-alt me-2"></i>
                             </a>
 
-                            <a href="#" class="text-danger deleteUserBtn me-2" data-id="${row.id}"
-                                data-bs-toggle="tooltip" data-bs-placement="top" title="Delete User">
+                            <a href="#" class="text-danger deleteBtn me-2" data-id="${row.id}"
+                                data-bs-toggle="tooltip" data-bs-placement="top" title="Delete ">
                                 <i class="fas fa-trash-alt me-2"></i>
                             </a>`;
                     },
@@ -329,8 +325,7 @@
                                             showConfirmButton: true,
                                             confirmButtonText: 'OK',
                                             preConfirm: () => {
-                                                return new Promise(( resolve
-                                                ) => {
+                                                return new Promise((resolve) => {
                                                     Swal.fire({
                                                         title: 'Please Wait...',
                                                         allowOutsideClick: false,
@@ -338,17 +333,19 @@
                                                         showConfirmButton: false,
                                                         showCancelButton: false,
                                                         didOpen: () => {
+                                                            // Show custom loader (assuming it's already styled correctly)
                                                             Swal.showLoading();
-                                                            // here the reload of datatable
-                                                            dataTable.table.ajax.reload( () =>
-                                                            {
-                                                                Swal.close();
-                                                                $(form)[0].reset();
-                                                                dataTable.table.page(currentPage).draw( false );
-                                                            },
-                                                            false );
+
+                                                            // Reload DataTable
+                                                            dataTable.table.ajax.reload(() => {
+                                                                // Hide custom loader and reset form after DataTable reload
+                                                                $('span.loader-icon').hide(); // Hide your loader
+                                                                $(form)[0].reset(); // Reset form
+                                                                dataTable.table.page(currentPage).draw(false); // Maintain current page
+                                                                Swal.close(); // Close SweetAlert
+                                                            }, false);
                                                         }
-                                                    })
+                                                    });
                                                 });
                                             }
                                         });
@@ -380,7 +377,7 @@
                 }
             });
 
-            $('#usersGroupPageTable').on('click', '.editUserBtn', function(e) {
+            $('#usersGroupPageTable').on('click', '.editBtn', function(e) {
                 e.preventDefault();
                 var itemID = $(this).data('id');
                 console.log(itemID);

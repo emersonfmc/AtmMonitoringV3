@@ -160,7 +160,9 @@ class SettingsController extends Controller
 
     public function area_page()
     {
-        return view('pages.pages_backend.settings.area_page');
+        $districts = TblDistrict::latest('updated_at')->get();
+
+        return view('pages.pages_backend.settings.area_page', compact('districts'));
     }
 
     public function area_data()
