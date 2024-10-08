@@ -32,9 +32,8 @@
                     </div>
                     <hr>
 
-
                     <div class="table-responsive">
-                        <table id="usersPageTable" class="table table-border dt-responsive wrap table-design" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                        <table id="FetchingDatatable" class="table table-border dt-responsive wrap table-design" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                             <thead class="table-light">
                                 <tr>
                                     <th>Sl</th>
@@ -58,9 +57,200 @@
         </div> <!-- end col -->
     </div> <!-- end row -->
 
+    <div class="modal fade" id="createUserModal" data-bs-backdrop="static" tabindex="-1" role="dialog"
+        aria-labelledby="createUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold text-uppercase" id="createUserModalLabel">Create User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="{{ route('users.create')  }}" id="createValidateForm">
+                        @csrf
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="fw-bold h6">User type</label>
+                                    <select id="userTypeSelect" name="user_type" class="form-select select2">
+                                        <option value="">Select User Type</option>
+                                        <option value="Head_Office">Head Office</option>
+                                        <option value="District">District</option>
+                                        <option value="Area">Area</option>
+                                        <option value="Branch">Branch</option>
+                                        <option value="Admin">Admin</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="fw-bold h5 text-primary">Personal Information</label>
+                                <hr>
+
+                                <div class="form-group mb-2">
+                                    <label class="fw-bold h6">Fullname</label>
+                                    <input type="text" name="name" class="form-control" placeholder="Fullname" minlength="0" maxlength="100" required>
+                                </div>
+
+                                <div class="form-group mb-2">
+                                    <label class="fw-bold h6">Contact No</label>
+                                    <input type="number" name="contact_no" min="0" class="form-control" placeholder="Contact No." required>
+                                </div>
+
+                                <div class="form-group mb-2">
+                                    <label class="fw-bold h6">Address</label>
+                                    <input type="text" name="address" class="form-control" placeholder="Address" minlength="0" maxlength="100" required>
+                                </div>
+
+                                <div class="form-group mb-2">
+                                    <label class="fw-bold h6">Employee No</label>
+                                    <input type="number" name="employee_id" min="0" class="form-control" placeholder="Employee No." required >
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="fw-bold h5 text-primary">User Account Details</label>
+                                <hr>
+
+                                <div class="form-group mb-2">
+                                    <label class="fw-bold h6">Username</label>
+                                    <input type="text" name="username" class="form-control" placeholder="Username" minlength="0" maxlength="50" required>
+                                </div>
+
+                                <div class="form-group mb-2">
+                                    <label class="fw-bold h6">Password</label>
+                                    <input type="password" name="password" id="create_password" class="form-control" placeholder="Password" minlength="0" maxlength="50" required>
+                                </div>
+
+                                <div class="form-group mb-2">
+                                    <label class="fw-bold h6">Confirm Password</label>
+                                    <input type="password" name="confirm_password" id="confirm_password" class="form-control" placeholder="Confirm Password" minlength="0" maxlength="50" required>
+                                </div>
+
+                                <div class="form-group mb-2">
+                                    <label class="fw-bold h6">Email</label>
+                                    <input type="email" name="email" class="form-control" placeholder="Email" minlength="0" maxlength="50" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <span id="HeadOfficeDisplay" style="display: none;">
+                                    <label class="fw-bold h5 text-primary">Head Office Details</label>
+                                    <hr>
+
+                                    <div class="form-group mb-2">
+                                        <label class="fw-bold h6">User Group</label>
+                                        <select id="user_group_id" name="user_group_id" class="form-select select2" required>
+                                            <option value="" selected disabled>Select User Type</option>
+                                            @foreach ($user_groups as $user_group)
+                                                <option value="{{ $user_group->id }}">{{ $user_group->group_name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                </span>
+
+                                <span id="DistrictDisplay" style="display: none;">
+                                    <label class="fw-bold h5 text-primary">Districts Details</label>
+                                    <hr>
+
+                                    <div class="form-group mb-2">
+                                        <label class="fw-bold h6">District</label>
+                                        <select id="district_id" name="district_id" class="form-select" required>
+                                            <option value="" selected disabled>Select District</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group mb-2">
+                                        <label class="fw-bold h6">District Session</label>
+                                        <select id="district_session_id" name="district_session_id" class="form-select" required>
+                                            <option value="" selected disabled>Select District Session</option>
+                                        </select>
+                                    </div>
+                                </span>
+
+                                <span id="AreaDisplay" style="display: none;">
+                                    <label class="fw-bold h5 text-primary">Area Details</label>
+                                    <hr>
+
+                                    <div class="form-group mb-2">
+                                        <label class="fw-bold h6">District Manageer</label>
+                                        <select id="district_manager_area_id" name="district_manager_area_id" class="form-select" required>
+                                            <option value="" selected disabled>Select District Manager</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group mb-2">
+                                        <label class="fw-bold h6">Area Supervisor</label>
+                                        <select id="area_supervisor_id" name="area_supervisor_id" class="form-select" required disabled >
+                                            <option value="" selected disabled>Select Area Supervisor</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group mb-2">
+                                        <label class="fw-bold h6">District | Area</label>
+                                        <select id="district_area_id" name="district_area_id" class="form-select" required disabled>
+                                            <option value="" selected disabled>District | Area</option>
+                                        </select>
+                                    </div>
+
+                                </span>
+
+                                <span id="BranchDisplay" style="display: none;">
+                                    <label class="fw-bold h5 text-primary">Branch Details</label>
+                                    <hr>
+
+                                    <div class="form-group mb-2">
+                                        <label class="fw-bold h6">District Manager</label>
+                                        <select id="district_manager_id" name="district_manager_id" class="form-select" required>
+                                            <option value="" selected disabled>Select District Manager</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group mb-2">
+                                        <label class="fw-bold h6">Area</label>
+                                        <select id="area_id" name="area_id" class="form-select" required>
+                                            <option value="" selected disabled>Select Area</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group mb-2">
+                                        <label class="fw-bold h6">Branch</label>
+                                        <select id="branch_id" name="branch_id" class="form-select" required>
+                                            <option value="" selected disabled>Select Branch</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group mb-2">
+                                        <label class="fw-bold h6">User Group</label>
+                                        <select id="user_group_branch_id" name="user_group_branch_id" class="form-select" required>
+                                            <option value="" selected disabled>Select User Type</option>
+                                            @foreach ($user_groups as $user_group)
+                                                <option value="{{ $user_group->id }}">{{ $user_group->group_name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         $(document).ready(function () {
-            const dataTable = new ServerSideDataTable('#usersPageTable');
+            var FetchingDatatableBody = $('#FetchingDatatable tbody');
+
+            const dataTable = new ServerSideDataTable('#FetchingDatatable');
             var url = '{!! route('users.data') !!}';
             const buttons = [{
                 text: 'Delete',
@@ -145,221 +335,135 @@
                 // <a href="" data-bs-toggle="tooltip" data-bs-placement="top" title="test">Test</a>
 
             ];
+            dataTable.initialize(url, columns);
 
-            // Log data sent from server
-            $('#usersPageTable').DataTable({
-                processing: true,
-                serverSide: true,
-                ajax: {
-                    url: url,
-                    type: 'GET',
-                    dataSrc: function (json) {
-                        console.log('Data returned from the server:', json); // Logs entire response
-                        return json.data; // Return the actual data array to DataTables
-                    }
+            $.validator.addMethod("passwordMatch", function(value, element) {
+                return value === $("#create_password").val();
+            }, "Passwords do not match.");
+
+            // Initialize the validation on the form
+            $('#createValidateForm').validate({
+                rules: {
+                    user_type: { required: true },
+                    password: { required: true, minlength: 6, maxlength: 50 }, // You can adjust the minlength as needed
+                    confirm_password: { required: true, passwordMatch: true } // Use custom method here
                 },
-                columns: columns,
-                buttons: buttons
+                errorElement: 'span',
+                errorPlacement: function(error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function(element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function(element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                },
+                submitHandler: function(form) {
+                    var hasRows = FetchingDatatableBody.children('tr').length > 0;
+                    if (hasRows) {
+                        Swal.fire({
+                            title: 'Confirmation',
+                            text: 'Are you sure you want to save this?',
+                            icon: 'question',
+                            showCancelButton: true,
+                            confirmButtonColor: "#007BFF",
+                            cancelButtonColor: "#6C757D",
+                            confirmButtonText: "Yes, Save it!"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                const currentPage = dataTable.table.page();
+                                $.ajax({
+                                    url: form.action,
+                                    type: form.method,
+                                    data: $(form).serialize(),
+                                    success: function(response) {
+                                        closeCreateModal();
+                                        Swal.fire({
+                                            title: 'Successfully Added!',
+                                            text: 'User is successfully added!',
+                                            icon: 'success',
+                                            showCancelButton: false,
+                                            showConfirmButton: true,
+                                            confirmButtonText: 'OK',
+                                            preConfirm: () => {
+                                                return new Promise(( resolve
+                                                ) => {
+                                                    Swal.fire({
+                                                        title: 'Please Wait...',
+                                                        allowOutsideClick: false,
+                                                        allowEscapeKey: false,
+                                                        showConfirmButton: false,
+                                                        showCancelButton: false,
+                                                        didOpen: () => {
+                                                            Swal.showLoading();
+                                                            // here the reload of datatable
+                                                            dataTable.table.ajax.reload( () =>
+                                                            {
+                                                                Swal.close();
+                                                                $(form)[0].reset();
+                                                                dataTable.table.page(currentPage).draw( false );
+                                                            },
+                                                            false );
+                                                        }
+                                                    })
+                                                });
+                                            }
+                                        });
+                                    },
+                                    error: function(xhr, status, error) {
+                                        var errorMessage =
+                                            'An error occurred. Please try again later.';
+                                        if (xhr.responseJSON && xhr.responseJSON
+                                            .error) {
+                                            errorMessage = xhr.responseJSON.error;
+                                        }
+                                        Swal.fire({
+                                            title: 'Error!',
+                                            text: errorMessage,
+                                            icon: 'error',
+                                        });
+                                    }
+                                })
+                            }
+                        })
+                    } else {
+
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Empty Record!',
+                            text: 'Table is empty, add row to proceed!',
+                        });
+                    }
+                }
             });
+
+            function closeCreateModal() {
+                $('#createUserModal').modal('hide');
+                $('#FetchingDatatable tbody').empty();
+                // $('#FetchingDatatable').addClass('d-none');
+            }
+
+            function closeUpdateModal() {
+                $('#updateUserModal').modal('hide');
+                $('#FetchingDatatable tbody').empty();
+                // $('#usersGroupPageTable').addClass('d-none');
+            }
         });
     </script>
 
-    <div class="modal fade" id="createUserModal" data-bs-backdrop="static" tabindex="-1" role="dialog"
-        aria-labelledby="createUserModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title fw-bold text-uppercase" id="createUserModalLabel">Create User</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form method="post" action="{{ route('users.create')  }}" id="createUserValidateForm">
-                        @csrf
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="fw-bold h6">User type</label>
-                                    <select id="userTypeSelect" name="user_type" class="form-select select2">
-                                        <option value="">Select User Type</option>
-                                        <option value="Head_Office">Head Office</option>
-                                        <option value="District">District</option>
-                                        <option value="Area">Area</option>
-                                        <option value="Branch">Branch</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <hr>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                <label class="fw-bold h5 text-primary">Personal Information</label>
-                                <hr>
-
-                                <div class="form-group mb-2">
-                                    <label class="fw-bold h6">Fullname</label>
-                                    <input type="text" name="name" class="form-control" placeholder="Fullname">
-                                </div>
-
-                                <div class="form-group mb-2">
-                                    <label class="fw-bold h6">Contact No</label>
-                                    <input type="text" name="contact_no" class="form-control" placeholder="Contact No.">
-                                </div>
-
-                                <div class="form-group mb-2">
-                                    <label class="fw-bold h6">Address</label>
-                                    <input type="text" name="address" class="form-control" placeholder="Address">
-                                </div>
-
-                                <div class="form-group mb-2">
-                                    <label class="fw-bold h6">Employee No</label>
-                                    <input type="text" name="employee_no" class="form-control" placeholder="Employee No.">
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="fw-bold h5 text-primary">User Account Details</label>
-                                <hr>
-
-                                <div class="form-group mb-2">
-                                    <label class="fw-bold h6">Username</label>
-                                    <input type="text" name="username" class="form-control" placeholder="Username">
-                                </div>
-
-                                <div class="form-group mb-2">
-                                    <label class="fw-bold h6">Password</label>
-                                    <input type="password" name="password" class="form-control" placeholder="Password.">
-                                </div>
-
-                                <div class="form-group mb-2">
-                                    <label class="fw-bold h6">Confirm Password</label>
-                                    <input type="password" name="confirm_password" class="form-control" placeholder="Address">
-                                </div>
-
-                                <div class="form-group mb-2">
-                                    <label class="fw-bold h6">Email</label>
-                                    <input type="email" name="email" class="form-control" placeholder="Email">
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <span id="HeadOfficeDisplay" style="display: none;">
-                                    <label class="fw-bold h5 text-primary">Head Office Details</label>
-                                    <hr>
-
-                                    <div class="form-group mb-2">
-                                        <label class="fw-bold h6">User Group</label>
-                                        <select id="user_group_id" name="user_group_id" class="form-select select2">
-                                            <option value="" selected disabled>Select User Type</option>
-                                            @foreach ($user_groups as $user_group)
-                                                <option value="{{ $user_group->id }}">{{ $user_group->group_name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-
-                                </span>
-
-                                <span id="DistrictDisplay" style="display: none;">
-                                    <label class="fw-bold h5 text-primary">Districts Details</label>
-                                    <hr>
-
-                                    <div class="form-group mb-2">
-                                        <label class="fw-bold h6">District</label>
-                                        <select id="district_id" name="district_id" class="form-select">
-                                            <option value="" selected disabled>Select District</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group mb-2">
-                                        <label class="fw-bold h6">District Session</label>
-                                        <select id="district_session_id" name="district_session_id" class="form-select">
-                                            <option value="" selected disabled>Select District Session</option>
-                                        </select>
-                                    </div>
-                                </span>
-
-                                <span id="AreaDisplay" style="display: none;">
-                                    <label class="fw-bold h5 text-primary">Area Details</label>
-                                    <hr>
-
-                                    <div class="form-group mb-2">
-                                        <label class="fw-bold h6">District Manageer</label>
-                                        <select id="district_manager_id" name="district_manager_id" class="form-select">
-                                            <option value="" selected disabled>Select District Manager</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group mb-2">
-                                        <label class="fw-bold h6">Area Supervisor</label>
-                                        <select id="area_supervisor_id" name="area_supervisor_id" class="form-select" disabled>
-                                            <option value="" selected disabled>Select Area Supervisor</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group mb-2">
-                                        <label class="fw-bold h6">District | Area</label>
-                                        <select id="district_area_id" name="district_area_id" class="form-select" disabled>
-                                            <option value="" selected disabled>District | Area</option>
-                                        </select>
-                                    </div>
-
-                                </span>
-
-                                <span id="BranchDisplay" style="display: none;">
-                                    <label class="fw-bold h5 text-primary">Branch Details</label>
-                                    <hr>
-
-                                    <div class="form-group mb-2">
-                                        <label class="fw-bold h6">District Manageer</label>
-                                        <select id="district_manager_io" name="district_manager_io" class="form-select">
-                                            <option value="" selected disabled>Select District Manager</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group mb-2">
-                                        <label class="fw-bold h6">Area</label>
-                                        <select id="area_id" name="area_id" class="form-select">
-                                            <option value="" selected disabled>Select Area</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group mb-2">
-                                        <label class="fw-bold h6">Branch</label>
-                                        <select id="branch_id" name="branch_id" class="form-select">
-                                            <option value="" selected disabled>Select Branch</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group mb-2">
-                                        <label class="fw-bold h6">User Group</label>
-                                        <select id="user_group_branch_id" name="user_group_branch_id" class="form-select">
-                                            <option value="" selected disabled>Select User Type</option>
-                                            @foreach ($user_groups as $user_group)
-                                                <option value="{{ $user_group->id }}">{{ $user_group->group_name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </span>
-                            </div>
-                        </div>
-
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 
 
 
 <script>
     $(document).ready(function(){
-        $('#userTypeSelect').select2({ dropdownParent: $('#createUserModal') });
-
-        $('#user_group_id').select2({
-            dropdownParent: $('#createUserModal')
+        $('#createUserModal').on('shown.bs.modal', function () {
+            $('#userTypeSelect').select2({
+                dropdownParent: $('#createUserModal'), // Ensure modal is the parent of Select2
+            });
+            $('#user_group_id').select2({
+                dropdownParent: $('#createUserModal')
+            });
         });
 
         $('#userTypeSelect').on('change', function() {

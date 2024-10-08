@@ -16,12 +16,13 @@ class CreateUsersTable extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
+            $table->string('employee_id')->unique();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
 
             $table->enum('session',['Online','Offline'])->default('Offline');
-            $table->enum('user_types',['Developer','Admin','District','Areas','Branch'])->nullable();
+            $table->enum('user_types',['Developer','Admin','District','Areas','Branch','Head Office'])->nullable();
 
             $table->string('avatar')->nullable();
             $table->date('dob');
@@ -32,6 +33,8 @@ class CreateUsersTable extends Migration
             $table->unsignedBigInteger('branch_id')->nullable();
             $table->unsignedBigInteger('district_code_id')->nullable();
             $table->unsignedBigInteger('area_code_id')->nullable();
+
+            $table->enum('status',['Active','Inactive'])->default('Active');
 
             $table->foreign('user_group_id')->references('id')->on('tbl_user_groups')->onDelete('restrict')->onUpdate('cascade');
             $table->foreign('company_id')->references('id')->on('tbl_companies')->onDelete('restrict')->onUpdate('cascade');
