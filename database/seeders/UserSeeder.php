@@ -16,6 +16,7 @@ class UserSeeder extends Seeder
             $data = [
                     [
                         'name' => 'Developer',
+                        'employee_id' => '000001',
                         'email' => 'dev@gmail.com',
                         'password' => '$2y$12$Y0/wCO5ghJDL.DHsRaxOyOpByhTEv9z03pxZEcsKJjgh1JZL1Vn36',
                         'session' => 'Offline',
@@ -24,6 +25,7 @@ class UserSeeder extends Seeder
                         'dob' => Carbon::now(),
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now(),
+                        'status' => 'Active',
                         'user_group_id' => 1,
                         'company_id' => 1,
                         'branch_id' => NULL,
@@ -32,6 +34,7 @@ class UserSeeder extends Seeder
                     ],
                     [
                         'name' => 'Admin',
+                        'employee_id' => '000002',
                         'email' => 'admin@gmail.com',
                         'password' => '$2y$12$Y0/wCO5ghJDL.DHsRaxOyOpByhTEv9z03pxZEcsKJjgh1JZL1Vn36',
                         'session' => 'Offline',
@@ -40,6 +43,7 @@ class UserSeeder extends Seeder
                         'dob' => Carbon::now(),
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now(),
+                        'status' => 'Active',
                         'user_group_id' => 2,
                         'company_id' => 1,
                         'branch_id' => NULL,
@@ -48,6 +52,7 @@ class UserSeeder extends Seeder
                     ],
                     [
                         'name' => 'Everfirst Admin',
+                        'employee_id' => '000003',
                         'email' => 'everfirst_admin@gmail.com',
                         'password' => '$2y$12$Y0/wCO5ghJDL.DHsRaxOyOpByhTEv9z03pxZEcsKJjgh1JZL1Vn36',
                         'session' => 'Offline',
@@ -56,6 +61,7 @@ class UserSeeder extends Seeder
                         'dob' => Carbon::now(),
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now(),
+                        'status' => 'Active',
                         'user_group_id' => 3,
                         'company_id' => 2,
                         'branch_id' => NULL,

@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Models\TblDistrict;
 use App\Models\TblUserGroup;
+use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\Facades\DataTables;
 
 class UserController extends Controller
@@ -36,31 +39,98 @@ class UserController extends Controller
 
     public function users_create(Request $request)
     {
-        if($request->user_type === 'Head_Office')
+        // Check if the password and confirm password match
+        if ($request->password !== $request->confirm_password) {
+            return response()->json(['error' => 'Passwords do not match!'], 400); // 400 Bad Request
+        }
+        else
         {
-            dd('headoffice');
-        }
-        else if($request->user_type === 'District')
-        {
-            dd('District');
-        }
-        else if($request->user_type === 'Area')
-        {
-            dd('Area');
-        }
-        else if($request->user_type === 'Branch')
-        {
-            dd('Branch');
-        }
-        else{
+            // Check if the email already exists
+            if (User::where('email', $request->email)->exists()) {
+                return response()->json(['error' => 'Email already exists!'], 409); // 409 Conflict
+            }
 
-        }
+            // Check if the employee number already exists
+            if (User::where('employee_id', $request->employee_id)->exists()) {
+                return response()->json(['error' => 'Employee number already exists!'], 409); // 409 Conflict
+            }
 
 
+            if($request->user_type === 'Head_Office')
+            {
+                $user_group_id = $request->user_group_id;
+                $district_id = NULL;
+                $branch_id = NULL;
+                $area_id = NULL;
+            }
+            else if($request->user_type === 'District')
+            {
+                $user_group_id = NULL;
+                $district_id = $request->district_id;
+                $branch_id = NULL;
+                $area_id = NULL;
+            }
+            else if($request->user_type === 'Area')
+            {
+                $district_id = $request->district_manager_area_id;
+                $area_id = $request->area_supervisor_id;
+            }
+            else if($request->user_type === 'Branch')
+            {
+                $user_group_id = $request->user_group_branch_id;
+                $branch_id = $request->branch_id;
+                $district_id = $request->district_manager_id;
+                $area_id = $request->area_id;
+            }
+            else if($request->user_type === 'Admin')
+            {
+                $user_group_id = $request->user_group_id;
+                $branch_id = NULL;
+                $district_id = NULL;
+                $area_id = NULL;
+            }
+            else if($request->user_type === 'Developer')
+            {
+                $user_group_id = $request->user_group_id;
+                $branch_id = NULL;
+                $district_id = NULL;
+                $area_id = NULL;
+            }
+            else
+            {
+            }
+
+                    // Create the user
+            User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'employee_id' => $request->employee_id,
+                // 'contact_no' => $request->contact_no,
+                // 'address' => $request->address,
+                'name' => $request->username,
+                'password' => Hash::make($request->password), // Hash the password
+                'email_verified_at' => Carbon::now(),
+                'session' => 'Offline',
+                'user_types' => $request->user_types,
+                'user_group_id' => $user_group_id,
+                'branch_id' => $branch_id,
+                'district_code_id' => $district_id,
+                'area_code_id' => $area_id,
+                'status' => 'Active',
+                'company_id' => 2,
+                'dob' => Carbon::now(),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+        }
 
 
-        // return response()->json($user);
+
+        //     return response()->json(['success' => 'User created successfully!']);
+
+        // }
     }
+
 
     public function users_update($id)
     {
