@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class TblBranch extends Model
+class DataArea extends Model
 {
     use HasFactory, SoftDeletes;
 
@@ -14,17 +14,11 @@ class TblBranch extends Model
 
     public function Company()
     {
-        return $this->belongsTo(TblCompany::class, 'company_id', 'id');
+        return $this->belongsTo(Company::class, 'company_id', 'id');
     }
 
     public function District()
     {
-        return $this->belongsTo(TblDistrict::class, 'district_id', 'id');
+        return $this->belongsTo(DataDistrict::class, 'district_id', 'id');
     }
-
-    public function Area()
-    {
-        return $this->belongsTo(TblArea::class, 'area_id', 'id');
-    }
-
 }

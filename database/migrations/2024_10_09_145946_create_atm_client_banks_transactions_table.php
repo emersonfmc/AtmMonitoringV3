@@ -13,14 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('tbl_user_groups', function (Blueprint $table) {
+        Schema::create('atm_client_banks_transactions', function (Blueprint $table) {
             $table->id();
-            $table->string('group_name')->nullable();
-            $table->unsignedBigInteger('company_id');
-            $table->foreign('company_id')->references('id')->on('tbl_companies')->onDelete('restrict')->onUpdate('cascade');
             $table->timestamps();
-            $table->softDeletes();
-            $table->enum('status',[['Active','Inactive']])->default('Active');
         });
     }
 
@@ -31,6 +26,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tbl_user_groups');
+        Schema::dropIfExists('atm_client_banks_transactions');
     }
 };

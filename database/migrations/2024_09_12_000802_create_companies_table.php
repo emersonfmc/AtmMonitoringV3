@@ -13,11 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('atm_pension_types_lists', function (Blueprint $table) {
+        Schema::create('companies', function (Blueprint $table) {
             $table->id();
-            $table->string('pension_name')->nullable();
-            $table->enum('types',['SSS','GSIS'])->nullable();
-            $table->enum('status',['Active','Inactive'])->nullable();
+            $table->string('company_name');
+            $table->enum('status',['Active','Inactive'])->default('Active');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -30,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('atm_pension_types_lists');
+        Schema::dropIfExists('companies');
     }
 };

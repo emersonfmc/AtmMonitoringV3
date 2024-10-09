@@ -114,6 +114,6 @@ class AtmPensionTypesSeeder extends Seeder
             ['id' => 124, 'pension_name' => 'GSIS-SP / EC', 'types' => 'GSIS', 'status' => 'Active', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
             ['id' => 125, 'pension_name' => 'GSIS-RT', 'types' => 'GSIS', 'status' => 'Active', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()]
         ];
-        DB::table('atm_pension_types_lists')->insert($data);
+        DB::table('data_pension_types_lists')->insert($data);
     }
 }

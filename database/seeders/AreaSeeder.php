@@ -134,6 +134,6 @@ class AreaSeeder extends Seeder
                         ],
 
                     ];
-            DB::table('tbl_areas')->insert($data);
+            DB::table('data_areas')->insert($data);
     }
 }

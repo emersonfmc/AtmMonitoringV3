@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\TblArea;
-use App\Models\TblBranch;
-use App\Models\TblDistrict;
-use App\Models\AtmBankLists;
-use App\Models\TblUserGroup;
+use App\Models\DataArea;
+use App\Models\DataDistrict;
+use App\Models\DataBankLists;
+use App\Models\DataUserGroup;
+use App\Models\DataPensionTypesLists;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Models\AtmPensionTypesLists;
 use App\Models\Branch;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -24,7 +24,7 @@ class SettingsController extends Controller
 
     public function users_group_data()
     {
-       $user_group = TblUserGroup::with('Company')
+       $user_group = DataUserGroup::with('Company')
             ->latest('updated_at')
             ->get();
 
@@ -35,7 +35,7 @@ class SettingsController extends Controller
 
     public function users_group_get($id)
     {
-        $TblUserGroup = TblUserGroup::with('Company')->findOrFail($id);
+        $TblUserGroup = DataUserGroup::with('Company')->findOrFail($id);
         return response()->json($TblUserGroup);
     }
 
@@ -45,7 +45,7 @@ class SettingsController extends Controller
         // try
         // {
             // Proceed with inserting if validation passes
-            TblUserGroup::create([
+            DataUserGroup::create([
                 'group_name' => $request->user_group,
                 'company_id' => 2,
                 'created_at' => Carbon::now(),
@@ -73,7 +73,7 @@ class SettingsController extends Controller
         DB::beginTransaction();
         try {
             // Find the user group by ID
-            $TblUserGroup = TblUserGroup::findOrFail($request->item_id);
+            $TblUserGroup = DataUserGroup::findOrFail($request->item_id);
 
             // Proceed with update if validation passes
             $TblUserGroup->update([  // Update the instance instead of using the class method
@@ -105,7 +105,7 @@ class SettingsController extends Controller
 
     public function districts_data()
     {
-       $district = TblDistrict::with('Company')
+       $district = DataDistrict::with('Company')
             ->latest('updated_at')
             ->get();
 
@@ -116,7 +116,7 @@ class SettingsController extends Controller
 
     public function districtsGet($id)
     {
-        $TblDistrict = TblDistrict::with('Company')->findOrFail($id);
+        $TblDistrict = DataDistrict::with('Company')->findOrFail($id);
         return response()->json($TblDistrict);
     }
 
@@ -124,7 +124,7 @@ class SettingsController extends Controller
     {
 
         // Proceed with inserting if validation passes
-        TblDistrict::create([
+        DataDistrict::create([
             'district_name' => $request->district_name,
             'district_number' => $request->district_number,
             'email' => $request->email,
@@ -142,7 +142,7 @@ class SettingsController extends Controller
     public function districtsUpdate(Request $request)
     {
         // Find the user group by ID
-        $TblDistrict = TblDistrict::findOrFail($request->item_id);
+        $TblDistrict = DataDistrict::findOrFail($request->item_id);
 
         // Proceed with update if validation passes
         $TblDistrict->update([  // Update the instance instead of using the class method
@@ -161,14 +161,14 @@ class SettingsController extends Controller
 
     public function area_page()
     {
-        $districts = TblDistrict::latest('updated_at')->get();
+        $districts = DataDistrict::latest('updated_at')->get();
 
         return view('pages.pages_backend.settings.area_page', compact('districts'));
     }
 
     public function area_data()
     {
-       $district = TblArea::with('Company','District')
+       $district = DataArea::with('Company','District')
             ->latest('updated_at')
             ->get();
 
@@ -179,7 +179,7 @@ class SettingsController extends Controller
 
     public function areaGet($id)
     {
-        $TblArea = TblArea::findOrFail($id);
+        $TblArea = DataArea::findOrFail($id);
         return response()->json($TblArea);
     }
 
@@ -187,7 +187,7 @@ class SettingsController extends Controller
     {
 
         // Proceed with inserting if validation passes
-        TblArea::create([
+        DataArea::create([
             'area_no' => $request->area_no,
             'area_supervisor' => $request->area_supervisor,
             'district_id' => $request->district_id,
@@ -206,7 +206,7 @@ class SettingsController extends Controller
     public function areaUpdate(Request $request)
     {
         // Find the user group by ID
-        $TblArea = TblArea::findOrFail($request->item_id);
+        $TblArea = DataArea::findOrFail($request->item_id);
         $TblArea->update([  // Update the instance instead of using the class method
             'area_no' => $request->area_no,
             'area_supervisor' => $request->area_supervisor,
@@ -223,7 +223,7 @@ class SettingsController extends Controller
 
     public function branch_page()
     {
-        $TblDistrict = TblDistrict::latest('updated_at')
+        $TblDistrict = DataDistrict::latest('updated_at')
             ->get();
 
         return view('pages.pages_backend.settings.branch_page', compact('TblDistrict'));
@@ -231,7 +231,7 @@ class SettingsController extends Controller
 
     public function branch_data()
     {
-       $branch = TblBranch::with('Company','District','Area')
+       $branch = Branch::with('Company','District','Area')
             ->latest('updated_at')
             ->get();
 
@@ -243,7 +243,7 @@ class SettingsController extends Controller
     public function areaGetBydistrict(Request $request)
     {
         // $district_id = $request->district_id;
-        $TblArea = TblArea::where('district_id', $request->district_id)->get(); // get() instead of first()
+        $TblArea = DataArea::where('district_id', $request->district_id)->get(); // get() instead of first()
         return response()->json($TblArea);
     }
 
@@ -253,7 +253,7 @@ class SettingsController extends Controller
         $branchAbbreviation = strtoupper(substr($request->branch_location, 0, 2));
 
         // Proceed with inserting if validation passes
-        TblBranch::create([
+        Branch::create([
             'district_id' => $request->district_id,
             'area_id' => $request->area_id,
             'branch_location' => $request->branch_location,
@@ -274,7 +274,7 @@ class SettingsController extends Controller
     public function branchUpdate(Request $request)
     {
         // Find the user group by ID
-        $AtmBankLists = TblBranch::findOrFail($request->item_id);
+        $AtmBankLists = Branch::findOrFail($request->item_id);
 
         // Proceed with update if validation passes
         $AtmBankLists->update([  // Update the instance instead of using the class method
@@ -299,7 +299,7 @@ class SettingsController extends Controller
 
     public function bank_data()
     {
-       $branch = AtmBankLists::latest('updated_at')
+       $branch = DataBankLists::latest('updated_at')
             ->get();
 
         return DataTables::of($branch)
@@ -309,7 +309,7 @@ class SettingsController extends Controller
 
     public function bankGet($id)
     {
-        $AtmBankLists = AtmBankLists::findOrFail($id);
+        $AtmBankLists = DataBankLists::findOrFail($id);
         return response()->json($AtmBankLists);
     }
 
@@ -317,7 +317,7 @@ class SettingsController extends Controller
     {
 
         // Proceed with inserting if validation passes
-        AtmBankLists::create([
+        DataBankLists::create([
             'bank_name' => $request->bank_name,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
@@ -332,7 +332,7 @@ class SettingsController extends Controller
     public function bankUpdate(Request $request)
     {
         // Find the user group by ID
-        $AtmBankLists = AtmBankLists::findOrFail($request->item_id);
+        $AtmBankLists = DataBankLists::findOrFail($request->item_id);
 
         // Proceed with update if validation passes
         $AtmBankLists->update([  // Update the instance instead of using the class method
@@ -353,7 +353,7 @@ class SettingsController extends Controller
 
     public function pension_types_data()
     {
-       $branch = AtmPensionTypesLists::latest('updated_at')
+       $branch = DataPensionTypesLists::latest('updated_at')
             ->get();
 
         return DataTables::of($branch)
@@ -363,13 +363,13 @@ class SettingsController extends Controller
 
     public function pension_typesGet($id)
     {
-        $AtmPensionTypesLists = AtmPensionTypesLists::findOrFail($id);
+        $AtmPensionTypesLists = DataPensionTypesLists::findOrFail($id);
         return response()->json($AtmPensionTypesLists);
     }
 
     public function pension_typesCreate(Request $request)
     {
-        AtmPensionTypesLists::create([
+        DataPensionTypesLists::create([
             'pension_name' => $request->pension_name,
             'types' => $request->types,
             'status' => 'Active',
@@ -386,7 +386,7 @@ class SettingsController extends Controller
     public function pension_typesUpdate(Request $request)
     {
         // Find the user group by ID
-        $AtmPensionTypesLists = AtmPensionTypesLists::findOrFail($request->item_id);
+        $AtmPensionTypesLists = DataPensionTypesLists::findOrFail($request->item_id);
 
         // Proceed with update if validation passes
         $AtmPensionTypesLists->update([  // Update the instance instead of using the class method
