@@ -123,6 +123,6 @@ class BranchesSeeder extends Seeder
                             'updated_at' => Carbon::now(),
                         ],
                     ];
-            DB::table('tbl_branches')->insert($data);
+            DB::table('branches')->insert($data);
     }
 }

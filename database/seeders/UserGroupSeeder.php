@@ -386,6 +386,6 @@ class UserGroupSeeder extends Seeder
                         'status' => 1,
                     ],
             ];
-            DB::table('tbl_user_groups')->insert($data);
+            DB::table('data_user_groups')->insert($data);
     }
 }

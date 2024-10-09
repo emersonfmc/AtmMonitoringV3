@@ -3,8 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\TblDistrict;
-use App\Models\TblUserGroup;
+use App\Models\DataUserGroup;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Http\Controllers\Controller;
@@ -16,7 +15,7 @@ class UserController extends Controller
 {
     public function users_page()
     {
-        $user_groups = TblUserGroup::whereNull('deleted_at')
+        $user_groups = DataUserGroup::whereNull('deleted_at')
             ->where('status','Active')
             ->get();
 

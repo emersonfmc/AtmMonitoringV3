@@ -25,6 +25,6 @@ class CompanySeeder extends Seeder
                             'updated_at' => Carbon::now(),
                         ],
                     ];
-            DB::table('tbl_companies')->insert($data);
+            DB::table('companies')->insert($data);
     }
 }

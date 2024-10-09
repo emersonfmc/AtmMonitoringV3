@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('atm_client_bank_transactions', function (Blueprint $table) {
+        Schema::create('atm_client_banks_transaction_approvals', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
         });
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('atm_client_bank_transactions');
+        Schema::dropIfExists('atm_client_banks_transaction_approvals');
     }
 };

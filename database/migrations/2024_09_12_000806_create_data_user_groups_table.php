@@ -13,12 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('tbl_companies', function (Blueprint $table) {
+        Schema::create('data_user_groups', function (Blueprint $table) {
             $table->id();
-            $table->string('company_name');
-            $table->string('status')->default(1);
-            $table->softDeletes();
+            $table->string('group_name')->nullable();
+            $table->unsignedBigInteger('company_id');
+            $table->foreign('company_id')->references('id')->on('companies')->onDelete('restrict')->onUpdate('cascade');
             $table->timestamps();
+            $table->softDeletes();
+            $table->enum('status',[['Active','Inactive']])->default('Active');
         });
     }
 
@@ -29,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tbl_companies');
+        Schema::dropIfExists('data_user_groups');
     }
 };

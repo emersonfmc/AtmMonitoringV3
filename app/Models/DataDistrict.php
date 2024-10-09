@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class TblUserGroup extends Model
+class DataDistrict extends Model
 {
     use HasFactory, SoftDeletes;
 
@@ -14,6 +14,6 @@ class TblUserGroup extends Model
 
     public function Company()
     {
-        return $this->belongsTo(TblCompany::class, 'company_id', 'id');
+        return $this->belongsTo(Company::class, 'company_id', 'id');
     }
 }
