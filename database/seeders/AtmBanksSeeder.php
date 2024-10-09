@@ -70,6 +70,6 @@ class AtmBanksSeeder extends Seeder
             ['id' => 55, 'bank_name' => 'Rural Bank of Montalban Inc.', 'status' => 'active', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
             ['id' => 56, 'bank_name' => 'Bank of Florida', 'status' => 'active', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
         ];
-        DB::table('atm_bank_lists')->insert($data);
+        DB::table('data_bank_lists')->insert($data);
     }
 }

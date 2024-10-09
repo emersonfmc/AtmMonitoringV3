@@ -13,8 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('atm_clients', function (Blueprint $table) {
+        Schema::create('data_bank_lists', function (Blueprint $table) {
             $table->id();
+            $table->string('bank_name')->nullable();
+            $table->enum('status', ['active','inactive'])->default('active');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -26,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('atm_clients');
+        Schema::dropIfExists('data_bank_lists');
     }
 };

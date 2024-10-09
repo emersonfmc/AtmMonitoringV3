@@ -13,14 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('tbl_districts', function (Blueprint $table) {
+        Schema::create('data_districts', function (Blueprint $table) {
             $table->id();
             $table->string('district_name')->nullable();
             $table->string('district_number')->nullable();
             $table->string('email')->nullable();
             $table->unsignedBigInteger('company_id');
             $table->string('status')->nullable();
-            $table->foreign('company_id')->references('id')->on('tbl_companies')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreign('company_id')->references('id')->on('companies')->onDelete('restrict')->onUpdate('cascade');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -33,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tbl_districts');
+        Schema::dropIfExists('data_districts');
     }
 };

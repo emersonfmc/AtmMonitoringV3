@@ -13,14 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('tbl_areas', function (Blueprint $table) {
+        Schema::create('data_areas', function (Blueprint $table) {
             $table->id();
             $table->string('area_no')->nullable();
             $table->string('area_supervisor')->nullable();
             $table->unsignedBigInteger('district_id')->nullable();
             $table->unsignedBigInteger('company_id')->nullable();
-            $table->foreign('district_id')->references('id')->on('tbl_districts')->onDelete('restrict')->onUpdate('cascade');
-            $table->foreign('company_id')->references('id')->on('tbl_companies')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreign('district_id')->references('id')->on('data_districts')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreign('company_id')->references('id')->on('companies')->onDelete('restrict')->onUpdate('cascade');
             $table->enum('status',['Active','Inactive'])->nullable();
             $table->softDeletes();
             $table->timestamps();
@@ -34,6 +34,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tbl_areas');
+        Schema::dropIfExists('data_areas');
     }
 };

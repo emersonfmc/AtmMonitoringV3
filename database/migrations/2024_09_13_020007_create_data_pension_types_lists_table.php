@@ -13,10 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('atm_client_bank_transaction_approvals', function (Blueprint $table) {
+        Schema::create('data_pension_types_lists', function (Blueprint $table) {
             $table->id();
+            $table->string('pension_name', 255)->nullable();  // Define length explicitly
+            $table->enum('types', ['SSS', 'GSIS'])->nullable();
+            $table->enum('status', ['Active', 'Inactive'])->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
+
     }
 
     /**
@@ -26,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('atm_client_bank_transaction_approvals');
+        Schema::dropIfExists('data_pension_types_lists');
     }
 };
