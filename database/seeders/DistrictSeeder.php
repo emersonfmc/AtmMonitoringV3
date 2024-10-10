@@ -67,6 +67,6 @@ class DistrictSeeder extends Seeder
                 'updated_at' => Carbon::now(),
             ],
         ];
-            DB::table('data_districts')->insert($data);
+        DB::table('data_districts')->insert($data);
     }
 }
