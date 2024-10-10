@@ -18,8 +18,8 @@ class DatabaseSeeder extends Seeder
             BranchesSeeder::class,
             AtmBanksSeeder::class,
             AtmPensionTypesSeeder::class,
-
-
+            AtmTransactionActionSeeder::class,
+            AtmTrasanctionSequenceSeeder::class,
         ]);
     }
 }
