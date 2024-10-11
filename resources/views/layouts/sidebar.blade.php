@@ -104,6 +104,12 @@
                     </a>
                     <ul class="sub-menu" aria-expanded="true">
                         <li>
+                            <a href="#" key="atm_clients">
+                                <span class="badge rounded-pill bg-success float-start me-2 fw-bold text-dark">20</span>
+                                Clients
+                            </a>
+                        </li>
+                        <li>
                             <a href="#" key="atm_ho_lists">
                                 <span class="badge rounded-pill bg-success float-start me-2 fw-bold text-dark">20</span>
                                 H.O. ATM Lists
@@ -263,6 +269,9 @@
                                 </li>
                                 <li>
                                     <a href="{{ route('settings.pension.types.page') }}" key="settings_atm_pension_types">Pension Types</a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('settings.transaction.action.page') }}" key="settings_atm_pension_types">Transaction Action</a>
                                 </li>
 
                             </ul>

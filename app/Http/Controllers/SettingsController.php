@@ -2,24 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Branch;
 use App\Models\DataArea;
 use App\Models\DataDistrict;
-use App\Models\DataBankLists;
-use App\Models\DataUserGroup;
-use App\Models\DataPensionTypesLists;
-
 use Illuminate\Http\Request;
+use App\Models\DataBankLists;
+
+use App\Models\DataUserGroup;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Models\Branch;
+use App\Models\AtmTransactionAction;
+use Illuminate\Support\Facades\Auth;
+use App\Models\DataPensionTypesLists;
 use Yajra\DataTables\Facades\DataTables;
 
 class SettingsController extends Controller
 {
     public function users_group_page()
     {
-        return view('pages.pages_backend.settings.users_group_page');
+        $user = Auth::user();
+        $user_types = $user->user_types;
+
+        return view('pages.pages_backend.settings.users_group_page', compact('user_types'));
     }
 
     public function users_group_data()
@@ -247,6 +252,13 @@ class SettingsController extends Controller
         return response()->json($TblArea);
     }
 
+    public function branchGetByarea(Request $request)
+    {
+        // $district_id = $request->district_id;
+        $Branch = Branch::where('area_id', $request->area_id)->get(); // get() instead of first()
+        return response()->json($Branch);
+    }
+
     public function branchCreate(Request $request)
     {
         // Extract the first two letters of branch_location and convert to uppercase
@@ -399,6 +411,60 @@ class SettingsController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Pension Types updated successfully!'  // Changed message to reflect update action
+        ]);
+    }
+
+    public function transaction_action_page()
+    {
+        return view('pages.pages_backend.settings.transaction_action_page');
+    }
+
+    public function transaction_action_data()
+    {
+       $AtmTransactionAction = AtmTransactionAction::with('AtmTransactionSequence','AtmTransactionSequence.DataUserGroup')->latest('updated_at')
+            ->get();
+
+        return DataTables::of($AtmTransactionAction)
+            ->setRowId('id')
+            ->make(true);
+    }
+
+    public function transaction_typesGet($id)
+    {
+        $AtmTransactionAction = AtmTransactionAction::with('AtmTransactionSequence','AtmTransactionSequence.DataUserGroup')->findOrFail($id);
+        return response()->json($AtmTransactionAction);
+    }
+
+    public function transaction_typesCreate(Request $request)
+    {
+        AtmTransactionAction::create([
+            'name' => $request->name,
+            'status' => 'Active',
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Transaction Action Created successfully!'
+        ]);
+    }
+
+    public function transaction_typesUpdate(Request $request)
+    {
+        // Find the user group by ID
+        $AtmTransactionAction = AtmTransactionAction::findOrFail($request->item_id);
+
+        // Proceed with update if validation passes
+        $AtmTransactionAction->update([  // Update the instance instead of using the class method
+            'name' => $request->name,
+            'status' => $request->status,
+            'updated_at' => Carbon::now(),
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Transaction Action updated successfully!'  // Changed message to reflect update action
         ]);
     }
 

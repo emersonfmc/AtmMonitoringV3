@@ -108,6 +108,43 @@ class AtmTrasanctionSequenceSeeder extends Seeder
             ['atm_transaction_actions_id' => 16, 'sequence_no' => 9, 'user_group_id' => 9,'type' => 'Received','created_at' => Carbon::now(),'updated_at' => Carbon::now()],
             ['atm_transaction_actions_id' => 16, 'sequence_no' => 10, 'user_group_id' => 5,'type' => 'Received','created_at' => Carbon::now(),'updated_at' => Carbon::now()],
 
+            ['atm_transaction_actions_id' => 17, 'sequence_no' => 1, 'user_group_id' => 9,'type' => 'Received','created_at' => Carbon::now(),'updated_at' => Carbon::now()],
+            ['atm_transaction_actions_id' => 17, 'sequence_no' => 2, 'user_group_id' => 15,'type' => 'Received','created_at' => Carbon::now(),'updated_at' => Carbon::now()],
+            ['atm_transaction_actions_id' => 17, 'sequence_no' => 3, 'user_group_id' => 31,'type' => 'Received','created_at' => Carbon::now(),'updated_at' => Carbon::now()],
+            ['atm_transaction_actions_id' => 17, 'sequence_no' => 4, 'user_group_id' => 54,'type' => 'Received','created_at' => Carbon::now(),'updated_at' => Carbon::now()],
+
+            ['atm_transaction_actions_id' => 18, 'sequence_no' => 1, 'user_group_id' => 9,'type' => 'Received','created_at' => Carbon::now(),'updated_at' => Carbon::now()],
+            ['atm_transaction_actions_id' => 18, 'sequence_no' => 2, 'user_group_id' => 15,'type' => 'Received','created_at' => Carbon::now(),'updated_at' => Carbon::now()],
+            ['atm_transaction_actions_id' => 18, 'sequence_no' => 3, 'user_group_id' => 31,'type' => 'Received','created_at' => Carbon::now(),'updated_at' => Carbon::now()],
+            ['atm_transaction_actions_id' => 18, 'sequence_no' => 4, 'user_group_id' => 54,'type' => 'Received','created_at' => Carbon::now(),'updated_at' => Carbon::now()],
+
+            ['atm_transaction_actions_id' => 19, 'sequence_no' => 1, 'user_group_id' => 55,'type' => 'Received','created_at' => Carbon::now(),'updated_at' => Carbon::now()],
+            ['atm_transaction_actions_id' => 19, 'sequence_no' => 2, 'user_group_id' => 54,'type' => 'Received','created_at' => Carbon::now(),'updated_at' => Carbon::now()],
+            ['atm_transaction_actions_id' => 19, 'sequence_no' => 3, 'user_group_id' => 32,'type' => 'Received','created_at' => Carbon::now(),'updated_at' => Carbon::now()],
+            ['atm_transaction_actions_id' => 19, 'sequence_no' => 4, 'user_group_id' => 32,'type' => 'Received','created_at' => Carbon::now(),'updated_at' => Carbon::now()],
+            ['atm_transaction_actions_id' => 19, 'sequence_no' => 5, 'user_group_id' => 9,'type' => 'Received','created_at' => Carbon::now(),'updated_at' => Carbon::now()],
+            ['atm_transaction_actions_id' => 19, 'sequence_no' => 6, 'user_group_id' => 5,'type' => 'Received','created_at' => Carbon::now(),'updated_at' => Carbon::now()],
+
+            ['atm_transaction_actions_id' => 20, 'sequence_no' => 1, 'user_group_id' => 9,'type' => 'Received','created_at' => Carbon::now(),'updated_at' => Carbon::now()],
+            ['atm_transaction_actions_id' => 20, 'sequence_no' => 2, 'user_group_id' => 15,'type' => 'Received','created_at' => Carbon::now(),'updated_at' => Carbon::now()],
+            ['atm_transaction_actions_id' => 20, 'sequence_no' => 3, 'user_group_id' => 55,'type' => 'Received','created_at' => Carbon::now(),'updated_at' => Carbon::now()],
+
+            ['atm_transaction_actions_id' => 21, 'sequence_no' => 1, 'user_group_id' => 9,'type' => 'Received','created_at' => Carbon::now(),'updated_at' => Carbon::now()],
+            ['atm_transaction_actions_id' => 21, 'sequence_no' => 2, 'user_group_id' => 15,'type' => 'Received','created_at' => Carbon::now(),'updated_at' => Carbon::now()],
+            ['atm_transaction_actions_id' => 21, 'sequence_no' => 3, 'user_group_id' => 31,'type' => 'Received','created_at' => Carbon::now(),'updated_at' => Carbon::now()],
+            ['atm_transaction_actions_id' => 21, 'sequence_no' => 4, 'user_group_id' => 54,'type' => 'Received','created_at' => Carbon::now(),'updated_at' => Carbon::now()],
+
+            ['atm_transaction_actions_id' => 22, 'sequence_no' => 1, 'user_group_id' => 9,'type' => 'Received','created_at' => Carbon::now(),'updated_at' => Carbon::now()],
+            ['atm_transaction_actions_id' => 22, 'sequence_no' => 2, 'user_group_id' => 15,'type' => 'Received','created_at' => Carbon::now(),'updated_at' => Carbon::now()],
+            ['atm_transaction_actions_id' => 22, 'sequence_no' => 3, 'user_group_id' => 31,'type' => 'Received','created_at' => Carbon::now(),'updated_at' => Carbon::now()],
+            ['atm_transaction_actions_id' => 22, 'sequence_no' => 4, 'user_group_id' => 54,'type' => 'Received','created_at' => Carbon::now(),'updated_at' => Carbon::now()],
+
+            ['atm_transaction_actions_id' => 23, 'sequence_no' => 1, 'user_group_id' => 9,'type' => 'Received','created_at' => Carbon::now(),'updated_at' => Carbon::now()],
+            ['atm_transaction_actions_id' => 23, 'sequence_no' => 2, 'user_group_id' => 15,'type' => 'Received','created_at' => Carbon::now(),'updated_at' => Carbon::now()],
+            ['atm_transaction_actions_id' => 23, 'sequence_no' => 3, 'user_group_id' => 31,'type' => 'Received','created_at' => Carbon::now(),'updated_at' => Carbon::now()],
+            ['atm_transaction_actions_id' => 23, 'sequence_no' => 4, 'user_group_id' => 54,'type' => 'Received','created_at' => Carbon::now(),'updated_at' => Carbon::now()],
+
+
         ];
         DB::table('atm_transaction_sequences')->insert($data);
     }
