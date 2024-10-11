@@ -33,6 +33,7 @@ return new class extends Migration
             // $table->foreign('collection_date')->references('collection_date')->on('data_collection_dates')->onDelete('restrict')->onUpdate('cascade');
             // $table->foreign('client_information_id')->references('id')->on('client_information')->onDelete('restrict')->onUpdate('cascade');
 
+            $table->softDeletes();
             $table->timestamps();
         });
     }

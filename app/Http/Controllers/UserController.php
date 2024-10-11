@@ -7,6 +7,7 @@ use App\Models\DataUserGroup;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Http\Controllers\Controller;
+use App\Models\DataDistrict;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\Facades\DataTables;
@@ -19,7 +20,10 @@ class UserController extends Controller
             ->where('status','Active')
             ->get();
 
-        return view('pages.pages_backend.settings.users_page',compact('user_groups'));
+        $DataDistrict = DataDistrict::whereNull('deleted_at')
+            ->get();
+
+        return view('pages.pages_backend.settings.users_page',compact('user_groups','DataDistrict'));
     }
 
     public function users_data()
@@ -40,20 +44,19 @@ class UserController extends Controller
     {
         // Check if the password and confirm password match
         if ($request->password !== $request->confirm_password) {
-            return response()->json(['error' => 'Passwords do not match!'], 400); // 400 Bad Request
+            return response()->json(['error' => 'Passwords do not match!']);
         }
         else
         {
             // Check if the email already exists
             if (User::where('email', $request->email)->exists()) {
-                return response()->json(['error' => 'Email already exists!'], 409); // 409 Conflict
+                return response()->json(['error' => 'Email already exists!']);
             }
 
             // Check if the employee number already exists
             if (User::where('employee_id', $request->employee_id)->exists()) {
-                return response()->json(['error' => 'Employee number already exists!'], 409); // 409 Conflict
+                return response()->json(['error' => 'Employee number already exists!']);
             }
-
 
             if($request->user_type === 'Head_Office')
             {
@@ -83,14 +86,14 @@ class UserController extends Controller
             }
             else if($request->user_type === 'Admin')
             {
-                $user_group_id = $request->user_group_id;
+                $user_group_id = 1;
                 $branch_id = NULL;
                 $district_id = NULL;
                 $area_id = NULL;
             }
             else if($request->user_type === 'Developer')
             {
-                $user_group_id = $request->user_group_id;
+                $user_group_id = 56;
                 $branch_id = NULL;
                 $district_id = NULL;
                 $area_id = NULL;
@@ -99,18 +102,20 @@ class UserController extends Controller
             {
             }
 
+            $contact_no = preg_replace('/[^0-9]/', '', $request->contact_no);
+
                     // Create the user
             User::create([
                 'name' => $request->name,
                 'email' => $request->email,
                 'employee_id' => $request->employee_id,
-                // 'contact_no' => $request->contact_no,
+                // 'contact_no' => $contact_no,
                 // 'address' => $request->address,
                 'name' => $request->username,
                 'password' => Hash::make($request->password), // Hash the password
                 'email_verified_at' => Carbon::now(),
                 'session' => 'Offline',
-                'user_types' => $request->user_types,
+                'user_types' => $request->user_type,
                 'user_group_id' => $user_group_id,
                 'branch_id' => $branch_id,
                 'district_code_id' => $district_id,

@@ -21,7 +21,7 @@ return new class extends Migration
             $table->enum('type',['Received','Released'])->nullable();
             $table->foreign('user_group_id')->references('id')->on('data_user_groups')->onDelete('restrict')->onUpdate('cascade');
             $table->foreign('atm_transaction_actions_id')->references('id')->on('atm_transaction_actions')->onDelete('restrict')->onUpdate('cascade');
-
+            $table->softDeletes();
             $table->timestamps();
         });
     }

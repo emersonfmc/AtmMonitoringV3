@@ -38,7 +38,7 @@
                                 <tr>
                                     <th>Sl</th>
                                     <th>Name</th>
-                                    <th>Email</th>
+                                    <th>Type</th>
                                     <th>Password</th>
                                     <th>Created Date</th>
                                     <th>Roles and Permission</th>
@@ -80,6 +80,9 @@
                                         <option value="Area">Area</option>
                                         <option value="Branch">Branch</option>
                                         <option value="Admin">Admin</option>
+                                        @if (Auth::user()->user_types == 'Developer')
+                                            <option value="Developer">Developer</option>
+                                        @endif
                                     </select>
                                 </div>
                             </div>
@@ -98,7 +101,7 @@
 
                                 <div class="form-group mb-2">
                                     <label class="fw-bold h6">Contact No</label>
-                                    <input type="number" name="contact_no" min="0" class="form-control" placeholder="Contact No." required>
+                                    <input type="text" name="contact_no" class="form-control contact_input_mask" placeholder="Contact No." required>
                                 </div>
 
                                 <div class="form-group mb-2">
@@ -158,15 +161,11 @@
 
                                     <div class="form-group mb-2">
                                         <label class="fw-bold h6">District</label>
-                                        <select id="district_id" name="district_id" class="form-select" required>
+                                        <select id="district_id" name="district_id" class="form-select select2" required>
                                             <option value="" selected disabled>Select District</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group mb-2">
-                                        <label class="fw-bold h6">District Session</label>
-                                        <select id="district_session_id" name="district_session_id" class="form-select" required>
-                                            <option value="" selected disabled>Select District Session</option>
+                                            @foreach ($DataDistrict as $item)
+                                                <option value="{{ $item->id }}">{{ $item->district_number .' - '. $item->district_name }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </span>
@@ -177,25 +176,21 @@
 
                                     <div class="form-group mb-2">
                                         <label class="fw-bold h6">District Manageer</label>
-                                        <select id="district_manager_area_id" name="district_manager_area_id" class="form-select" required>
+                                        <select id="district_manager_area_id" name="district_manager_area_id" class="form-select select2" required>
                                             <option value="" selected disabled>Select District Manager</option>
+
+                                            @foreach ($DataDistrict as $item)
+                                                <option value="{{ $item->id }}">{{ $item->district_name }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
 
                                     <div class="form-group mb-2">
                                         <label class="fw-bold h6">Area Supervisor</label>
-                                        <select id="area_supervisor_id" name="area_supervisor_id" class="form-select" required disabled >
+                                        <select id="area_supervisor_id" name="area_supervisor_id" class="form-select select2" required disabled >
                                             <option value="" selected disabled>Select Area Supervisor</option>
                                         </select>
                                     </div>
-
-                                    <div class="form-group mb-2">
-                                        <label class="fw-bold h6">District | Area</label>
-                                        <select id="district_area_id" name="district_area_id" class="form-select" required disabled>
-                                            <option value="" selected disabled>District | Area</option>
-                                        </select>
-                                    </div>
-
                                 </span>
 
                                 <span id="BranchDisplay" style="display: none;">
@@ -204,28 +199,31 @@
 
                                     <div class="form-group mb-2">
                                         <label class="fw-bold h6">District Manager</label>
-                                        <select id="district_manager_id" name="district_manager_id" class="form-select" required>
+                                        <select id="district_manager_id" name="district_manager_id" class="form-select select2" required>
                                             <option value="" selected disabled>Select District Manager</option>
+                                            @foreach ($DataDistrict as $item)
+                                                <option value="{{ $item->id }}">{{ $item->district_name }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
 
                                     <div class="form-group mb-2">
                                         <label class="fw-bold h6">Area</label>
-                                        <select id="area_id" name="area_id" class="form-select" required>
+                                        <select id="area_id" name="area_id" class="form-select select2" required>
                                             <option value="" selected disabled>Select Area</option>
                                         </select>
                                     </div>
 
                                     <div class="form-group mb-2">
                                         <label class="fw-bold h6">Branch</label>
-                                        <select id="branch_id" name="branch_id" class="form-select" required>
+                                        <select id="branch_id" name="branch_id" class="form-select select2" required>
                                             <option value="" selected disabled>Select Branch</option>
                                         </select>
                                     </div>
 
                                     <div class="form-group mb-2">
                                         <label class="fw-bold h6">User Group</label>
-                                        <select id="user_group_branch_id" name="user_group_branch_id" class="form-select" required>
+                                        <select id="user_group_branch_id" name="user_group_branch_id" class="form-select select2" required>
                                             <option value="" selected disabled>Select User Type</option>
                                             @foreach ($user_groups as $user_group)
                                                 <option value="{{ $user_group->id }}">{{ $user_group->group_name }}</option>
@@ -264,7 +262,7 @@
                     data: 'id',
                     name: 'id',
                     render: function(data, type, row, meta) {
-                        return '<span class="fw-bold h6">' + data + '</span>'; // Display user's ID
+                        return '<span class="fw-bold h6">' + row.id + '</span>'; // Display user's ID
                     },
                     orderable: true,
                     searchable: true,
@@ -273,14 +271,15 @@
                     data: 'name',
                     name: 'name',
                     render: function(data, type, row, meta) {
-                        return '<span class="fw-bold h6">' + data + '</span>'; // Display user's name
+                        return `<div class="fw-bold h6">${row.name}</div>
+                                <div class="fw-bold text-primary fs-6">${row.name}</div>`; // Display user's name
                     },
                     orderable: true,
                     searchable: true,
                 },
                 {
-                    data: 'email',
-                    name: 'email',
+                    data: 'user_types',
+                    name: 'user_types',
                     render: function(data, type, row, meta) {
                         return '<span>' + data + '</span>'; // Display user's email
                     },
@@ -450,65 +449,150 @@
                 // $('#usersGroupPageTable').addClass('d-none');
             }
         });
+
+        $(document).ready(function(){
+            var userType = '{{ Auth::user()->user_types }}'; // or however you get the user's type
+
+                if (userType === 'Developer') {
+                    $('#userTypeSelect option').not('[value="Developer"]').prop('disabled', true); // Disable all other options
+                    $('#userTypeSelect').val('Developer'); // Set the selected value to Developer
+                }
+
+            $('#createUserModal').on('shown.bs.modal', function () {
+                $('#userTypeSelect').select2({
+                    dropdownParent: $('#createUserModal'), // Ensure modal is the parent of Select2
+                });
+                $('#user_group_id').select2({
+                    dropdownParent: $('#createUserModal')
+                });
+            });
+
+            $('#userTypeSelect').on('change', function() {
+                var selectedUserType = $(this).val();
+
+                if(selectedUserType === 'Head_Office')
+                {
+                    $('#HeadOfficeDisplay').show();
+                    $('#DistrictDisplay').hide();
+                    $('#AreaDisplay').hide();
+                    $('#BranchDisplay').hide();
+                }
+                else if(selectedUserType === 'District')
+                {
+                    $('#HeadOfficeDisplay').hide();
+                    $('#DistrictDisplay').show();
+                    $('#AreaDisplay').hide();
+                    $('#BranchDisplay').hide();
+                }
+                else if(selectedUserType === 'Area')
+                {
+                    $('#HeadOfficeDisplay').hide();
+                    $('#DistrictDisplay').hide();
+                    $('#AreaDisplay').show();
+                    $('#BranchDisplay').hide();
+                }
+                else if(selectedUserType === 'Branch')
+                {
+                    $('#HeadOfficeDisplay').hide();
+                    $('#DistrictDisplay').hide();
+                    $('#AreaDisplay').hide();
+                    $('#BranchDisplay').show();
+                }
+                else
+                {
+                    $('#HeadOfficeDisplay').hide();
+                    $('#DistrictDisplay').hide();
+                    $('#AreaDisplay').hide();
+                    $('#BranchDisplay').hide();
+                }
+
+
+            });
+
+            $('#district_manager_area_id').on('change', function() {
+                var selectedDistrict = $(this).val();
+                // Make the AJAX GET request
+                $.ajax({
+                    url: '/settings/area/using/district',
+                    type: 'GET',
+                    data: {
+                        district_id: selectedDistrict
+                    },
+                    success: function(response) {
+                        // Assuming the response is an array of objects with id, area_no, and area_supervisor properties
+                        var options = ''; // Initialize an empty string for options
+                        $.each(response, function(index, item) {
+                            // Create an option for each item in the response
+                            options += `<option value="${item.id}">${item.area_no} - ${item.area_supervisor}</option>`;
+                        });
+                        // Populate the dropdown (make sure to replace '#area_supervisor_id' with the actual dropdown ID)
+                        $('#area_supervisor_id').prop('disabled', false); // Remove disabled attribute
+                        $('#area_supervisor_id').html(options); // Set the dropdown options
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle any errors
+                        console.error('AJAX Error:', status, error);
+                    }
+                });
+            });
+
+            $('#district_manager_id').on('change', function() {
+                var selectedDistrict = $(this).val();
+                // Make the AJAX GET request
+                $.ajax({
+                    url: '/settings/area/using/district',
+                    type: 'GET',
+                    data: {
+                        district_id: selectedDistrict
+                    },
+                    success: function(response) {
+                        // Assuming the response is an array of objects with id, area_no, and area_supervisor properties
+                        var options = ''; // Initialize an empty string for options
+                        $.each(response, function(index, item) {
+                            // Create an option for each item in the response
+                            options += `<option value="${item.id}">${item.area_no} - ${item.area_supervisor}</option>`;
+                        });
+                        // Populate the dropdown (make sure to replace '#area_supervisor_id' with the actual dropdown ID)
+                        $('#area_id').prop('disabled', false); // Remove disabled attribute
+                        $('#area_id').html(options); // Set the dropdown options
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle any errors
+                        console.error('AJAX Error:', status, error);
+                    }
+                });
+            });
+
+            $('#area_id').on('change', function() {
+                var selectedArea = $(this).val();
+                // Make the AJAX GET request
+                $.ajax({
+                    url: '/settings/branch/using/area',
+                    type: 'GET',
+                    data: {
+                        area_id: selectedArea
+                    },
+                    success: function(response) {
+                        // Assuming the response is an array of objects with id, area_no, and area_supervisor properties
+                        var options = ''; // Initialize an empty string for options
+                        $.each(response, function(index, item) {
+                            // Create an option for each item in the response
+                            options += `<option value="${item.id}">${item.branch_location}</option>`;
+                        });
+                        // Populate the dropdown (make sure to replace '#area_supervisor_id' with the actual dropdown ID)
+                        $('#branch_id').prop('disabled', false); // Remove disabled attribute
+                        $('#branch_id').html(options); // Set the dropdown options
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle any errors
+                        console.error('AJAX Error:', status, error);
+                    }
+                });
+            });
+
+
+        });
     </script>
-
-
-
-
-<script>
-    $(document).ready(function(){
-        $('#createUserModal').on('shown.bs.modal', function () {
-            $('#userTypeSelect').select2({
-                dropdownParent: $('#createUserModal'), // Ensure modal is the parent of Select2
-            });
-            $('#user_group_id').select2({
-                dropdownParent: $('#createUserModal')
-            });
-        });
-
-        $('#userTypeSelect').on('change', function() {
-            var selectedUserType = $(this).val();
-
-            if(selectedUserType === 'Head_Office')
-            {
-                $('#HeadOfficeDisplay').show();
-                $('#DistrictDisplay').hide();
-                $('#AreaDisplay').hide();
-                $('#BranchDisplay').hide();
-            }
-            else if(selectedUserType === 'District')
-            {
-                $('#HeadOfficeDisplay').hide();
-                $('#DistrictDisplay').show();
-                $('#AreaDisplay').hide();
-                $('#BranchDisplay').hide();
-            }
-            else if(selectedUserType === 'Area')
-            {
-                $('#HeadOfficeDisplay').hide();
-                $('#DistrictDisplay').hide();
-                $('#AreaDisplay').show();
-                $('#BranchDisplay').hide();
-            }
-            else if(selectedUserType === 'Branch')
-            {
-                $('#HeadOfficeDisplay').hide();
-                $('#DistrictDisplay').hide();
-                $('#AreaDisplay').hide();
-                $('#BranchDisplay').show();
-            }
-            else
-            {
-                $('#HeadOfficeDisplay').hide();
-                $('#DistrictDisplay').hide();
-                $('#AreaDisplay').hide();
-                $('#BranchDisplay').hide();
-            }
-
-
-        });
-    });
-</script>
 
 
 

@@ -9,7 +9,7 @@
 
     @component('components.breadcrumb')
         @slot('li_1') Settings @endslot
-        @slot('title') Area @endslot
+        @slot('title') Transaction Action @endslot
     @endcomponent
 
     <div class="row">
@@ -19,15 +19,16 @@
 
                     <div class="row">
                         <div class="col-md-8 text-start">
-                            <h4 class="card-title">Area</h4>
+                            <h4 class="card-title">Transaction Action</h4>
                             <p class="card-title-desc">
-                                A district head is responsible for managing and overseeing the operations,
-                                administration, and development activities within a district
+                                This feature enables users to perform various transactional
+                                tasks, such as creating, editing, and managing financial
+                                transactions, ensuring seamless and efficient workflow management.
                             </p>
                         </div>
                         <div class="col-md-4 text-end">
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createAreaModal"><i
-                                class="fas fa-plus-circle me-1"></i> Create Area</button>
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createTransactionActionModal"><i
+                                class="fas fa-plus-circle me-1"></i> Create Action</button>
                         </div>
                     </div>
                     <hr>
@@ -38,10 +39,9 @@
                             <thead class="table-light">
                                 <tr>
                                     <th>Sl</th>
-                                    <th>Area No.</th>
-                                    <th>Area Name</th>
-                                    <th>District</th>
-                                    {{-- <th>Email</th> --}}
+                                    <th>Transaction Name</th>
+                                    <th>Sequence / User Selected</th>
+                                    <th>Status</th>
                                     <th>Created Date</th>
                                     <th>Action</th>
                                 </tr>
@@ -58,38 +58,22 @@
         </div> <!-- end col -->
     </div> <!-- end row -->
 
-    <div class="modal fade" id="createAreaModal" data-bs-backdrop="static" tabindex="-1" role="dialog"district_id
-        aria-labelledby="createAreaModalLabel" aria-hidden="true">
+    <div class="modal fade" id="createTransactionActionModal" data-bs-backdrop="static" tabindex="-1" role="dialog"district_id
+        aria-labelledby="createTransactionActionModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title fw-bold text-uppercase">Create Area</h5>
+                    <h5 class="modal-title fw-bold text-uppercase">Create Transaction Action</h5>
                     <button type="button" class="btn-close closeCreateModal" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form method="post" action="{{ route('settings.area.create') }}" id="createValidateForm">
+                    <form method="post" action="{{ route('settings.transaction.action.create') }}" id="createValidateForm">
                         @csrf
 
                         <div class="form-group mb-3">
-                            <label class="fw-bold h6">Area</label>
-                            <input type="text" name="area_no" class="form-control" id="area_no"
-                                placeholder="Enter Area No" minlength="0" maxlength="50" required>
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <label class="fw-bold h6">Area Supervisor</label>
-                            <input type="text" name="area_supervisor" class="form-control" id="area_supervisor"
-                                placeholder="Enter Area Supervisor" minlength="0" maxlength="50" required>
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <label class="fw-bold h6">District Manager</label>
-                            <select name="district_id" id="district_id" class="form-select select2" required>
-                                <option value="" selected disabled>Select District Manager</option>
-                                @foreach ($districts as $district)
-                                    <option value="{{ $district->id }}">{{  $district->district_number .' / '. $district->district_name }}</option>
-                                @endforeach
-                            </select>
+                            <label class="fw-bold h6">Transaction Name</label>
+                            <input type="text" name="name" class="form-control" id="name"
+                                placeholder="Enter Transaction Name" minlength="0" maxlength="50" required>
                         </div>
 
                         <div class="modal-footer">
@@ -102,38 +86,23 @@
         </div>
     </div>
 
-    <div class="modal fade" id="updateAreaModal" data-bs-backdrop="static" tabindex="-1" role="dialog"update_district_id
-        aria-labelledby="updateAreaModalLabel" aria-hidden="true">
+    <div class="modal fade" id="updateTransactionActionModal" data-bs-backdrop="static" tabindex="-1" role="dialog"update_district_id
+        aria-labelledby="updateTransactionActionModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title fw-bold text-uppercase">Update Area</h5>
+                    <h5 class="modal-title fw-bold text-uppercase">Update Transaction Action</h5>
                     <button type="button" class="btn-close closeUpdateModal" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form method="post" action="{{ route('settings.area.update') }}" id="updateValidateForm">
+                    <form method="post" action="{{ route('settings.transaction.action.update') }}" id="updateValidateForm">
                         @csrf
                         <input type="hidden" id="item_id" name="item_id">
 
                         <div class="form-group mb-3">
                             <label class="fw-bold h6">Area</label>
-                            <input type="text" name="area_no" class="form-control" id="update_area_no"
-                                placeholder="Enter Area" minlength="0" maxlength="50" required>
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <label class="fw-bold h6">Area Supervisor</label>
-                            <input type="text" name="area_supervisor" class="form-control" id="update_area_supervisor"
-                                placeholder="Enter Area Supervisor" minlength="0" maxlength="50" required>
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <label class="fw-bold h6">District Manager</label>
-                            <select name="district_id" id="update_district_id" class="form-select select2" required>
-                                @foreach ($districts as $district)
-                                    <option value="{{ $district->id }}">{{  $district->district_number .' / '. $district->district_name }}</option>
-                                @endforeach
-                            </select>
+                            <input type="text" name="name" class="form-control" id="update_name"
+                                placeholder="Enter Transaction Name" minlength="0" maxlength="50" required>
                         </div>
 
                         <div class="form-group mb-3">
@@ -141,7 +110,6 @@
                             <select name="status" id="update_status" class="form-select" required>
                                 <option value="Active">Active</option>
                                 <option value="Inactive">Inactive</option>
-
                             </select>
                         </div>
 
@@ -157,13 +125,10 @@
 
     <script>
         $(document).ready(function () {
-            $('#district_id').select2({ dropdownParent: $('#createAreaModal') });
-            $('#update_district_id').select2({ dropdownParent: $('#updateAreaModal') });
-
             var FetchingDatatableBody = $('#FetchingDatatable tbody');
 
             const dataTable = new ServerSideDataTable('#FetchingDatatable');
-            var url = '{!! route('settings.area.data') !!}';
+            var url = '{!! route('settings.transaction.action.data') !!}';
             const buttons = [{
                 text: 'Delete',
                 action: function(e, dt, node, config) {
@@ -176,14 +141,14 @@
                     data: 'id',
                     name: 'id',
                     render: function(data, type, row, meta) {
-                        return '<span">' + data + '</span>'; // Display user's ID
+                        return '<span>' + data + '</span>'; // Display user's ID
                     },
                     orderable: true,
                     searchable: true,
                 },
                 {
-                    data: 'area_no',
-                    name: 'area_no',
+                    data: 'name',
+                    name: 'name',
                     render: function(data, type, row, meta) {
                         return '<span class="fw-bold h6 text-primary">' + data + '</span>';
                     },
@@ -191,32 +156,43 @@
                     searchable: true,
                 },
                 {
-                    data: 'area_supervisor',
-                    name: 'area_supervisor',
-                    render: function(data, type, row, meta) {
-                        return '<span class="fw-bold h6">' + data + '</span>';
+                    data: null, // No direct data for ATM sequences; will be created from response
+                    render: function(data, type, row) {
+                        // Check if atm_transaction_sequence exists and is an array
+                        if (data.atm_transaction_sequence && Array.isArray(data.atm_transaction_sequence)) {
+                            // Initialize an empty string for group names
+                            let groups = '';
+                            // Use each to loop through the sequences
+                            $.each(data.atm_transaction_sequence, function(index, sequence) {
+                                // Check if data_user_group exists before accessing group_name
+                                if (sequence.data_user_group) {
+                                    groups += sequence.sequence_no + ' - ' + sequence.data_user_group.group_name + ' - <span class="text-danger"> ' + sequence.type + '</span>' +'<br>'; // Use <br> for line breaks
+                                }
+                            });
+                            return '<div class="fw-bold h6 text-start">' + (groups.length ? groups : 'No Sequence Yet') + '</div>';
+                        }
+                        return '<div class="fw-bold h6">No Sequence Yet</div>'; // Fallback if there's no data
                     },
                     orderable: true,
                     searchable: true,
                 },
                 {
-                    data: 'district_id',
-                    name: 'district.district_name',
+                    data: 'status',
+                    name: 'status',
                     render: function(data, type, row, meta) {
-                        return row.district ? '<span>' + row.district.district_name + '</span>' : ''; // Check if company exists
+                        if (data.toLowerCase() === 'active') {
+                            return '<div class="badge bg-primary">Active</div>';
+                        } else if (data.toLowerCase() === 'inactive') {
+                            return '<span class="badge bg-danger">Inactive</span>';
+                        } else {
+                            return '<span>No Status</span>';
+                        }
                     },
                     orderable: true,
                     searchable: true,
                 },
-                // {
-                //     data: 'email',
-                //     name: 'email',
-                //     render: function(data, type, row, meta) {
-                //         return '<span">' + data + '</span>';
-                //     },
-                //     orderable: true,
-                //     searchable: true,
-                // },
+
+
                 {
                     data: 'created_at',
                     name: 'created_at',
@@ -289,7 +265,7 @@
                                         closeCreateModal();
                                         Swal.fire({
                                             title: 'Successfully Added!',
-                                            text: 'Area is successfully added!',
+                                            text: 'Transaction is successfully added!',
                                             icon: 'success',
                                             showCancelButton: false,
                                             showConfirmButton: true,
@@ -385,7 +361,7 @@
                                         closeUpdateModal();
                                         Swal.fire({
                                             title: 'Successfully Updated!',
-                                            text: 'Area is successfully Updated!',
+                                            text: 'Transaction is successfully Updated!',
                                             icon: 'success',
                                             showCancelButton: false,
                                             showConfirmButton: true,
@@ -446,26 +422,25 @@
                 e.preventDefault();
                 var itemID = $(this).data('id');
 
-                var url = "/settings/area/get/" + itemID;
+                var url = "/settings/transaction/action/get/" + itemID;
 
                 $.get(url, function(data) {
                     $('#item_id').val(data.id);
-                    $('#update_area_no').val(data.area_no);
-                    $('#update_area_supervisor').val(data.area_supervisor);
-                    $('#update_district_id').val(data.district_id);
+                    $('#update_name').val(data.name);
                     $('#update_status').val(data.status);
-                    $('#updateAreaModal').modal('show');
+
+                    $('#updateTransactionActionModal').modal('show');
                 });
             });
 
             function closeCreateModal() {
-                $('#createAreaModal').modal('hide');
+                $('#createTransactionActionModal').modal('hide');
                 $('#FetchingDatatable tbody').empty();
                 // $('#FetchingDatatable').addClass('d-none');
             }
 
             function closeUpdateModal() {
-                $('#updateAreaModal').modal('hide');
+                $('#updateTransactionActionModal').modal('hide');
                 $('#FetchingDatatable tbody').empty();
                 // $('#usersGroupPageTable').addClass('d-none');
             }

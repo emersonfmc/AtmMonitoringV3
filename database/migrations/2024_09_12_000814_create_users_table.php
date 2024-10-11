@@ -28,7 +28,7 @@ class CreateUsersTable extends Migration
             $table->date('dob');
             $table->rememberToken();
 
-            $table->unsignedBigInteger('user_group_id');
+            $table->unsignedBigInteger('user_group_id')->nullable();
             $table->unsignedBigInteger('company_id')->nullable();
             $table->unsignedBigInteger('branch_id')->nullable();
             $table->unsignedBigInteger('district_code_id')->nullable();
