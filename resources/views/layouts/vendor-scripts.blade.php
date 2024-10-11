@@ -55,9 +55,10 @@
 @yield('script')
 
 <!-- App js -->
+
+
 <script src="{{ URL::asset('assets/libs/datatables/datatables.min.js') }}"></script>
 <script src="{{ URL::asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
-
 <script src="{{ URL::asset('assets/js/pages/datatable-server-side.init.js')}}"></script>
 <script src="{{ URL::asset('assets/js/pages/datatables.init.js') }}"></script>
 <script src="{{ URL::asset('assets/js/app.min.js')}}"></script>
@@ -66,8 +67,12 @@
 <script src="{{ URL::asset('assets/libs/select2/select2.init.js') }}"></script>
 
 <script src="{{ URL::asset('assets/libs/jquery-validation/jquery-validation.min.js') }}"></script>
+<script src="{{ URL::asset('assets/libs/inputmask/inputmask.min.js') }}"></script>
+
+
 
 <script src="{{ URL::asset('/assets/js/pages/ecommerce-select2.init.js') }}"></script>
+<script src="{{ URL::asset('/assets/js/pages/add_script.js') }}"></script>
 
 
 

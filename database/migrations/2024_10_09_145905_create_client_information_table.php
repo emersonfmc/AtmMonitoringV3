@@ -29,6 +29,7 @@ return new class extends Migration
             // $table->foreign('pension_type')->references('pension_name')->on('data_pension_types_lists')->onDelete('restrict')->onUpdate('cascade');  // Reference 'pension_name' now
             // $table->foreign('branch_id')->references('id')->on('branches')->onDelete('restrict')->onUpdate('cascade');
 
+            $table->softDeletes();
             $table->timestamps();
         });
     }

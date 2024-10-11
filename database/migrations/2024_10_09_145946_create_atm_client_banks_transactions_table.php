@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('atm_client_banks_transactions', function (Blueprint $table) {
             $table->id();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
