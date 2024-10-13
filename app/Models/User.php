@@ -15,6 +15,31 @@ class User extends Authenticatable
 
     protected $guarded = [];
 
+    public function Company()
+    {
+        return $this->belongsTo(Company::class, 'company_id', 'id');
+    }
+
+    public function Branch()
+    {
+        return $this->belongsTo(Branch::class, 'branch_id', 'id');
+    }
+
+    public function District()
+    {
+        return $this->belongsTo(DataDistrict::class, 'district_code_id', 'id');
+    }
+
+    public function Area()
+    {
+        return $this->belongsTo(DataArea::class, 'area_code_id', 'id');
+    }
+
+    public function UserGroup()
+    {
+        return $this->belongsTo(DataUserGroup::class, 'user_group_id', 'id');
+    }
+
     /**
      * The attributes that should be hidden for arrays.
      *

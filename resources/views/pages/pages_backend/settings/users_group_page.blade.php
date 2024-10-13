@@ -393,7 +393,6 @@
                 });
             });
 
-
             function closeUserGroupModal() {
                 $('#createUserGroupModal').modal('hide');
                 $('#user_group').empty();
