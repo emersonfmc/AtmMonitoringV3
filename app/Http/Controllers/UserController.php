@@ -210,28 +210,27 @@ class UserController extends Controller
             $contact_no = preg_replace('/[^0-9]/', '', $request->contact_no);
 
             $User = User::findOrFail($request->item_id);
-                    // Create the user
+
+            // If password is provided, hash and update it; otherwise, keep the old password
+            $passwordUpdate = $request->password ? Hash::make($request->password) : $User->password;
+
+            // Update the user
             $User->update([
                 'name' => $request->name,
                 'email' => $request->email,
                 'employee_id' => $request->employee_id,
-                // 'contact_no' => $contact_no,
-                // 'address' => $request->address,
                 'name' => $request->username,
-                'password' => Hash::make($request->password), // Hash the password
-                'email_verified_at' => Carbon::now(),
-                'session' => 'Offline',
+                'password' => $passwordUpdate, // Update with the hashed new password or keep the old one
                 'user_types' => $request->user_type,
                 'user_group_id' => $user_group_id,
                 'branch_id' => $branch_id,
                 'district_code_id' => $district_id,
                 'area_code_id' => $area_id,
                 'status' => 'Active',
-                'company_id' => 2,
                 'dob' => Carbon::now(),
-                'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]);
+
         }
 
         //     return response()->json(['success' => 'User created successfully!']);

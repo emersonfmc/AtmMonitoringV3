@@ -256,6 +256,7 @@
                 <div class="modal-body">
                     <form method="POST" action="{{ route('users.update')  }}" id="updateValidateForm">
                         @csrf
+                        <input type="hidden" id="item_id" name="item_id">
 
                         <div class="row">
                             <div class="col-md-4">
@@ -312,12 +313,12 @@
 
                                 <div class="form-group mb-2">
                                     <label class="fw-bold h6">Password</label>
-                                    <input type="password" name="password" id="update_create_password" class="form-control" placeholder="Password" minlength="0" maxlength="50" required>
+                                    <input type="password" name="password" id="update_create_password" class="form-control" placeholder="Password" minlength="0" maxlength="50">
                                 </div>
 
                                 <div class="form-group mb-2">
                                     <label class="fw-bold h6">Confirm Password</label>
-                                    <input type="password" name="confirm_password" id="update_confirm_password" class="form-control" placeholder="Confirm Password" minlength="0" maxlength="50" required>
+                                    <input type="password" name="confirm_password" id="update_confirm_password" class="form-control" placeholder="Confirm Password" minlength="0" maxlength="50">
                                 </div>
 
                                 <div class="form-group mb-2">
@@ -636,11 +637,15 @@
                 }
             });
 
+            $.validator.addMethod("UpdatepasswordMatch", function(value, element) {
+                return value === $("#update_create_password").val();
+            }, "Passwords do not match.");
+
             $('#updateValidateForm').validate({
                 rules: {
                     user_type: { required: true },
-                    password: { required: true, minlength: 6, maxlength: 50 }, // You can adjust the minlength as needed
-                    confirm_password: { required: true, passwordMatch: true } // Use custom method here
+                    password: { minlength: 6, maxlength: 50 }, // You can adjust the minlength as needed
+                    confirm_password: { UpdatepasswordMatch: true } // Use custom method here
                 },
                 errorElement: 'span',
                 errorPlacement: function(error, element) {
@@ -661,7 +666,7 @@
                             text: 'Are you sure you want to save this?',
                             icon: 'question',
                             showCancelButton: true,
-                            confirmButtonColor: "#007BFF",
+                            confirmButtonColor: "#28A745",
                             cancelButtonColor: "#6C757D",
                             confirmButtonText: "Yes, Save it!"
                         }).then((result) => {
@@ -672,7 +677,7 @@
                                     type: form.method,
                                     data: $(form).serialize(),
                                     success: function(response) {
-                                        closeCreateModal();
+                                        closeUpdateModal();
                                         Swal.fire({
                                             title: 'Successfully Updated!',
                                             text: 'User is successfully Updated!',
@@ -752,21 +757,39 @@
                     $('#update_user_group_id').val(data.user_group_id).trigger('change');
                     $('#update_district_id').val(data.district_code_id).trigger('change');
 
+                    $('#update_district_manager_area_id').val(data.district_code_id).trigger('change');
+
                     $('#update_area_supervisor_id').html(''); // Clear the dropdown first
-                    var areaOption = new Option(
-                        (data.area.area_no ?? '') + ' - ' + (data.area.area_supervisor ?? ''),  // Display text
-                        data.area_code_id,                                                       // Value
-                        true,                                                                    // Default selected (true)
-                        true                                                                     // Selected (true)
-                    );
+
+                        var areaText = (data.area && data.area.area_no ? data.area.area_no : '') +
+                                    ' - ' + (data.area && data.area.area_supervisor ? data.area.area_supervisor : '');
+
+                        var areaOption = new Option(
+                            areaText,                                  // Display text
+                            data.area_code_id ?? '',                   // Value, allows null
+                            true,                                      // Default selected (true)
+                            true                                       // Selected (true)
+                        );
+
                     $('#update_area_supervisor_id').append(areaOption).trigger('change');
 
                     $('#update_district_manager_id').val(data.district_code_id).trigger('change');
 
-                    // update_district_manager_id
-                    // update_area_id
-                    // update_branch_id
-                    // update_user_group_branch_id
+                    $('#update_area_id').val(data.area_code_id ?? '');
+
+                    $('#update_branch_id').html(''); // Clear the dropdown first
+                        var BranchText = (data.branch && data.branch.branch_location ? data.branch.branch_location : '');
+
+                        var BranchOption = new Option(
+                            BranchText,                                  // Display text
+                            data.branch_id ?? '',                   // Value, allows null
+                            true,                                      // Default selected (true)
+                            true                                       // Selected (true)
+                        );
+                    $('#update_branch_id').append(BranchOption).trigger('change');
+
+                    $('#update_user_group_branch_id').val(data.user_group_id).trigger('change');
+
 
                     $('#update_create_password').val(data.password);
                     $('#update_confirm_password').val(data.password);
@@ -792,12 +815,15 @@
         // Create Function
         $(document).ready(function(){
             $('#createUserModal').on('shown.bs.modal', function () {
-                $('#userTypeSelect').select2({
-                    dropdownParent: $('#createUserModal'), // Ensure modal is the parent of Select2
-                });
-                $('#user_group_id').select2({
-                    dropdownParent: $('#createUserModal')
-                });
+                $('#userTypeSelect').select2({ dropdownParent: $('#createUserModal'), });
+                $('#user_group_id').select2({  dropdownParent: $('#createUserModal') });
+                $('#district_id').select2({  dropdownParent: $('#createUserModal') });
+                $('#district_manager_area_id').select2({  dropdownParent: $('#createUserModal') });
+                $('#area_supervisor_id').select2({  dropdownParent: $('#createUserModal') });
+                $('#district_manager_id').select2({  dropdownParent: $('#createUserModal') });
+                $('#area_id').select2({  dropdownParent: $('#createUserModal') });
+                $('#branch_id').select2({  dropdownParent: $('#createUserModal') });
+                $('#user_group_branch_id').select2({  dropdownParent: $('#createUserModal') });
             });
 
             $('#userTypeSelect').on('change', function() {
@@ -938,14 +964,12 @@
             });
         });
 
+        // Update Function
         $(document).ready(function(){
             $('#updateUserModal').on('shown.bs.modal', function () {
-                $('#userTypeSelectUpdate').select2({
-                    dropdownParent: $('#updateUserModal'), // Ensure modal is the parent of Select2
-                });
-                $('#user_group_id').select2({
-                    dropdownParent: $('#updateUserModal')
-                });
+                $('#userTypeSelectUpdate').select2({ dropdownParent: $('#updateUserModal'), });
+                $('#user_group_id').select2({  dropdownParent: $('#updateUserModal') });
+                $('#update_user_group_branch_id').select2({ dropdownParent: $('#updateUserModal') });
             });
 
             $('#userTypeSelectUpdate').on('change', function() {
@@ -986,6 +1010,125 @@
                     $('#UpdateAreaDisplay').hide();
                     $('#UpdateBranchDisplay').hide();
                 }
+            });
+
+            $('#userTypeSelect').on('change', function() {
+                var selectedUserType = $(this).val();
+
+                if(selectedUserType === 'Head Office')
+                {
+                    $('#HeadOfficeDisplay').show();
+                    $('#DistrictDisplay').hide();
+                    $('#AreaDisplay').hide();
+                    $('#BranchDisplay').hide();
+                }
+                else if(selectedUserType === 'District')
+                {
+                    $('#HeadOfficeDisplay').hide();
+                    $('#DistrictDisplay').show();
+                    $('#AreaDisplay').hide();
+                    $('#BranchDisplay').hide();
+                }
+                else if(selectedUserType === 'Area')
+                {
+                    $('#HeadOfficeDisplay').hide();
+                    $('#DistrictDisplay').hide();
+                    $('#AreaDisplay').show();
+                    $('#BranchDisplay').hide();
+                }
+                else if(selectedUserType === 'Branch')
+                {
+                    $('#HeadOfficeDisplay').hide();
+                    $('#DistrictDisplay').hide();
+                    $('#AreaDisplay').hide();
+                    $('#BranchDisplay').show();
+                }
+                else
+                {
+                    $('#HeadOfficeDisplay').hide();
+                    $('#DistrictDisplay').hide();
+                    $('#AreaDisplay').hide();
+                    $('#BranchDisplay').hide();
+                }
+
+
+            });
+
+
+            $('#update_district_manager_area_id').on('change', function() {
+                var selectedDistrict = $(this).val();
+                // Make the AJAX GET request
+                $.ajax({
+                    url: '/settings/area/using/district',
+                    type: 'GET',
+                    data: {
+                        district_id: selectedDistrict
+                    },
+                    success: function(response) {
+                        // Assuming the response is an array of objects with id, area_no, and area_supervisor properties
+                        var options = ''; // Initialize an empty string for options
+                        $.each(response, function(index, item) {
+                            // Create an option for each item in the response
+                            options += `<option value="${item.id}">${item.area_no} - ${item.area_supervisor}</option>`;
+                        });
+                        $('#update_area_supervisor_id').html(options); // Set the dropdown options
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle any errors
+                        console.error('AJAX Error:', status, error);
+                    }
+                });
+            });
+
+            $('#update_district_manager_id').on('change', function() {
+                var selectedDistrict = $(this).val();
+                var currentAreaSelected = $('#update_area_id').val();
+
+                // Make the AJAX GET request
+                $.ajax({
+                    url: '/settings/area/using/district',
+                    type: 'GET',
+                    data: {
+                        district_id: selectedDistrict
+                    },
+                    success: function(response) {
+                        var options = '';
+                        $.each(response, function(index, item) {
+                            // Build options and check if it matches the previously selected area
+                            options += `<option value="${item.id}" ${item.id == currentAreaSelected ? 'selected' : ''}>${item.area_no} - ${item.area_supervisor}</option>`;
+                        });
+
+                        $('#update_area_id').html(options); // Set the dropdown options
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle any errors
+                        console.error('AJAX Error:', status, error);
+                    }
+                });
+            });
+
+            $('#update_area_id').on('change', function() {
+                var selectedArea = $(this).val();
+                // Make the AJAX GET request
+                $.ajax({
+                    url: '/settings/branch/using/area',
+                    type: 'GET',
+                    data: {
+                        area_id: selectedArea
+                    },
+                    success: function(response) {
+                        var options = '';
+                        $.each(response, function(index, item) {
+                            // Create an option for each item in the response
+                            options += `<option value="${item.id}">${item.branch_location}</option>`;
+                        });
+                        $('#update_branch_id').html(options); // Set the dropdown options
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle any errors
+                        console.error('AJAX Error:', status, error);
+                    }
+                });
             });
         });
     </script>
