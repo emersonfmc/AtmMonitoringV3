@@ -60,7 +60,7 @@
 
     <div class="modal fade" id="createTransactionActionModal" data-bs-backdrop="static" tabindex="-1" role="dialog"district_id
         aria-labelledby="createTransactionActionModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title fw-bold text-uppercase">Create Transaction Action</h5>
@@ -70,10 +70,50 @@
                     <form method="post" action="{{ route('settings.transaction.action.create') }}" id="createValidateForm">
                         @csrf
 
-                        <div class="form-group mb-3">
+                        <div class="form-group mb-3 col-md-6">
                             <label class="fw-bold h6">Transaction Name</label>
                             <input type="text" name="name" class="form-control" id="name"
                                 placeholder="Enter Transaction Name" minlength="0" maxlength="50" required>
+                        </div>
+                        <hr>
+
+                        <div class="text-end mb-2">
+                            <button type="button" id="addSequenceBtn" class="btn btn-primary">Add Sequence</button>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table id="sequenceTable" class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="col-md-2">Sequence No</th>
+                                        <th class="col-md-4">Assign User</th>
+                                        <th class="col-md-3">Type</th>
+                                        <th class="col-md-2">Remove</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><input type="text" name="sequence_no[]" class="form-control sequence_no" value="1" readonly></td>
+                                        <td>
+                                            <select name="user_group_id[]" class="form-select select2 user-select" required>
+                                                <option value="" selected disabled>Select User</option>
+                                                @foreach ($DataUserGroup as $item)
+                                                    <option value="{{ $item->id }}">{{ $item->group_name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select name="type[]" class="form-select">
+                                                <option value="Received">Received</option>
+                                                <option value="Released">Released</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            {{-- <a href="#" class="btn btn-danger removeRow" disabled><i class="fas fa-trash-alt"></i></a> --}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
 
                         <div class="modal-footer">
@@ -88,7 +128,7 @@
 
     <div class="modal fade" id="updateTransactionActionModal" data-bs-backdrop="static" tabindex="-1" role="dialog"update_district_id
         aria-labelledby="updateTransactionActionModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title fw-bold text-uppercase">Update Transaction Action</h5>
@@ -99,19 +139,25 @@
                         @csrf
                         <input type="hidden" id="item_id" name="item_id">
 
-                        <div class="form-group mb-3">
-                            <label class="fw-bold h6">Area</label>
-                            <input type="text" name="name" class="form-control" id="update_name"
-                                placeholder="Enter Transaction Name" minlength="0" maxlength="50" required>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="fw-bold h6">Area</label>
+                                    <input type="text" name="name" class="form-control" id="update_name"
+                                        placeholder="Enter Transaction Name" minlength="0" maxlength="50" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="fw-bold h6">Status</label>
+                                    <select name="status" id="update_status" class="form-select" required>
+                                        <option value="Active">Active</option>
+                                        <option value="Inactive">Inactive</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="form-group mb-3">
-                            <label class="fw-bold h6">Status</label>
-                            <select name="status" id="update_status" class="form-select" required>
-                                <option value="Active">Active</option>
-                                <option value="Inactive">Inactive</option>
-                            </select>
-                        </div>
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary closeUpdateModal" data-bs-dismiss="modal">Close</button>
@@ -124,6 +170,7 @@
     </div>
 
     <script>
+        // Fetching of Data
         $(document).ready(function () {
             var FetchingDatatableBody = $('#FetchingDatatable tbody');
 
@@ -166,15 +213,16 @@
                             $.each(data.atm_transaction_sequence, function(index, sequence) {
                                 // Check if data_user_group exists before accessing group_name
                                 if (sequence.data_user_group) {
-                                    groups += sequence.sequence_no + ' - ' + sequence.data_user_group.group_name + ' - <span class="text-danger"> ' + sequence.type + '</span>' +'<br>'; // Use <br> for line breaks
+                                    // Set text class based on sequence type
+                                    let textClass = sequence.type === 'Received' ? 'text-primary' : (sequence.type === 'Released' ? 'text-danger' : '');
+
+                                    groups += sequence.sequence_no + ' - ' + sequence.data_user_group.group_name + ' - <span class="' + textClass + '"> ' + sequence.type + '</span><br>'; // Use <br> for line breaks
                                 }
                             });
                             return '<div class="fw-bold h6 text-start">' + (groups.length ? groups : 'No Sequence Yet') + '</div>';
                         }
                         return '<div class="fw-bold h6">No Sequence Yet</div>'; // Fallback if there's no data
-                    },
-                    orderable: true,
-                    searchable: true,
+                    }
                 },
                 {
                     data: 'status',
@@ -225,102 +273,6 @@
                 }
             ];
             dataTable.initialize(url, columns);
-
-            $('#createValidateForm').validate({
-                rules: {
-                    area: { required: true, },
-                    area_supervisor: { required: true, },
-                    district_id: { required: true, },
-                },
-                errorElement: 'span',
-                errorPlacement: function(error, element) {
-                    error.addClass('invalid-feedback');
-                    element.closest('.form-group').append(error);
-                },
-                highlight: function(element, errorClass, validClass) {
-                    $(element).addClass('is-invalid');
-                },
-                unhighlight: function(element, errorClass, validClass) {
-                    $(element).removeClass('is-invalid');
-                },
-                submitHandler: function(form) {
-                    var hasRows = FetchingDatatableBody.children('tr').length > 0;
-                    if (hasRows) {
-                        Swal.fire({
-                            title: 'Confirmation',
-                            text: 'Are you sure you want to save this?',
-                            icon: 'question',
-                            showCancelButton: true,
-                            confirmButtonColor: "#007BFF",
-                            cancelButtonColor: "#6C757D",
-                            confirmButtonText: "Yes, Save it!"
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                const currentPage = dataTable.table.page();
-                                $.ajax({
-                                    url: form.action,
-                                    type: form.method,
-                                    data: $(form).serialize(),
-                                    success: function(response) {
-                                        closeCreateModal();
-                                        Swal.fire({
-                                            title: 'Successfully Added!',
-                                            text: 'Transaction is successfully added!',
-                                            icon: 'success',
-                                            showCancelButton: false,
-                                            showConfirmButton: true,
-                                            confirmButtonText: 'OK',
-                                            preConfirm: () => {
-                                                return new Promise(( resolve
-                                                ) => {
-                                                    Swal.fire({
-                                                        title: 'Please Wait...',
-                                                        allowOutsideClick: false,
-                                                        allowEscapeKey: false,
-                                                        showConfirmButton: false,
-                                                        showCancelButton: false,
-                                                        didOpen: () => {
-                                                            Swal.showLoading();
-                                                            // here the reload of datatable
-                                                            dataTable.table.ajax.reload( () =>
-                                                            {
-                                                                Swal.close();
-                                                                $(form)[0].reset();
-                                                                dataTable.table.page(currentPage).draw( false );
-                                                            },
-                                                            false );
-                                                        }
-                                                    })
-                                                });
-                                            }
-                                        });
-                                    },
-                                    error: function(xhr, status, error) {
-                                        var errorMessage =
-                                            'An error occurred. Please try again later.';
-                                        if (xhr.responseJSON && xhr.responseJSON
-                                            .error) {
-                                            errorMessage = xhr.responseJSON.error;
-                                        }
-                                        Swal.fire({
-                                            title: 'Error!',
-                                            text: errorMessage,
-                                            icon: 'error',
-                                        });
-                                    }
-                                })
-                            }
-                        })
-                    } else {
-
-                        Swal.fire({
-                            icon: 'warning',
-                            title: 'Empty Record!',
-                            text: 'Table is empty, add row to proceed!',
-                        });
-                    }
-                }
-            });
 
             $('#updateValidateForm').validate({
                 rules: {
@@ -444,10 +396,158 @@
                 $('#FetchingDatatable tbody').empty();
                 // $('#usersGroupPageTable').addClass('d-none');
             }
+        // Creation Function
 
+            function initializeSelect2() {
+                // Initialize select2 for all elements with .user-select
+                $('.user-select').each(function() {
+                    var newSelectId = 'select' + Date.now(); // Unique ID for each select
+                    $(this).attr('id', newSelectId).select2({
+                        dropdownParent: $('#createTransactionActionModal') // Ensure it works in modals
+                    });
+                });
+            }
 
+            // Call the initializeSelect2 function for the first select2 element on page load
+            initializeSelect2();
 
+            let sequenceTable = $('#sequenceTable tbody');
+
+            // Function to update sequence numbers
+            function updateSequenceNumbers() {
+                sequenceTable.find('tr').each(function(index, row) {
+                    $(row).find('.sequence_no').val(index + 1); // Update the sequence number based on the row index
+                });
+            }
+
+            // Add new row on Add Sequence button click
+            $('#addSequenceBtn').click(function() {
+                let newRow = `
+                    <tr>
+                        <td><input type="text" name="sequence_no[]" class="form-control sequence_no" value="${sequenceTable.children('tr').length + 1}" readonly></td>
+                        <td>
+                            <select name="user_group_id[]" class="form-select select2 user-select">
+                                <option value="" selected disabled>Select User</option>
+                                @foreach ($DataUserGroup as $item)
+                                    <option value="{{ $item->id }}">{{ $item->group_name }}</option>
+                                @endforeach
+                            </select>
+                        </td>
+                        <td>
+                            <select name="type[]" class="form-select">
+                                <option value="Received">Received</option>
+                                <option value="Released">Released</option>
+                            </select>
+                        </td>
+                        <td>
+                            <a href="#" class="btn btn-danger removeRow"><i class="fas fa-trash-alt"></i></a>
+                        </td>
+                    </tr>
+                `;
+
+                sequenceTable.append(newRow); // Append the new row
+                updateSequenceNumbers(); // Update sequence numbers
+                initializeSelect2(); // Initialize Select2 for the newly added row
+            });
+
+            // Remove row on Remove button click
+            $(document).on('click', '.removeRow', function(e) {
+                e.preventDefault();
+                $(this).closest('tr').remove(); // Remove the row
+                updateSequenceNumbers(); // Update sequence numbers after removal
+            });
+
+            $('#createValidateForm').validate({
+                rules: {
+                    area: { required: true, },
+                    area_supervisor: { required: true, },
+                    district_id: { required: true, },
+                },
+                errorElement: 'span',
+                errorPlacement: function(error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function(element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function(element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                },
+                submitHandler: function(form) {
+                    var hasRows = sequenceTable.children('tr').length > 0;
+                    if (hasRows) {
+                        Swal.fire({
+                            title: 'Confirmation',
+                            text: 'Are you sure you want to save this?',
+                            icon: 'question',
+                            showCancelButton: true,
+                            confirmButtonColor: "#007BFF",
+                            cancelButtonColor: "#6C757D",
+                            confirmButtonText: "Yes, Save it!"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                const currentPage = dataTable.table.page();
+                                $.ajax({
+                                    url: form.action,
+                                    type: form.method,
+                                    data: $(form).serialize(),
+                                    success: function(response) {
+                                        closeCreateModal();
+                                        Swal.fire({
+                                            title: 'Successfully Added!',
+                                            text: 'Transaction is successfully added!',
+                                            icon: 'success',
+                                            showCancelButton: false,
+                                            showConfirmButton: true,
+                                            confirmButtonText: 'OK',
+                                            preConfirm: () => {
+                                                return new Promise((resolve) => {
+                                                    Swal.fire({
+                                                        title: 'Please Wait...',
+                                                        allowOutsideClick: false,
+                                                        allowEscapeKey: false,
+                                                        showConfirmButton: false,
+                                                        showCancelButton: false,
+                                                        didOpen: () => {
+                                                            Swal.showLoading();
+                                                            // here the reload of datatable
+                                                            dataTable.table.ajax.reload(() => {
+                                                                Swal.close();
+                                                                $(form)[0].reset();
+                                                                dataTable.table.page(currentPage).draw(false);
+                                                            }, false);
+                                                        }
+                                                    })
+                                                });
+                                            }
+                                        });
+                                    },
+                                    error: function(xhr, status, error) {
+                                        var errorMessage = 'An error occurred. Please try again later.';
+                                        if (xhr.responseJSON && xhr.responseJSON.error) {
+                                            errorMessage = xhr.responseJSON.error;
+                                        }
+                                        Swal.fire({
+                                            title: 'Error!',
+                                            text: errorMessage,
+                                            icon: 'error',
+                                        });
+                                    }
+                                })
+                            }
+                        })
+                    } else {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Empty Record!',
+                            text: 'Table is empty, add row to proceed!',
+                        });
+                    }
+                }
+            });
         });
+
     </script>
 
 

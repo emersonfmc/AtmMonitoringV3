@@ -22,7 +22,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
 
             $table->enum('session',['Online','Offline'])->default('Offline');
-            $table->enum('user_types',['Developer','Admin','District','Areas','Branch','Head Office'])->nullable();
+            $table->enum('user_types',['Developer','Admin','District','Area','Branch','Head Office'])->nullable();
 
             $table->string('avatar')->nullable();
             $table->date('dob');

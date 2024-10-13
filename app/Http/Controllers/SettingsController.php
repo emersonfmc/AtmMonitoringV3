@@ -4,17 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Models\Branch;
 use App\Models\DataArea;
+use App\Models\SystemLogs;
+
 use App\Models\DataDistrict;
 use Illuminate\Http\Request;
 use App\Models\DataBankLists;
-
 use App\Models\DataUserGroup;
+
 use Illuminate\Support\Carbon;
+
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\AtmTransactionAction;
 use Illuminate\Support\Facades\Auth;
 use App\Models\DataPensionTypesLists;
+
+use App\Models\AtmTransactionSequence;
 use Yajra\DataTables\Facades\DataTables;
 
 class SettingsController extends Controller
@@ -46,37 +51,49 @@ class SettingsController extends Controller
 
     public function users_group_create(Request $request)
     {
-        // DB::beginTransaction();
-        // try
-        // {
-            // Proceed with inserting if validation passes
+        DB::beginTransaction();
+        try
+        {
             DataUserGroup::create([
                 'group_name' => $request->user_group,
                 'company_id' => 2,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]);
-        // }
-        // catch (\Exception $e)
-        // {
-        //     DB::rollBack();
-        //     return response()->json([
-        //         'status' => 'error',
-        //         'message' => 'An Error Occurs, Please Check and Repeat!'
-        //     ]);
-        //     throw $e;
-        // }
+
+            // Create a system logs
+            SystemLogs::create([
+                'system' => 'ATM Monitoring',
+                'action' => 'Create',
+                'description' => 'Create New Usergroup' . $request->user_group,
+                'user_id' => Auth::user()->id,
+                'ip_address' => $request->ip(),
+                'created_at' => Carbon::now(),
+                'company_id' => Auth::user()->company_id,
+            ]);
+
+            DB::commit();  // Commit the transaction if successful
+        }
+        catch (\Exception $e)
+        {
+            DB::rollBack();  // Roll back the transaction on error
+            return response()->json([
+                'status' => 'error',
+                'message' => 'An Error Occurred, Please Check and Repeat!'
+            ]);
+        }
 
         return response()->json([
             'status' => 'success',
-            'message' => 'User group created successfully!'
+            'message' => 'User group Created successfully!'  // Changed message to reflect update action
         ]);
     }
 
     public function users_group_update(Request $request)
     {
         DB::beginTransaction();
-        try {
+        try
+        {
             // Find the user group by ID
             $TblUserGroup = DataUserGroup::findOrFail($request->item_id);
 
@@ -86,8 +103,21 @@ class SettingsController extends Controller
                 'updated_at' => Carbon::now(),  // Updated timestamp
             ]);
 
+            // Create a Logs for System
+            SystemLogs::create([
+                'system' => 'ATM Monitoring',
+                'action' => 'Update',
+                'description' => 'Update Usergroup' . $TblUserGroup->user_group,
+                'user_id' => Auth::user()->id,
+                'ip_address' => $request->ip(),
+                'created_at' => Carbon::now(),
+                'company_id' => Auth::user()->company_id,
+            ]);
+
             DB::commit();  // Commit the transaction if successful
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e)
+        {
             DB::rollBack();  // Roll back the transaction on error
             return response()->json([
                 'status' => 'error',
@@ -100,7 +130,6 @@ class SettingsController extends Controller
             'message' => 'User group updated successfully!'  // Changed message to reflect update action
         ]);
     }
-
 
 
     public function districts_page()
@@ -138,6 +167,17 @@ class SettingsController extends Controller
             'updated_at' => Carbon::now(),
         ]);
 
+        // Create System Logs used for Auditing of Logs
+        SystemLogs::create([
+            'system' => 'ATM Monitoring',
+            'action' => 'Create',
+            'description' => 'Create New District' .  $request->district_number .' - '.$request->district_name,
+            'user_id' => Auth::user()->id,
+            'ip_address' => $request->ip(),
+            'created_at' => Carbon::now(),
+            'company_id' => Auth::user()->company_id,
+        ]);
+
         return response()->json([
             'status' => 'success',
             'message' => 'District created successfully!'
@@ -155,6 +195,17 @@ class SettingsController extends Controller
             'district_number' => $request->district_number,
             'email' => $request->email,
             'updated_at' => Carbon::now(),  // Updated timestamp
+        ]);
+
+        // Create System Logs used for Auditing of Logs
+        SystemLogs::create([
+            'system' => 'ATM Monitoring',
+            'action' => 'Update',
+            'description' => 'Update District' .  $TblDistrict->district_number .' - '.$TblDistrict->district_name,
+            'user_id' => Auth::user()->id,
+            'ip_address' => $request->ip(),
+            'created_at' => Carbon::now(),
+            'company_id' => Auth::user()->company_id,
         ]);
 
         return response()->json([
@@ -202,6 +253,17 @@ class SettingsController extends Controller
             'updated_at' => Carbon::now(),
         ]);
 
+        // Create System Logs used for Auditing of Logs
+        SystemLogs::create([
+            'system' => 'ATM Monitoring',
+            'action' => 'Create',
+            'description' => 'Create Area' .  $request->area_no .' - '.$request->area_supervisor,
+            'user_id' => Auth::user()->id,
+            'ip_address' => $request->ip(),
+            'created_at' => Carbon::now(),
+            'company_id' => Auth::user()->company_id,
+        ]);
+
         return response()->json([
             'status' => 'success',
             'message' => 'Area created successfully!'
@@ -218,6 +280,17 @@ class SettingsController extends Controller
             'district_id' => $request->district_id,
             'status' => $request->status,
             'updated_at' => Carbon::now(),
+        ]);
+
+        // Create System Logs used for Auditing of Logs
+        SystemLogs::create([
+            'system' => 'ATM Monitoring',
+            'action' => 'Update',
+            'description' => 'Update Area' .  $TblArea->area_no .' - '.$TblArea->area_supervisor,
+            'user_id' => Auth::user()->id,
+            'ip_address' => $request->ip(),
+            'created_at' => Carbon::now(),
+            'company_id' => Auth::user()->company_id,
         ]);
 
         return response()->json([
@@ -277,6 +350,17 @@ class SettingsController extends Controller
             'updated_at' => Carbon::now(),
         ]);
 
+        // Create System Logs used for Auditing of Logs
+        SystemLogs::create([
+            'system' => 'ATM Monitoring',
+            'action' => 'Create',
+            'description' => 'Create New Branch' .  $request->branch_location,
+            'user_id' => Auth::user()->id,
+            'ip_address' => $request->ip(),
+            'created_at' => Carbon::now(),
+            'company_id' => Auth::user()->company_id,
+        ]);
+
         return response()->json([
             'status' => 'success',
             'message' => 'Branch created successfully!'
@@ -296,6 +380,17 @@ class SettingsController extends Controller
             'branch_head' => $request->branch_head,
             'status' => $request->status,
             'updated_at' => Carbon::now(),
+        ]);
+
+        // Create System Logs used for Auditing of Logs
+        SystemLogs::create([
+            'system' => 'ATM Monitoring',
+            'action' => 'Update',
+            'description' => 'Update Branch' .  $AtmBankLists->branch_location,
+            'user_id' => Auth::user()->id,
+            'ip_address' => $request->ip(),
+            'created_at' => Carbon::now(),
+            'company_id' => Auth::user()->company_id,
         ]);
 
         return response()->json([
@@ -335,6 +430,17 @@ class SettingsController extends Controller
             'updated_at' => Carbon::now(),
         ]);
 
+        // Create System Logs used for Auditing of Logs
+        SystemLogs::create([
+            'system' => 'ATM Monitoring',
+            'action' => 'Create',
+            'description' => 'Create New Bank' .  $request->bank_name,
+            'user_id' => Auth::user()->id,
+            'ip_address' => $request->ip(),
+            'created_at' => Carbon::now(),
+            'company_id' => Auth::user()->company_id,
+        ]);
+
         return response()->json([
             'status' => 'success',
             'message' => 'Bank created successfully!'
@@ -350,6 +456,17 @@ class SettingsController extends Controller
         $AtmBankLists->update([  // Update the instance instead of using the class method
             'bank_name' => $request->bank_name,
             'updated_at' => Carbon::now(),  // Updated timestamp
+        ]);
+
+        // Create System Logs used for Auditing of Logs
+        SystemLogs::create([
+            'system' => 'ATM Monitoring',
+            'action' => 'Update',
+            'description' => 'Update Bank' .  $AtmBankLists->bank_name,
+            'user_id' => Auth::user()->id,
+            'ip_address' => $request->ip(),
+            'created_at' => Carbon::now(),
+            'company_id' => Auth::user()->company_id,
         ]);
 
         return response()->json([
@@ -389,6 +506,17 @@ class SettingsController extends Controller
             'updated_at' => Carbon::now(),
         ]);
 
+        // Create System Logs used for Auditing of Logs
+        SystemLogs::create([
+            'system' => 'ATM Monitoring',
+            'action' => 'Create',
+            'description' => 'Create Pension Types' .  $request->types . ' - ' . $request->pension_name,
+            'user_id' => Auth::user()->id,
+            'ip_address' => $request->ip(),
+            'created_at' => Carbon::now(),
+            'company_id' => Auth::user()->company_id,
+        ]);
+
         return response()->json([
             'status' => 'success',
             'message' => 'Pension Types Created successfully!'
@@ -408,6 +536,17 @@ class SettingsController extends Controller
             'updated_at' => Carbon::now(),
         ]);
 
+        // Create System Logs used for Auditing of Logs
+        SystemLogs::create([
+            'system' => 'ATM Monitoring',
+            'action' => 'Update',
+            'description' => 'Update Pension Types' .  $AtmPensionTypesLists->types . ' - ' . $AtmPensionTypesLists->pension_name,
+            'user_id' => Auth::user()->id,
+            'ip_address' => $request->ip(),
+            'created_at' => Carbon::now(),
+            'company_id' => Auth::user()->company_id,
+        ]);
+
         return response()->json([
             'status' => 'success',
             'message' => 'Pension Types updated successfully!'  // Changed message to reflect update action
@@ -416,7 +555,10 @@ class SettingsController extends Controller
 
     public function transaction_action_page()
     {
-        return view('pages.pages_backend.settings.transaction_action_page');
+
+        $DataUserGroup = DataUserGroup::where('status','Active')->get();
+
+        return view('pages.pages_backend.settings.transaction_action_page', compact('DataUserGroup'));
     }
 
     public function transaction_action_data()
@@ -437,11 +579,32 @@ class SettingsController extends Controller
 
     public function transaction_typesCreate(Request $request)
     {
-        AtmTransactionAction::create([
+        $AtmTransactionAction = AtmTransactionAction::create([
             'name' => $request->name,
             'status' => 'Active',
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
+        ]);
+
+        foreach ($request->user_group_id as $key => $value) {
+            AtmTransactionSequence::create([
+                'atm_transaction_actions_id' =>$AtmTransactionAction->id,
+                'user_group_id' => $value,
+                'sequence_no' => $request->sequence_no[$key],
+                'type' => $request->type[$key],
+                'updated_at' => Carbon::now(),
+            ]);
+        }
+
+        // Create System Logs used for Auditing of Logs
+        SystemLogs::create([
+            'system' => 'ATM Monitoring',
+            'action' => 'Create',
+            'description' => 'Create Transaction Action' .  $request->name,
+            'user_id' => Auth::user()->id,
+            'ip_address' => $request->ip(),
+            'created_at' => Carbon::now(),
+            'company_id' => Auth::user()->company_id,
         ]);
 
         return response()->json([
@@ -460,6 +623,17 @@ class SettingsController extends Controller
             'name' => $request->name,
             'status' => $request->status,
             'updated_at' => Carbon::now(),
+        ]);
+
+        // Create System Logs used for Auditing of Logs
+        SystemLogs::create([
+            'system' => 'ATM Monitoring',
+            'action' => 'Update',
+            'description' => 'Update Transaction Action' .  $AtmTransactionAction->name,
+            'user_id' => Auth::user()->id,
+            'ip_address' => $request->ip(),
+            'created_at' => Carbon::now(),
+            'company_id' => Auth::user()->company_id,
         ]);
 
         return response()->json([
@@ -486,3 +660,4 @@ class SettingsController extends Controller
 
 
 }
+

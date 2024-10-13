@@ -39,6 +39,7 @@
                                     <th>Sl</th>
                                     <th>Name</th>
                                     <th>Type</th>
+                                    <th>Usergroup</th>
                                     <th>Password</th>
                                     <th>Created Date</th>
                                     <th>Roles and Permission</th>
@@ -75,7 +76,7 @@
                                     <label class="fw-bold h6">User type</label>
                                     <select id="userTypeSelect" name="user_type" class="form-select select2">
                                         <option value="">Select User Type</option>
-                                        <option value="Head_Office">Head Office</option>
+                                        <option value="Head Office">Head Office</option>
                                         <option value="District">District</option>
                                         <option value="Area">Area</option>
                                         <option value="Branch">Branch</option>
@@ -209,21 +210,21 @@
 
                                     <div class="form-group mb-2">
                                         <label class="fw-bold h6">Area</label>
-                                        <select id="area_id" name="area_id" class="form-select select2" required>
+                                        <select id="area_id" name="area_id" class="form-select select2" required disabled>
                                             <option value="" selected disabled>Select Area</option>
                                         </select>
                                     </div>
 
                                     <div class="form-group mb-2">
                                         <label class="fw-bold h6">Branch</label>
-                                        <select id="branch_id" name="branch_id" class="form-select select2" required>
+                                        <select id="branch_id" name="branch_id" class="form-select select2" required disabled>
                                             <option value="" selected disabled>Select Branch</option>
                                         </select>
                                     </div>
 
                                     <div class="form-group mb-2">
                                         <label class="fw-bold h6">User Group</label>
-                                        <select id="user_group_branch_id" name="user_group_branch_id" class="form-select select2" required>
+                                        <select id="user_group_branch_id" name="user_group_branch_id" class="form-select select2" required disabled>
                                             <option value="" selected disabled>Select User Type</option>
                                             @foreach ($user_groups as $user_group)
                                                 <option value="{{ $user_group->id }}">{{ $user_group->group_name }}</option>
@@ -237,6 +238,190 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="updateUserModal" data-bs-backdrop="static" tabindex="-1" role="dialog"
+        aria-labelledby="createUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold text-uppercase" id="createUserModalLabel">Update User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="{{ route('users.update')  }}" id="updateValidateForm">
+                        @csrf
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="fw-bold h6">User type</label>
+                                    <select id="userTypeSelectUpdate" name="user_type" class="form-select select2">
+                                        <option value="Head Office">Head Office</option>
+                                        <option value="District">District</option>
+                                        <option value="Area">Area</option>
+                                        <option value="Branch">Branch</option>
+                                        <option value="Admin">Admin</option>
+                                        @if (Auth::user()->user_types == 'Developer')
+                                            <option value="Developer">Developer</option>
+                                        @endif
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="fw-bold h5 text-primary">Personal Information</label>
+                                <hr>
+
+                                <div class="form-group mb-2">
+                                    <label class="fw-bold h6">Fullname</label>
+                                    <input type="text" name="name" id="update_name" class="form-control" placeholder="Fullname" minlength="0" maxlength="100" required>
+                                </div>
+
+                                <div class="form-group mb-2">
+                                    <label class="fw-bold h6">Contact No</label>
+                                    <input type="text" name="contact_no" id="update_contact_no" class="form-control contact_input_mask" placeholder="Contact No." required>
+                                </div>
+
+                                <div class="form-group mb-2">
+                                    <label class="fw-bold h6">Address</label>
+                                    <input type="text" name="address" id="update_address" class="form-control" placeholder="Address" minlength="0" maxlength="100" required>
+                                </div>
+
+                                <div class="form-group mb-2">
+                                    <label class="fw-bold h6">Employee No</label>
+                                    <input type="number" name="employee_id" id="update_employee_id" min="0" class="form-control" placeholder="Employee No." required >
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="fw-bold h5 text-primary">User Account Details</label>
+                                <hr>
+
+                                <div class="form-group mb-2">
+                                    <label class="fw-bold h6">Username</label>
+                                    <input type="text" name="username" id="update_username" class="form-control" placeholder="Username" minlength="0" maxlength="50" required>
+                                </div>
+
+                                <div class="form-group mb-2">
+                                    <label class="fw-bold h6">Password</label>
+                                    <input type="password" name="password" id="update_create_password" class="form-control" placeholder="Password" minlength="0" maxlength="50" required>
+                                </div>
+
+                                <div class="form-group mb-2">
+                                    <label class="fw-bold h6">Confirm Password</label>
+                                    <input type="password" name="confirm_password" id="update_confirm_password" class="form-control" placeholder="Confirm Password" minlength="0" maxlength="50" required>
+                                </div>
+
+                                <div class="form-group mb-2">
+                                    <label class="fw-bold h6">Email</label>
+                                    <input type="email" name="email" id="update_email" class="form-control" placeholder="Email" minlength="0" maxlength="50" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <span id="UpdateHeadOfficeDisplay" style="display: none;">
+                                    <label class="fw-bold h5 text-primary">Head Office Details</label>
+                                    <hr>
+
+                                    <div class="form-group mb-2">
+                                        <label class="fw-bold h6">User Group</label>
+                                        <select id="update_user_group_id" name="user_group_id" class="form-select select2" required>
+                                            <option value="">Select User Group</option>
+                                            @foreach ($user_groups as $user_group)
+                                                <option value="{{ $user_group->id }}">{{ $user_group->group_name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                </span>
+
+                                <span id="UpdateDistrictDisplay" style="display: none;">
+                                    <label class="fw-bold h5 text-primary">Districts Details</label>
+                                    <hr>
+
+                                    <div class="form-group mb-2">
+                                        <label class="fw-bold h6">District</label>
+                                        <select id="update_district_id" name="district_id" class="form-select select2" required>
+                                            <option value="">Select District</option>
+                                            @foreach ($DataDistrict as $item)
+                                                <option value="{{ $item->id }}">{{ $item->district_number .' - '. $item->district_name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </span>
+
+                                <span id="UpdateAreaDisplay" style="display: none;">
+                                    <label class="fw-bold h5 text-primary">Area Details</label>
+                                    <hr>
+
+                                    <div class="form-group mb-2">
+                                        <label class="fw-bold h6">District Manager</label>
+                                        <select id="update_district_manager_area_id" name="district_manager_area_id" class="form-select select2" required>
+                                            <option value="">Select District Manager</option>
+                                            @foreach ($DataDistrict as $item)
+                                                <option value="{{ $item->id }}">{{ $item->district_name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group mb-2">
+                                        <label class="fw-bold h6">Area Supervisor</label>
+                                        <select id="update_area_supervisor_id" name="area_supervisor_id" class="form-select select2" required>
+                                            <option value="">Select Area Supervisor</option>
+                                        </select>
+                                    </div>
+                                </span>
+
+                                <span id="UpdateBranchDisplay" style="display: none;">
+                                    <label class="fw-bold h5 text-primary">Branch Details</label>
+                                    <hr>
+
+                                    <div class="form-group mb-2">
+                                        <label class="fw-bold h6">District Manager</label>
+                                        <select id="update_district_manager_id" name="district_manager_id" class="form-select select2" required>
+                                            @foreach ($DataDistrict as $item)
+                                                <option value="{{ $item->id }}">{{ $item->district_name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group mb-2">
+                                        <label class="fw-bold h6">Area</label>
+                                        <select id="update_area_id" name="area_id" class="form-select select2" required>
+                                            <option value="">Select Area</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group mb-2">
+                                        <label class="fw-bold h6">Branch</label>
+                                        <select id="update_branch_id" name="branch_id" class="form-select select2" required>
+                                            <option value="">Select Branch</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group mb-2">
+                                        <label class="fw-bold h6">User Group</label>
+                                        <select id="update_user_group_branch_id" name="user_group_branch_id" class="form-select select2" required>
+                                            <option value="">Select User Type</option>
+                                            @foreach ($user_groups as $user_group)
+                                                <option value="{{ $user_group->id }}">{{ $user_group->group_name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-success">Update</button>
                         </div>
                     </form>
                 </div>
@@ -287,6 +472,15 @@
                     searchable: true,
                 },
                 {
+                    data: 'user_group_id',
+                    name: 'user_group.',
+                    render: function(data, type, row, meta) {
+                        return row.user_group ? '<span>' + row.user_group.group_name + '</span>' : '';
+                    },
+                    orderable: true,
+                    searchable: true,
+                },
+                {
                     data: 'password',
                     name: 'password',
                     render: function(data, type, row, meta) {
@@ -307,8 +501,6 @@
                     }
 
                 },
-
-
                 {
                     data: null,
                     name: 'roles',
@@ -325,13 +517,20 @@
                     data: null,
                     name: 'action',
                     render: function(data, type, row) {
-                        return '<a href="#" class="text-danger deleteUserBtn me-2" data-id="' + row.id +'" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete User"><i class="fas fa-trash-alt me-2"></i></a>' +
-                               '<a href="#" class="text-warning editUserBtn me-2" data-id="' + row.id +'" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit User"><i class="fas fa-pencil-alt me-2"></i></a>';
+                        return `
+                            <a href="#" class="text-warning editBtn me-2" data-id="${row.id}"
+                                data-bs-toggle="tooltip" data-bs-placement="top" title="Edit ">
+                                <i class="fas fa-pencil-alt me-2"></i>
+                            </a>
+
+                            <a href="#" class="text-danger deleteBtn me-2" data-id="${row.id}"
+                                data-bs-toggle="tooltip" data-bs-placement="top" title="Delete ">
+                                <i class="fas fa-trash-alt me-2"></i>
+                            </a>`;
                     },
                     orderable: false,
                     searchable: false,
                 }
-                // <a href="" data-bs-toggle="tooltip" data-bs-placement="top" title="test">Test</a>
 
             ];
             dataTable.initialize(url, columns);
@@ -437,6 +636,146 @@
                 }
             });
 
+            $('#updateValidateForm').validate({
+                rules: {
+                    user_type: { required: true },
+                    password: { required: true, minlength: 6, maxlength: 50 }, // You can adjust the minlength as needed
+                    confirm_password: { required: true, passwordMatch: true } // Use custom method here
+                },
+                errorElement: 'span',
+                errorPlacement: function(error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function(element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function(element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                },
+                submitHandler: function(form) {
+                    var hasRows = FetchingDatatableBody.children('tr').length > 0;
+                    if (hasRows) {
+                        Swal.fire({
+                            title: 'Confirmation',
+                            text: 'Are you sure you want to save this?',
+                            icon: 'question',
+                            showCancelButton: true,
+                            confirmButtonColor: "#007BFF",
+                            cancelButtonColor: "#6C757D",
+                            confirmButtonText: "Yes, Save it!"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                const currentPage = dataTable.table.page();
+                                $.ajax({
+                                    url: form.action,
+                                    type: form.method,
+                                    data: $(form).serialize(),
+                                    success: function(response) {
+                                        closeCreateModal();
+                                        Swal.fire({
+                                            title: 'Successfully Updated!',
+                                            text: 'User is successfully Updated!',
+                                            icon: 'success',
+                                            showCancelButton: false,
+                                            showConfirmButton: true,
+                                            confirmButtonText: 'OK',
+                                            preConfirm: () => {
+                                                return new Promise(( resolve
+                                                ) => {
+                                                    Swal.fire({
+                                                        title: 'Please Wait...',
+                                                        allowOutsideClick: false,
+                                                        allowEscapeKey: false,
+                                                        showConfirmButton: false,
+                                                        showCancelButton: false,
+                                                        didOpen: () => {
+                                                            Swal.showLoading();
+                                                            // here the reload of datatable
+                                                            dataTable.table.ajax.reload( () =>
+                                                            {
+                                                                Swal.close();
+                                                                $(form)[0].reset();
+                                                                dataTable.table.page(currentPage).draw( false );
+                                                            },
+                                                            false );
+                                                        }
+                                                    })
+                                                });
+                                            }
+                                        });
+                                    },
+                                    error: function(xhr, status, error) {
+                                        var errorMessage =
+                                            'An error occurred. Please try again later.';
+                                        if (xhr.responseJSON && xhr.responseJSON
+                                            .error) {
+                                            errorMessage = xhr.responseJSON.error;
+                                        }
+                                        Swal.fire({
+                                            title: 'Error!',
+                                            text: errorMessage,
+                                            icon: 'error',
+                                        });
+                                    }
+                                })
+                            }
+                        })
+                    } else {
+
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Empty Record!',
+                            text: 'Table is empty, add row to proceed!',
+                        });
+                    }
+                }
+            });
+
+            $('#FetchingDatatable').on('click', '.editBtn', function(e) {
+                e.preventDefault();
+                var itemID = $(this).data('id');
+
+                var url = "/users/get/" + itemID;
+
+                $.get(url, function(data) {
+                    $('#item_id').val(data.id);
+                    $('#userTypeSelectUpdate').val(data.user_types).trigger('change');
+
+                    $('#update_name').val(data.name);
+                    $('#update_contact_no').val(data.contact_no ?? '');
+                    $('#update_address').val(data.address ?? '');
+                    $('#update_employee_id').val(data.employee_id ?? '');
+                    $('#update_username').val(data.username);
+                    $('#update_email').val(data.email);
+
+                    $('#update_user_group_id').val(data.user_group_id).trigger('change');
+                    $('#update_district_id').val(data.district_code_id).trigger('change');
+
+                    $('#update_area_supervisor_id').html(''); // Clear the dropdown first
+                    var areaOption = new Option(
+                        (data.area.area_no ?? '') + ' - ' + (data.area.area_supervisor ?? ''),  // Display text
+                        data.area_code_id,                                                       // Value
+                        true,                                                                    // Default selected (true)
+                        true                                                                     // Selected (true)
+                    );
+                    $('#update_area_supervisor_id').append(areaOption).trigger('change');
+
+                    $('#update_district_manager_id').val(data.district_code_id).trigger('change');
+
+                    // update_district_manager_id
+                    // update_area_id
+                    // update_branch_id
+                    // update_user_group_branch_id
+
+                    $('#update_create_password').val(data.password);
+                    $('#update_confirm_password').val(data.password);
+
+
+                    $('#updateUserModal').modal('show');
+                });
+            });
+
             function closeCreateModal() {
                 $('#createUserModal').modal('hide');
                 $('#FetchingDatatable tbody').empty();
@@ -450,14 +789,8 @@
             }
         });
 
+        // Create Function
         $(document).ready(function(){
-            var userType = '{{ Auth::user()->user_types }}'; // or however you get the user's type
-
-                if (userType === 'Developer') {
-                    $('#userTypeSelect option').not('[value="Developer"]').prop('disabled', true); // Disable all other options
-                    $('#userTypeSelect').val('Developer'); // Set the selected value to Developer
-                }
-
             $('#createUserModal').on('shown.bs.modal', function () {
                 $('#userTypeSelect').select2({
                     dropdownParent: $('#createUserModal'), // Ensure modal is the parent of Select2
@@ -470,7 +803,7 @@
             $('#userTypeSelect').on('change', function() {
                 var selectedUserType = $(this).val();
 
-                if(selectedUserType === 'Head_Office')
+                if(selectedUserType === 'Head Office')
                 {
                     $('#HeadOfficeDisplay').show();
                     $('#DistrictDisplay').hide();
@@ -511,6 +844,7 @@
 
             $('#district_manager_area_id').on('change', function() {
                 var selectedDistrict = $(this).val();
+
                 // Make the AJAX GET request
                 $.ajax({
                     url: '/settings/area/using/district',
@@ -520,7 +854,7 @@
                     },
                     success: function(response) {
                         // Assuming the response is an array of objects with id, area_no, and area_supervisor properties
-                        var options = ''; // Initialize an empty string for options
+                        var options = '<option value="" selected disabled>Select Area</option>'; // Initialize an empty string for options
                         $.each(response, function(index, item) {
                             // Create an option for each item in the response
                             options += `<option value="${item.id}">${item.area_no} - ${item.area_supervisor}</option>`;
@@ -547,7 +881,7 @@
                     },
                     success: function(response) {
                         // Assuming the response is an array of objects with id, area_no, and area_supervisor properties
-                        var options = ''; // Initialize an empty string for options
+                        var options = '<option value="" selected disabled>Select Supervisor</option>'; // Initialize an empty string for options
                         $.each(response, function(index, item) {
                             // Create an option for each item in the response
                             options += `<option value="${item.id}">${item.area_no} - ${item.area_supervisor}</option>`;
@@ -566,6 +900,19 @@
             $('#area_id').on('change', function() {
                 var selectedArea = $(this).val();
                 // Make the AJAX GET request
+
+                $('#branch_id').on('change', function() {
+                    var selectedBranch = $(this).val();
+
+                    if (selectedBranch) {
+                        // Enable the User Group dropdown
+                        $('#user_group_branch_id').prop('disabled', false); // Enable the dropdown
+                    } else {
+                        // Disable the User Group dropdown if no branch is selected
+                        $('#user_group_branch_id').prop('disabled', true); // Keep it disabled if no selection
+                    }
+                });
+
                 $.ajax({
                     url: '/settings/branch/using/area',
                     type: 'GET',
@@ -574,7 +921,7 @@
                     },
                     success: function(response) {
                         // Assuming the response is an array of objects with id, area_no, and area_supervisor properties
-                        var options = ''; // Initialize an empty string for options
+                        var options = '<option value="" selected disabled>Select Branch</option>'; // Initialize an empty string for options
                         $.each(response, function(index, item) {
                             // Create an option for each item in the response
                             options += `<option value="${item.id}">${item.branch_location}</option>`;
@@ -589,8 +936,57 @@
                     }
                 });
             });
+        });
 
+        $(document).ready(function(){
+            $('#updateUserModal').on('shown.bs.modal', function () {
+                $('#userTypeSelectUpdate').select2({
+                    dropdownParent: $('#updateUserModal'), // Ensure modal is the parent of Select2
+                });
+                $('#user_group_id').select2({
+                    dropdownParent: $('#updateUserModal')
+                });
+            });
 
+            $('#userTypeSelectUpdate').on('change', function() {
+                var selectedUserType = $(this).val();
+
+                if(selectedUserType === 'Head Office')
+                {
+                    $('#UpdateHeadOfficeDisplay').show();
+                    $('#UpdateDistrictDisplay').hide();
+                    $('#UpdateAreaDisplay').hide();
+                    $('#UpdateBranchDisplay').hide();
+                }
+                else if(selectedUserType === 'District')
+                {
+                    $('#UpdateHeadOfficeDisplay').hide();
+                    $('#UpdateDistrictDisplay').show();
+                    $('#UpdateAreaDisplay').hide();
+                    $('#UpdateBranchDisplay').hide();
+                }
+                else if(selectedUserType === 'Area')
+                {
+                    $('#UpdateHeadOfficeDisplay').hide();
+                    $('#UpdateDistrictDisplay').hide();
+                    $('#UpdateAreaDisplay').show();
+                    $('#UpdateBranchDisplay').hide();
+                }
+                else if(selectedUserType === 'Branch')
+                {
+                    $('#UpdateHeadOfficeDisplay').hide();
+                    $('#UpdateDistrictDisplay').hide();
+                    $('#UpdateAreaDisplay').hide();
+                    $('#UpdateBranchDisplay').show();
+                }
+                else
+                {
+                    $('#UpdateHeadOfficeDisplay').hide();
+                    $('#UpdateDistrictDisplay').hide();
+                    $('#UpdateAreaDisplay').hide();
+                    $('#UpdateBranchDisplay').hide();
+                }
+            });
         });
     </script>
 
