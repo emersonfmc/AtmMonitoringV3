@@ -3,8 +3,8 @@
 @section('content')
 
     @component('components.breadcrumb')
-        @slot('li_1') ATM / Passbook / Simcard @endslot
-        @slot('title') Receiving of Transaction @endslot
+        @slot('li_1') Passbook Transaction @endslot
+        @slot('title') Passbook Transaction @endslot
     @endcomponent
 
 @endsection
