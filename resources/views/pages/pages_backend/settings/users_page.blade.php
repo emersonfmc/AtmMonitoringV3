@@ -362,6 +362,8 @@
                                     <label class="fw-bold h5 text-primary">Area Details</label>
                                     <hr>
 
+                                    <input type="hidden" id="update_val_area_supervisor_id" class="update_val_area_supervisor_id">
+
                                     <div class="form-group mb-2">
                                         <label class="fw-bold h6">District Manager</label>
                                         <select id="update_district_manager_area_id" name="district_manager_area_id" class="form-select select2" required>
@@ -392,6 +394,9 @@
                                             @endforeach
                                         </select>
                                     </div>
+
+                                    <input type="hidden" id="update_val_area_id" class="update_val_area_id">
+                                    <input type="hidden" id="update_val_branch_id" class="update_val_branch_id">
 
                                     <div class="form-group mb-2">
                                         <label class="fw-bold h6">Area</label>
@@ -754,51 +759,16 @@
                     $('#update_email').val(data.email);
 
                     $('#update_user_group_id').val(data.user_group_id).trigger('change');
-                    $('#update_district_id').val(data.district_code_id).trigger('change');
+                    $('#update_district_id').val(data.district_code_id ?? '').trigger('change');
 
-                    $('#update_district_manager_area_id').val(data.district_code_id).trigger('change');
-
-                    $('#update_area_supervisor_id').html(''); // Clear the dropdown first
-
-                        var areaText = (data.area && data.area.area_no ? data.area.area_no : '') +
-                                    ' - ' + (data.area && data.area.area_supervisor ? data.area.area_supervisor : '');
-
-                        var areaOption = new Option(
-                            areaText,                                  // Display text
-                            data.area_code_id ?? '',                   // Value, allows null
-                            true,                                      // Default selected (true)
-                            true                                       // Selected (true)
-                        );
-
-                    $('#update_area_supervisor_id').append(areaOption).trigger('change');
+                    $('#update_district_manager_area_id').val(data.district_code_id ?? '').trigger('change');
+                    $('#update_val_area_supervisor_id').val(data.area_code_id ?? '');
 
                     $('#update_district_manager_id').val(data.district_code_id).trigger('change');
 
-                    $('#update_area_id').html(''); // Clear the dropdown first
-                    var Area = (data.area && data.area.area_supervisor ? data.area.area_supervisor : '');
+                    $('#update_val_area_id').val(data.area_code_id ?? '');
+                    $('#update_val_branch_id').val(data.branch_id ?? '');
 
-                    var AreaOption = new Option(
-                        Area,
-                        data.area_code_id ?? '',
-                        true,
-                        true
-                    );
-                    $('#update_area_id').append(AreaOption);
-                    $('#update_area_id option[value="' + (data.area_code_id ?? '') + '"]').prop('selected', true);
-                    $('#update_area_id').trigger('change');
-
-
-                    $('#update_branch_id').html(''); // Clear the dropdown first
-                        var BranchText = (data.branch && data.branch.branch_location ? data.branch.branch_location : '');
-                        var BranchOption = new Option(
-                            BranchText,
-                            data.branch_id ?? '',
-                            true,
-                            true
-                        );
-                    $('#update_branch_id').append(BranchOption);
-                    $('#update_branch_id option[value="' + (data.branch_id ?? '') + '"]').prop('selected', true);
-                    $('#update_branch_id').trigger('change');
                     $('#update_user_group_branch_id').val(data.user_group_id).trigger('change');
 
                     $('#update_create_password').val(data.password);
@@ -1066,42 +1036,11 @@
 
 
             $('#update_district_manager_area_id').on('change', function() {
-                var selectedDistrict = $(this).val();
-                // Make the AJAX GET request
-                $.ajax({
-                    url: '/settings/area/using/district',
-                    type: 'GET',
-                    data: {
-                        district_id: selectedDistrict
-                    },
-                    success: function(response) {
-                        // Assuming the response is an array of objects with id, area_no, and area_supervisor properties
-                        var options = ''; // Initialize an empty string for options
-                        $.each(response, function(index, item) {
-                            // Create an option for each item in the response
-                            options += `<option value="${item.id}">${item.area_no} - ${item.area_supervisor}</option>`;
-                        });
-                        $('#update_area_supervisor_id').html(options); // Set the dropdown options
-                    },
-                    error: function(xhr, status, error) {
-                        // Handle any errors
-                        console.error('AJAX Error:', status, error);
-                    }
-                });
-            });
+                var selectedDistrict = $(this).val(); // Get selected district value
 
-            let previousDistrict = $('#update_district_manager_id').val();
-            let previousArea = $('#update_area_id').val();
+                setTimeout(function() {
+                    var previousAreaIdFromArea = $('#update_val_area_supervisor_id').val(); // Get previous area supervisor ID
 
-            // District Manager change event
-            $('#update_district_manager_id').on('change', function() {
-                var selectedDistrict = $(this).val();
-
-                // Only proceed if the district has actually changed
-                if (selectedDistrict !== previousDistrict) {
-                    previousDistrict = selectedDistrict; // Update previousDistrict
-
-                    // Make the AJAX GET request
                     $.ajax({
                         url: '/settings/area/using/district',
                         type: 'GET',
@@ -1109,35 +1048,74 @@
                             district_id: selectedDistrict
                         },
                         success: function(response) {
-                            var options = '<option value="">Select Area</option>'; // Add a default 'Select Area' option
+                            console.log('AJAX Response:', response); // Log the response
+
+                            var options = '<option value="">Select Area Supervisor</option>'; // Default option
+
+                            $.each(response, function(index, item) {
+                                // Check if this area matches the previous one and mark it as selected
+                                var selected = (item.id == previousAreaIdFromArea) ? 'selected' : '';
+                                options += `<option value="${item.id}" ${selected}>${item.area_no} - ${item.area_supervisor}</option>`;
+                            });
+
+                            $('#update_area_supervisor_id').html(options); // Update the dropdown with the new options
+
+                            // Automatically select the previous area supervisor if it exists
+                            if (previousAreaIdFromArea) {
+                                $('#update_area_supervisor_id').val(previousAreaIdFromArea).trigger('change'); // Set the previous area supervisor as selected
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            // Handle any errors
+                            console.error('AJAX Error:', status, error);
+                        }
+                    });
+                }, 100); // Delay to ensure the value is updated
+            });
+
+
+            $('#update_district_manager_id').on('change', function() {
+                var selectedDistrict = $(this).val(); // Get selected district value
+
+                setTimeout(function() {
+                    var previousAreaId = $('#update_val_area_id').val(); // Get the latest area ID value after a brief delay
+
+                    // Make the AJAX GET request for areas
+                    $.ajax({
+                        url: '/settings/area/using/district',
+                        type: 'GET',
+                        data: {
+                            district_id: selectedDistrict
+                        },
+                        success: function(response) {
+                            var options = '<option value="">Select Area</option>'; // Default 'Select Area' option
 
                             // Build options for each area
                             $.each(response, function(index, item) {
-                                options += `<option value="${item.id}">${item.area_no} - ${item.area_supervisor}</option>`;
+                                // Check if this area matches the previous one and mark it as selected
+                                var selected = (item.id == previousAreaId) ? 'selected' : '';
+                                options += `<option value="${item.id}" ${selected}>${item.area_no} - ${item.area_supervisor}</option>`;
                             });
 
-                            $('#update_area_id').html(options); // Update the dropdown options
+                            $('#update_area_id').html(options); // Update the dropdown with the new options
 
-                            // Check if the previously selected area is still in the new options
-                            if (response.some(item => item.id === previousArea)) {
-                                $('#update_area_id').val(previousArea); // Set the previously selected value if it exists
-                            } else {
-                                $('#update_area_id').val('').trigger('change'); // Reset if not found
+                            // Automatically trigger the area change to load branches
+                            if (previousAreaId) {
+                                $('#update_area_id').val(previousAreaId).trigger('change'); // Set previous area as selected and trigger change event
                             }
                         },
                         error: function(xhr, status, error) {
                             console.error('AJAX Error:', status, error);
                         }
                     });
-                }
+                }, 100); // Small delay to ensure area ID is updated
             });
 
             $('#update_area_id').on('change', function() {
                 var selectedArea = $(this).val();
 
-                // Only proceed if the area has actually changed
-                if (selectedArea !== previousArea) {
-                    previousArea = selectedArea; // Update previousArea
+                setTimeout(function() {
+                    var previousBranchId = $('#update_val_branch_id').val(); // Get the latest branch ID value after a brief delay
 
                     // Make the AJAX GET request for branches
                     $.ajax({
@@ -1147,23 +1125,29 @@
                             area_id: selectedArea
                         },
                         success: function(response) {
-                            var currentBranchSelected = $('#update_branch_id').val(); // Keep track of the current branch
-                            var options = '<option value="">Select Branch</option>'; // Add a default 'Select Branch' option
+                            var options = '<option value="">Select Branch</option>'; // Default 'Select Branch' option
 
+                            // Build options for each branch
                             $.each(response, function(index, item) {
-                                // Build options for each branch and keep track of the selected one
-                                options += `<option value="${item.id}" ${item.id == currentBranchSelected ? 'selected' : ''}>${item.branch_location}</option>`;
+                                // Check if this branch matches the previous one and mark it as selected
+                                var selected = (item.id == previousBranchId) ? 'selected' : '';
+                                options += `<option value="${item.id}" ${selected}>${item.branch_location}</option>`;
                             });
 
-                            $('#update_branch_id').html(options); // Update the branch dropdown options
-                            $('#update_branch_id').val(currentBranchSelected).trigger('change'); // Re-apply the selected value
+                            $('#update_branch_id').html(options); // Update the dropdown with the new options
+
+                            // Automatically set the previous branch ID if it exists
+                            if (previousBranchId) {
+                                $('#update_branch_id').val(previousBranchId); // Set previous branch as selected
+                            }
                         },
                         error: function(xhr, status, error) {
                             console.error('AJAX Error:', status, error);
                         }
                     });
-                }
+                }, 100);
             });
+
         });
     </script>
 
