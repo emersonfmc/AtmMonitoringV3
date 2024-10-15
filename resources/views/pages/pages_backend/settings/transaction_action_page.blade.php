@@ -95,15 +95,17 @@
                                     <tr>
                                         <td><input type="text" name="sequence_no[]" class="form-control sequence_no" value="1" readonly></td>
                                         <td>
-                                            <select name="user_group_id[]" class="form-select select2 user-select" required>
-                                                <option value="" selected disabled>Select User</option>
-                                                @foreach ($DataUserGroup as $item)
-                                                    <option value="{{ $item->id }}">{{ $item->group_name }}</option>
-                                                @endforeach
-                                            </select>
+                                            <div class="form-group">
+                                                <select name="user_group_id[]" class="form-select select2 user-select" required required>
+                                                    <option value="" selected disabled>Select User</option>
+                                                    @foreach ($DataUserGroup as $item)
+                                                        <option value="{{ $item->id }}">{{ $item->group_name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
                                         </td>
                                         <td>
-                                            <select name="type[]" class="form-select">
+                                            <select name="type[]" class="form-select" required>
                                                 <option value="Received">Received</option>
                                                 <option value="Released">Released</option>
                                             </select>
@@ -426,15 +428,17 @@
                     <tr>
                         <td><input type="text" name="sequence_no[]" class="form-control sequence_no" value="${sequenceTable.children('tr').length + 1}" readonly></td>
                         <td>
-                            <select name="user_group_id[]" class="form-select select2 user-select">
-                                <option value="" selected disabled>Select User</option>
-                                @foreach ($DataUserGroup as $item)
-                                    <option value="{{ $item->id }}">{{ $item->group_name }}</option>
-                                @endforeach
-                            </select>
+                            <div class="form-group">
+                                <select name="user_group_id[]" class="form-select select2 user-select" required>
+                                    <option value="" selected disabled>Select User</option>
+                                    @foreach ($DataUserGroup as $item)
+                                        <option value="{{ $item->id }}">{{ $item->group_name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </td>
                         <td>
-                            <select name="type[]" class="form-select">
+                            <select name="type[]" class="form-select" required>
                                 <option value="Received">Received</option>
                                 <option value="Released">Released</option>
                             </select>
