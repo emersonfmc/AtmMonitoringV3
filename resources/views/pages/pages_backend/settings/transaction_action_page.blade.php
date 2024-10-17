@@ -159,6 +159,27 @@
                                 </div>
                             </div>
                         </div>
+                        <hr>
+
+                        <div class="text-end mb-2">
+                            <button type="button" id="addSequenceUpdateBtn" class="btn btn-primary">Add Sequence</button>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table id="sequenceTableUpdate" class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="col-md-2">Sequence No</th>
+                                        <th class="col-md-4">Assign User</th>
+                                        <th class="col-md-3">Type</th>
+                                        <th class="col-md-2">Remove</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sequenceTableUpdateBody">
+
+                                </tbody>
+                            </table>
+                        </div>
 
 
                         <div class="modal-footer">
@@ -383,6 +404,41 @@
                     $('#update_name').val(data.name);
                     $('#update_status').val(data.status);
 
+                    $('#sequenceTableUpdateBody').empty();
+                        data.atm_transaction_sequence.forEach(function(rows) {
+                            var newRow = '<tr>' +
+                                            '<td>' +
+                                                '<input type="text" value="' + rows.sequence_no + '" class="sequence_no_update form-control" name="sequence_no[]" readonly>' +
+                                                '<input type="hidden" value="' + rows.id + '" class="form-control" name="items_id[]">' +
+                                            '</td>' +
+                                            '<td>' +
+                                                '<div class="form-group">' +
+                                                    '<select name="user_group_id[]" class="form-select select2 user-select" required>' +
+                                                        '<option value="" disabled>Select User</option>';
+
+                                                        // Loop through your `$DataUserGroup` to create the dropdown options
+                                                        @foreach ($DataUserGroup as $item)
+                                                            // Check if the current item ID matches the `user_group_id` to pre-select it
+                                                            newRow += '<option value="{{ $item->id }}" ' + (rows.user_group_id == {{ $item->id }} ? 'selected' : '') + '>{{ $item->group_name }}</option>';
+                                                        @endforeach
+
+                                                        newRow +=
+                                                    '</select>' +
+                                                '</div>' +
+                                            '</td>' +
+                                            '<td>' +
+                                                '<select name="type[]" class="form-select" required>' +
+                                                    '<option value="Received" ' + (rows.type == 'Received' ? 'selected' : '') + '>Received</option>' +
+                                                    '<option value="Released" ' + (rows.type == 'Released' ? 'selected' : '') + '>Released</option>' +
+                                                '</select>' +
+                                            '</td>' +
+                                            '<td>' +
+                                                '<a href="#" class="btn btn-danger removeUpdateRow" disabled><i class="fas fa-trash-alt"></i></a>' +
+                                            '</td>' +
+                                        '</tr>';
+
+                            $('#sequenceTableUpdateBody').append(newRow);
+                        });
                     $('#updateTransactionActionModal').modal('show');
                 });
             });
@@ -398,6 +454,7 @@
                 $('#FetchingDatatable tbody').empty();
                 // $('#usersGroupPageTable').addClass('d-none');
             }
+
         // Creation Function
 
             function initializeSelect2() {
@@ -549,6 +606,54 @@
                         });
                     }
                 }
+            });
+
+
+
+            let sequenceTableUpdate = $('#sequenceTableUpdate tbody');
+
+            // Function to update sequence numbers
+            function updateSequenceNumbers() {
+                sequenceTableUpdate.find('tr').each(function(index, row) {
+                    $(row).find('.sequence_no_update').val(index + 1); // Update the sequence number based on the row index
+                });
+            }
+            // Add new row on Add Sequence button click
+            $('#addSequenceUpdateBtn').click(function() {
+                let newRow = `
+                    <tr>
+                        <td><input type="text" name="sequence_no[]" class="form-control sequence_no_update" value="${sequenceTableUpdate.children('tr').length + 1}" readonly></td>
+                        <td>
+                            <div class="form-group">
+                                <select name="user_group_id[]" class="form-select select2 user-select" required>
+                                    <option value="" selected disabled>Select User</option>
+                                    @foreach ($DataUserGroup as $item)
+                                        <option value="{{ $item->id }}">{{ $item->group_name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </td>
+                        <td>
+                            <select name="type[]" class="form-select" required>
+                                <option value="Received">Received</option>
+                                <option value="Released">Released</option>
+                            </select>
+                        </td>
+                        <td>
+                            <a href="#" class="btn btn-danger removeUpdateRow"><i class="fas fa-trash-alt"></i></a>
+                        </td>
+                    </tr>
+                `;
+
+                sequenceTableUpdate.append(newRow); // Append the new row
+                updateSequenceNumbers(); // Update sequence numbers
+            });
+
+            // Remove row on Remove button click
+            $(document).on('click', '.removeUpdateRow', function(e) {
+                e.preventDefault();
+                $(this).closest('tr').remove(); // Remove the row
+                updateSequenceNumbers(); // Update sequence numbers after removal
             });
         });
 

@@ -318,6 +318,12 @@ class SettingsController extends Controller
         ->make(true);
     }
 
+    public function branchGet($id)
+    {
+        $Branch = Branch::with('Company','District','Area')->findOrFail($id);
+        return response()->json($Branch);
+    }
+
     public function areaGetBydistrict(Request $request)
     {
         // $district_id = $request->district_id;
@@ -374,10 +380,11 @@ class SettingsController extends Controller
 
         // Proceed with update if validation passes
         $AtmBankLists->update([  // Update the instance instead of using the class method
-            'district_id' => $request->district_id,
-            'area_id' => $request->area_id,
+            'branch_abbreviation' => $request->branch_abbreviation,
             'branch_location' => $request->branch_location,
             'branch_head' => $request->branch_head,
+            'district_id' => $request->district_id,
+            'area_id' => $request->area_id,
             'status' => $request->status,
             'updated_at' => Carbon::now(),
         ]);

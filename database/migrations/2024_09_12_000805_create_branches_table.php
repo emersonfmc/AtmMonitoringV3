@@ -15,13 +15,13 @@ return new class extends Migration
     {
         Schema::create('branches', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('district_id')->nullable();
-            $table->unsignedBigInteger('area_id')->nullable();
 
             $table->string('branch_abbreviation')->nullable();
             $table->string('branch_location')->nullable();
             $table->string('branch_head')->nullable();
 
+            $table->unsignedBigInteger('district_id')->nullable();
+            $table->unsignedBigInteger('area_id')->nullable();
             $table->unsignedBigInteger('company_id');
 
             $table->foreign('district_id')->references('id')->on('data_districts')->onDelete('restrict')->onUpdate('cascade');

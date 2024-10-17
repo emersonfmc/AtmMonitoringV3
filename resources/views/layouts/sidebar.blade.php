@@ -56,14 +56,6 @@
                     </ul>
                 </li>
 
-
-                <li>
-                    <a href="#" class="waves-effect">
-                        <i class="fas fa-box text-warning"></i>
-                        <span key="cashbox">Cash Box Number Report</span>
-                    </a>
-                </li>
-
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="fas fa-folder-open text-success"></i>
@@ -92,6 +84,14 @@
                             <a href="#" key="atm_reports_aprb_report">
                                 <i class="fas fa-print fs-6 text-success"></i>APRB Report</a>
                         </li>
+
+                        <li>
+                            <a href="#" key="atm_reports_cash_box_report">
+                                <i class="fas fa-box fs-6 text-warning"></i>Cash Box No. Report
+                            </a>
+                        </li>
+
+
 
                     </ul>
                 </li>
