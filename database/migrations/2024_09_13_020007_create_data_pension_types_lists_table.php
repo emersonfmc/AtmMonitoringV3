@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('data_pension_types_lists', function (Blueprint $table) {
             $table->id();
-            $table->string('pension_name', 255)->nullable();  // Define length explicitly
+            $table->string('pension_name', 255)->nullable();  // Ensure this matches in client_information
             $table->enum('types', ['SSS', 'GSIS'])->nullable();
             $table->enum('status', ['Active', 'Inactive'])->nullable();
             $table->softDeletes();

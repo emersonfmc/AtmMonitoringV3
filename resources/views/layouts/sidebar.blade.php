@@ -104,7 +104,7 @@
                     </a>
                     <ul class="sub-menu" aria-expanded="true">
                         <li>
-                            <a href="#" key="atm_clients">
+                            <a href="{{ route('clients.page') }}" key="atm_clients">
                                 <span class="badge rounded-pill bg-success float-start me-2 fw-bold text-dark">20</span>
                                 Clients
                             </a>

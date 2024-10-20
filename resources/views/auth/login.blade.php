@@ -19,12 +19,13 @@
     <div class="login-page">
         <div class="row justify-content-center align-items-center" style="min-height: 100vh;">
             <!-- end col -->
-            <div class="col-md-3">
+            <div class="col-12 col-sm-8 col-md-7 col-lg-5 col-xl-3">
                 <div class="card shadow p-3 mb-5 bg-white rounded">
                     <div class="card-body">
 
                         <div class="text-center">
-                            <img src="{{ asset('images/EverfirstLogo.png') }}" class="img-fluid image-size" alt="Everfirst Logo">
+                            <img src="{{ asset('images/EverfirstLogo.png') }}" class="img-fluid image-size me-5" alt="Everfirst Logo">
+                            <img src="{{ asset('images/MultiLineLogo.png') }}" class="img-fluid image-size" alt="Everfirst Logo">
                         </div>
 
                         <div class="mb-4">
