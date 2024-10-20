@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ATM\ClientContoller;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\UserController;
@@ -81,6 +82,15 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => 'settings'], functio
     });
 });
 
+Route::controller(ClientContoller::class)->group(function () {
+    Route::get('/clients/page', 'client_page')->name('clients.page');
+    Route::get('/clients/data', 'client_data')->name('clients.data');
+    Route::get('/clients/get/{id}', 'clientGet')->name('clients.get');
+    Route::post('/clients/create', 'clientCreate')->name('clients.create');
+    Route::post('/clients/update', 'clientUpdate')->name('clients.update');
+
+    Route::post('/pension_number/validate', 'PensionNumberValidate')->name('pension.number.validate');
+});
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::controller(DashboardController::class)->group(function () {
