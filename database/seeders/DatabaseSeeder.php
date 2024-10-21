@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             AtmPensionTypesSeeder::class,
             AtmTransactionActionSeeder::class,
             AtmTrasanctionSequenceSeeder::class,
+            DataCollectionDateSeeder::class,
         ]);
     }
 }
