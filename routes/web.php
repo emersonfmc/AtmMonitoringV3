@@ -1,11 +1,12 @@
 <?php
 
-use App\Http\Controllers\ATM\ClientContoller;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\SettingsController;
-use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\ATM\ClientContoller;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ATM\DefaultController;
 
 Auth::routes();
 
@@ -19,6 +20,10 @@ Route::post('/update-password/{id}', [App\Http\Controllers\HomeController::class
 
 //Language Translation
 Route::get('index/{locale}', [App\Http\Controllers\HomeController::class, 'lang']);
+
+Route::controller(DefaultController::class)->group(function () {
+    Route::get('/pension/types/fetch', 'PensionTypesFetch')->name('pension.types.fetch');
+});
 
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
@@ -88,7 +93,6 @@ Route::controller(ClientContoller::class)->group(function () {
     Route::get('/clients/get/{id}', 'clientGet')->name('clients.get');
     Route::post('/clients/create', 'clientCreate')->name('clients.create');
     Route::post('/clients/update', 'clientUpdate')->name('clients.update');
-
     Route::post('/pension_number/validate', 'PensionNumberValidate')->name('pension.number.validate');
 });
 

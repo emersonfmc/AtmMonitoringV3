@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('data_collection_dates', function (Blueprint $table) {
             $table->id();
             $table->string('collection_date')->nullable();
+            $table->enum('status', ['Active', 'Inactive'])->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
