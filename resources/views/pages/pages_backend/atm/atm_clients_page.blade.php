@@ -52,11 +52,14 @@
                             <thead class="table-light">
                                 <tr>
                                     <th>Sl</th>
-                                    <th>Area No.</th>
-                                    <th>Area Name</th>
-                                    <th>District</th>
-                                    {{-- <th>Email</th> --}}
-                                    <th>Created Date</th>
+                                    <th>Action</th>
+                                    <th>Reference No.</th>
+                                    <th>Branch</th>
+                                    <th>Clients</th>
+                                    <th>Pension No. / Type</th>
+                                    <th>ATM / Passbook / Simcard & Bank</th>
+                                    <th>PIN Code</th>
+                                    <th>Type & Status</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -285,6 +288,79 @@
 
     <script>
         $(document).ready(function () {
+            // var FetchingDatatableBody = $('#FetchingDatatable tbody');
+
+            // const dataTable = new ServerSideDataTable('#FetchingDatatable');
+            // var url = '{!! route('clients.data') !!}';
+            // const buttons = [{
+            //     text: 'Delete',
+            //     action: function(e, dt, node, config) {
+            //         // Add your custom button action here
+            //         alert('Custom button clicked!');
+            //     }
+            // }];
+
+            // // const columns = [
+            // //     {
+            // //         data: null,
+            // //         name: 'action',
+            // //         render: function(data, type, row) {
+            // //             return `
+            // //                 <a href="#" class="text-warning editBtn me-2" data-id="${row.id}"
+            // //                     data-bs-toggle="tooltip" data-bs-placement="top" title="Edit ">
+            // //                     <i class="fas fa-pencil-alt me-2"></i>
+            // //                 </a>
+
+            // //                 <a href="#" class="text-danger deleteBtn me-2" data-id="${row.id}"
+            // //                     data-bs-toggle="tooltip" data-bs-placement="top" title="Delete ">
+            // //                     <i class="fas fa-trash-alt me-2"></i>
+            // //                 </a>`;
+            // //         },
+            // //         orderable: false,
+            // //         searchable: false,
+            // //     },
+            // //     {
+            // //         data: null,
+            // //         name: 'branch_location',
+            // //         render: function(data, type, row, meta) {
+            // //             var abbreviation = row.branch_abbreviation ? row.branch_abbreviation : '';
+            // //             var separator = row.branch_abbreviation ? ' - ' : '';
+            // //             return '<span class="fw-bold h6">' + '<span class="fw-bold h6 text-primary">' + abbreviation + '</span>' + separator + row.branch_location + '</span>';
+            // //         },
+            // //         orderable: true,
+            // //         searchable: true,
+            // //     },
+            // //     {
+            // //         data: 'branch_head',
+            // //         name: 'branch_head',
+            // //         render: function(data, type, row, meta) {
+            // //             return '<span class="fw-bold h6">' + (row.branch_head !== null && row.branch_head !== undefined ? row.branch_head : '') + '</span>'; // Display user's name or empty if null
+            // //         },
+            // //         orderable: true,
+            // //         searchable: true,
+            // //     },
+            // //     {
+            // //         data: 'district_id',
+            // //         name: 'district.district_name',
+            // //         render: function(data, type, row, meta) {
+            // //             return row.district ? '<span>' + row.district.district_name + '</span>' : '';
+            // //         },
+            // //         orderable: true,
+            // //         searchable: true,
+            // //     },
+            // //     {
+            // //         data: 'area_id',
+            // //         name: 'district.area',
+            // //         render: function(data, type, row, meta) {
+            // //             return row.area ? '<span>' + row.area.area_supervisor + '</span>' : '';
+            // //         },
+            // //         orderable: true,
+            // //         searchable: true,
+            // //     }
+
+            // // ];
+            // dataTable.initialize(url, columns);
+
             $('.balanceCurrency').inputmask({
                 'alias': 'currency',
                 allowMinus: false,
@@ -323,133 +399,133 @@
             });
 
             var maxRows = 5; // Maximum number of rows
-        var rowCount = $('.atm-details').length; // Initial row count
+            var rowCount = $('.atm-details').length; // Initial row count
 
-        // Initialize input mask for existing rows
-        applyInputMaskCurrency();
-        applyCardNumberInputMask();
+            // Initialize input mask for existing rows
+            applyInputMaskCurrency();
+            applyCardNumberInputMask();
 
-        // Add new row on Add button click
-        $('#addMoreAtmBtn').click(function(e) {
-            e.preventDefault();
-            if (rowCount < maxRows) {
-                let newRow = `
-                    <div class="row atm-details mt-2">
-                        <hr>
-                        <label class="fw-bold h6 text-center mb-3 text-primary">
-                            Add ATM / Passbook / Simcard No.
-                        </label>
+            // Add new row on Add button click
+            $('#addMoreAtmBtn').click(function(e) {
+                e.preventDefault();
+                if (rowCount < maxRows) {
+                    let newRow = `
+                        <div class="row atm-details mt-2">
+                            <hr>
+                            <label class="fw-bold h6 text-center mb-3 text-primary">
+                                Add ATM / Passbook / Simcard No.
+                            </label>
 
-                        <hr>
-                        <div class="col-md-6">
-                            <div class="form-group mb-2 row align-items-center">
-                            <label class="col-form-label col-sm-4 fw-bold">Type</label>
-                            <div class="col-8">
-                                <select name="atm_type[]" class="form-select" required>
-                                <option value="" selected disabled>Type</option>
-                                <option value="ATM">ATM</option>
-                                <option value="Passbook">Passbook</option>
-                                <option value="Sim Card">Sim Card</option>
-                                </select>
-                            </div>
-                            </div>
-                            <div class="form-group mb-2 row align-items-center">
-                            <label class="col-form-label col-sm-4 fw-bold">ATM / Passbook / Sim No.</label>
-                            <div class="col-8">
-                                <input type="text" name="atm_number[]" class="atm_card_input_mask form-control" placeholder="ATM / Passbook / Sim No." required>
-                            </div>
-                            </div>
-                            <div class="form-group mb-3 row align-items-center">
-                            <label class="col-form-label col-4 fw-bold">Balance</label>
-                            <div class="col-8">
-                                <input type="text" name="atm_balance[]" class="balanceCurrency form-control" value="0" placeholder="Balance" required>
-                            </div>
-                            </div>
-                            <div class="form-group mb-2 row align-items-center">
-                            <label class="font-size col-form-label col-4 fw-bold">Banks</label>
-                            <div class="col-8">
-                                <div class="form-group">
-                                <select name="bank_id[]" id="bank_id" class="form-select">
-                                    <option value="" selected disabled>Banks</option>
-                                    @foreach ($DataBankLists as $bank)
-                                            <option value="{{ $bank->id }}">{{ $bank->bank_name }}</option>
-                                    @endforeach
-                                </select>
+                            <hr>
+                            <div class="col-md-6">
+                                <div class="form-group mb-2 row align-items-center">
+                                <label class="col-form-label col-sm-4 fw-bold">Type</label>
+                                <div class="col-8">
+                                    <select name="atm_type[]" class="form-select" required>
+                                    <option value="" selected disabled>Type</option>
+                                    <option value="ATM">ATM</option>
+                                    <option value="Passbook">Passbook</option>
+                                    <option value="Sim Card">Sim Card</option>
+                                    </select>
+                                </div>
+                                </div>
+                                <div class="form-group mb-2 row align-items-center">
+                                <label class="col-form-label col-sm-4 fw-bold">ATM / Passbook / Sim No.</label>
+                                <div class="col-8">
+                                    <input type="text" name="atm_number[]" class="atm_card_input_mask form-control" placeholder="ATM / Passbook / Sim No." required>
+                                </div>
+                                </div>
+                                <div class="form-group mb-3 row align-items-center">
+                                <label class="col-form-label col-4 fw-bold">Balance</label>
+                                <div class="col-8">
+                                    <input type="text" name="atm_balance[]" class="balanceCurrency form-control" value="0" placeholder="Balance" required>
+                                </div>
+                                </div>
+                                <div class="form-group mb-2 row align-items-center">
+                                <label class="font-size col-form-label col-4 fw-bold">Banks</label>
+                                <div class="col-8">
+                                    <div class="form-group">
+                                    <select name="bank_id[]" id="bank_id" class="form-select">
+                                        <option value="" selected disabled>Banks</option>
+                                        @foreach ($DataBankLists as $bank)
+                                                <option value="{{ $bank->id }}">{{ $bank->bank_name }}</option>
+                                        @endforeach
+                                    </select>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-3 row align-items-center">
-                            <label class="col-form-label col-4 fw-bold">Pin Code</label>
-                            <div class="col-8">
-                                <input type="number" name="pin_code[]" class="form-control" placeholder="PIN Code">
                             </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3 row align-items-center">
+                                <label class="col-form-label col-4 fw-bold">Pin Code</label>
+                                <div class="col-8">
+                                    <input type="number" name="pin_code[]" class="form-control" placeholder="PIN Code">
+                                </div>
+                                </div>
+                                <div class="form-group mb-3 row align-items-center">
+                                <label class="col-form-label col-4 fw-bold">Expiration Date</label>
+                                <div class="col-8">
+                                    <input type="month" name="expiration_date[]" class="form-control">
+                                </div>
+                                </div>
+                                <div class="form-group mb-3 row align-items-center">
+                                <label class="col-form-label col-4 fw-bold">Remarks</label>
+                                <div class="col-8">
+                                    <input type="text" name="remarks[]" class="form-control" placeholder="Remarks" minlength="0" maxlength="100">
+                                </div>
+                                </div>
+                                <!-- <div class="form-group mb-2 row align-items-center">
+                                <label class="col-form-label col-4 fw-bold">Remove</label>
+                                <div class="col-8">
+                                    <a href="#" class="btn btn-danger remove-atm-row"><i class="fa-solid fa-trash"></i></a>
+                                </div>
+                                </div> -->
                             </div>
-                            <div class="form-group mb-3 row align-items-center">
-                            <label class="col-form-label col-4 fw-bold">Expiration Date</label>
-                            <div class="col-8">
-                                <input type="month" name="expiration_date[]" class="form-control">
-                            </div>
-                            </div>
-                            <div class="form-group mb-3 row align-items-center">
-                            <label class="col-form-label col-4 fw-bold">Remarks</label>
-                            <div class="col-8">
-                                <input type="text" name="remarks[]" class="form-control" placeholder="Remarks" minlength="0" maxlength="100">
-                            </div>
-                            </div>
-                            <!-- <div class="form-group mb-2 row align-items-center">
-                            <label class="col-form-label col-4 fw-bold">Remove</label>
-                            <div class="col-8">
-                                <a href="#" class="btn btn-danger remove-atm-row"><i class="fa-solid fa-trash"></i></a>
-                            </div>
-                            </div> -->
-                        </div>
-                        <hr class="mt-2 mb-2">
-                    </div>`;
+                            <hr class="mt-2 mb-2">
+                        </div>`;
 
-                $('#AddMoreAtmContainer').append(newRow); // Append the new row
-                applyCardNumberInputMask(); // Apply input mask to the new row
-                applyInputMaskCurrency(); // Apply input mask for balance
-                rowCount++; // Increase row count
-            } else {
-                Swal.fire({
-                    icon: "error",
-                    title: "Oops...",
-                    text: "Limit of 5 ATM Rows Only!"
+                    $('#AddMoreAtmContainer').append(newRow); // Append the new row
+                    applyCardNumberInputMask(); // Apply input mask to the new row
+                    applyInputMaskCurrency(); // Apply input mask for balance
+                    rowCount++; // Increase row count
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Limit of 5 ATM Rows Only!"
+                    });
+                }
+            });
+
+            // Remove row and update the count
+            $(document).on('click', '.remove-atm-row', function(e) {
+                e.preventDefault();
+                if (rowCount > 1) { // Ensure at least one row remains
+                    $(this).closest('.atm-details').remove();
+                    rowCount--;
+                }
+            });
+
+            // Function to apply input mask to balance fields
+            function applyInputMaskCurrency() {
+                $('.balanceCurrency').inputmask({
+                    'alias': 'currency',
+                    allowMinus: false,
+                    'prefix': "₱ ",
+                    max: 999999999999.99,
                 });
             }
-        });
 
-        // Remove row and update the count
-        $(document).on('click', '.remove-atm-row', function(e) {
-            e.preventDefault();
-            if (rowCount > 1) { // Ensure at least one row remains
-                $(this).closest('.atm-details').remove();
-                rowCount--;
+            // Function to apply card number input mask
+            function applyCardNumberInputMask() {
+                $(".atm_card_input_mask").inputmask({
+                    mask: '9999-9999-9999-9999', // Custom mask for the card number
+                    placeholder: '', // Placeholder to show the expected format
+                    showMaskOnHover: false,  // Hide the mask when the user is not interacting with the field
+                    showMaskOnFocus: true,   // Show the mask when the field is focused
+                    rightAlign: false       // Align the input to the left
+                });
             }
-        });
-
-        // Function to apply input mask to balance fields
-        function applyInputMaskCurrency() {
-            $('.balanceCurrency').inputmask({
-                'alias': 'currency',
-                allowMinus: false,
-                'prefix': "₱ ",
-                max: 999999999999.99,
-            });
-        }
-
-        // Function to apply card number input mask
-        function applyCardNumberInputMask() {
-            $(".atm_card_input_mask").inputmask({
-                mask: '9999-9999-9999-9999', // Custom mask for the card number
-                placeholder: '', // Placeholder to show the expected format
-                showMaskOnHover: false,  // Hide the mask when the user is not interacting with the field
-                showMaskOnFocus: true,   // Show the mask when the field is focused
-                rightAlign: false       // Align the input to the left
-            });
-        }
 
             $('.pension_number_mask').inputmask('99-9999999-9', {
                 placeholder: "",  // Placeholder for the input
@@ -495,7 +571,8 @@
                                         $('#createClientModal').modal('show');
                                     }
                                 });
-                            } else if (response.error) {
+                            }
+                            else if (response.error) {
                                 Swal.fire({
                                     title: 'Error!',
                                     text: response.error,
