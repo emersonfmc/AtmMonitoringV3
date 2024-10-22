@@ -17,16 +17,13 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('branch_id');
             $table->string('pension_number')->unique();
-            $table->unsignedBigInteger('pension_name_id')->nullable();
+            $table->string('pension_type')->nullable();
             $table->enum('pension_account_type', ['SSS', 'GSIS'])->nullable();
             $table->string('first_name')->nullable();
             $table->string('middle_name')->nullable();
             $table->string('last_name')->nullable();
-            $table->string('suffix')->nullable();
+            $table->enum('suffix', ['Jr.','Sr.','Ma.','I','II','III','IV'])->nullable();
             $table->date('birth_date')->nullable();
-
-            // Foreign key constraints
-            $table->foreign('pension_name_id')->references('id')->on('data_pension_types_lists')->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('branch_id')->references('id')->on('branches')->onDelete('cascade')->onUpdate('cascade');
 
             $table->softDeletes();
