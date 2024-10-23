@@ -11,4 +11,9 @@ class AtmClientBanks extends Model
     use HasFactory, SoftDeletes;
 
     protected $guarded = [];
+
+    public function ClientInformation()
+    {
+        return $this->belongsTo(ClientInformation::class, 'client_information_id','id');
+    }
 }

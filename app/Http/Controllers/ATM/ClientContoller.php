@@ -33,7 +33,7 @@ class ClientContoller extends Controller
     {
         $userBranchId = Auth::user()->branch_id;
 
-        $query = ClientInformation::with('Branch', 'DataPensionTypesLists')
+        $query = ClientInformation::with('Branch', 'AtmClientBanks')
                     ->latest('updated_at');
 
         if (!empty($userBranchId) && $userBranchId != 0 ||  $userBranchId == NULL) {
