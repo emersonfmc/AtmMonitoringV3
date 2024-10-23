@@ -49,13 +49,12 @@
 
                     <div class="table-responsive">
                         <table id="FetchingDatatable" class="table table-border dt-responsive wrap table-design" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                            <thead class="table-light">
+                            <thead>
                                 <tr>
-                                    <th>Sl</th>
                                     <th>Action</th>
+                                    <th>Clients</th>
                                     <th>Reference No.</th>
                                     <th>Branch</th>
-                                    <th>Clients</th>
                                     <th>Pension No. / Type</th>
                                     <th>ATM / Passbook / Simcard & Bank</th>
                                     <th>PIN Code</th>
@@ -84,13 +83,14 @@
                     <button type="button" class="btn-close closeCreateModal" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="#" id="createClientValidateForm">
+                    <form action="#" id="createValidateForm">
 
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="form-group mb-3">
                                     <label class="fw-bold h6">Pension Number</label>
-                                    <input type="text" name="pension_number" id="pension_number_get" class="form-control" placeholder="Enter Pension Number"  readonly required>
+                                    <input type="text" name="pension_number" id="pension_number_get"
+                                            class="form-control" placeholder="Enter Pension Number"  readonly required>
                                 </div>
                             </div>
 
@@ -98,7 +98,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group mb-3">
                                         <label class="fw-bold h6">Branch</label>
-                                        <select name="branch_id" id="branch_id" class="form-select select2">
+                                        <select name="branch_id" id="branch_id" class="form-select select2" required>
                                             <option value="" selected disabled>Select Branch</option>
                                             @foreach ($branches as $branch)
                                                 <option value="{{ $branch->id }}">{{ $branch->branch_abbreviation .' - '. $branch->branch_location }}</option>
@@ -115,7 +115,7 @@
                             <div class="col-md-3">
                                 <div class="form-group mb-3">
                                     <label class="fw-bold h6">Pension Number Type</label>
-                                    <select name="pension_number_type" id="pension_number_type" class="form-select">
+                                    <select name="pension_number_type" id="pension_number_type" class="form-select" required>
                                         <option value="" selected disabled>Pension Number Type</option>
                                         <option value="SSS">SSS</option>
                                         <option value="GSIS">GSIS</option>
@@ -126,7 +126,7 @@
                             <div class="col-md-3">
                                 <div class="form-group mb-3">
                                     <label class="fw-bold h6">Pension Type</label>
-                                    <select name="pension_type" id="pension_type" class="form-select select2" disabled>
+                                    <select name="pension_type" id="pension_type" class="form-select select2" disabled required>
                                         <option value="" selected disabled>Pension Type</option>
                                     </select>
                                 </div>
@@ -135,7 +135,7 @@
                             <div class="col-md-3">
                                 <div class="form-group mb-3">
                                     <label class="fw-bold h6">Collection Date</label>
-                                    <select name="collection_date" id="collection_date" class="form-select">
+                                    <select name="collection_date" id="collection_date" class="form-select" required>
                                         <option value="" selected disabled>Collection Date</option>
                                         @foreach ($DataCollectionDates as $DataCollectionDate)
                                             <option value="{{ $DataCollectionDate->id }}">{{ $DataCollectionDate->collection_date }}</option>
@@ -150,19 +150,22 @@
                             <div class="col-3">
                                 <div class="form-group mb-3">
                                     <label class="fw-bold h6">Firstname</label>
-                                    <input type="text" name="first_name" id="first_name" class="form-control" placeholder="Enter Firstname" minlength="0" maxlength="50">
+                                    <input type="text" name="first_name" id="first_name"
+                                            class="form-control" placeholder="Enter Firstname" minlength="0" maxlength="50" required>
                                 </div>
                             </div>
                             <div class="col-3">
                                 <div class="form-group mb-3">
                                     <label class="fw-bold h6">Middlename</label>
-                                    <input type="text" name="middle_name" id="middle_name" class="form-control" placeholder="Enter Middlename" minlength="0" maxlength="50">
+                                    <input type="text" name="middle_name" id="middle_name"
+                                            class="form-control" placeholder="Enter Middlename" minlength="0" maxlength="50">
                                 </div>
                             </div>
                             <div class="col-3">
                                 <div class="form-group mb-3">
                                     <label class="fw-bold h6">Lastname</label>
-                                    <input type="text" name="last_name" id="last_name" class="form-control" placeholder="Enter Lastname" minlength="0" maxlength="50">
+                                    <input type="text" name="last_name" id="last_name" class="form-control"
+                                            placeholder="Enter Lastname" minlength="0" maxlength="50" required>
                                 </div>
                             </div>
                         </div>
@@ -187,7 +190,7 @@
                             <div class="col-3">
                                 <div class="form-group mb-3">
                                     <label class="fw-bold h6">Birthdate</label>
-                                    <input type="date" name="birth_date" id="birth_date" class="form-control" placeholder="Enter Birthdate">
+                                    <input type="date" name="birth_date" id="birth_date" class="form-control" placeholder="Enter Birthdate" required>
                                 </div>
                             </div>
                         </div>
@@ -288,84 +291,235 @@
 
     <script>
         $(document).ready(function () {
-            // var FetchingDatatableBody = $('#FetchingDatatable tbody');
+            var FetchingDatatableBody = $('#FetchingDatatable tbody');
 
-            // const dataTable = new ServerSideDataTable('#FetchingDatatable');
-            // var url = '{!! route('clients.data') !!}';
-            // const buttons = [{
-            //     text: 'Delete',
-            //     action: function(e, dt, node, config) {
-            //         // Add your custom button action here
-            //         alert('Custom button clicked!');
-            //     }
-            // }];
+            const dataTable = new ServerSideDataTable('#FetchingDatatable');
+            var url = '{!! route('clients.data') !!}';
+            const buttons = [{
+                text: 'Delete',
+                action: function(e, dt, node, config) {
+                    // Add your custom button action here
+                    alert('Custom button clicked!');
+                }
+            }];
+            const columns = [
+                {
+                    data: null,
+                    name: 'action',
+                    render: function(data, type, row) {
+                        return `
+                            <a href="#" class="text-warning editBtn me-2" data-id="${row.id}"
+                                data-bs-toggle="tooltip" data-bs-placement="top" title="Edit ">
+                                <i class="fas fa-pencil-alt me-2"></i>
+                            </a>
 
-            // // const columns = [
-            // //     {
-            // //         data: null,
-            // //         name: 'action',
-            // //         render: function(data, type, row) {
-            // //             return `
-            // //                 <a href="#" class="text-warning editBtn me-2" data-id="${row.id}"
-            // //                     data-bs-toggle="tooltip" data-bs-placement="top" title="Edit ">
-            // //                     <i class="fas fa-pencil-alt me-2"></i>
-            // //                 </a>
+                            <a href="#" class="text-danger deleteBtn me-2" data-id="${row.id}"
+                                data-bs-toggle="tooltip" data-bs-placement="top" title="Delete ">
+                                <i class="fas fa-trash-alt me-2"></i>
+                            </a>`;
+                    },
+                    orderable: false,
+                    searchable: false,
+                },
+                {
+                    "data": function(row, type, set) {
+                        return (row.last_name ? row.last_name : '') + ', ' + (row.first_name ? row.first_name : '') + ' ' + (row.middle_name ? row.middle_name : '') + ' ' + (row.suffix ? row.suffix : '');
+                    }
+                },
 
-            // //                 <a href="#" class="text-danger deleteBtn me-2" data-id="${row.id}"
-            // //                     data-bs-toggle="tooltip" data-bs-placement="top" title="Delete ">
-            // //                     <i class="fas fa-trash-alt me-2"></i>
-            // //                 </a>`;
-            // //         },
-            // //         orderable: false,
-            // //         searchable: false,
-            // //     },
-            // //     {
-            // //         data: null,
-            // //         name: 'branch_location',
-            // //         render: function(data, type, row, meta) {
-            // //             var abbreviation = row.branch_abbreviation ? row.branch_abbreviation : '';
-            // //             var separator = row.branch_abbreviation ? ' - ' : '';
-            // //             return '<span class="fw-bold h6">' + '<span class="fw-bold h6 text-primary">' + abbreviation + '</span>' + separator + row.branch_location + '</span>';
-            // //         },
-            // //         orderable: true,
-            // //         searchable: true,
-            // //     },
-            // //     {
-            // //         data: 'branch_head',
-            // //         name: 'branch_head',
-            // //         render: function(data, type, row, meta) {
-            // //             return '<span class="fw-bold h6">' + (row.branch_head !== null && row.branch_head !== undefined ? row.branch_head : '') + '</span>'; // Display user's name or empty if null
-            // //         },
-            // //         orderable: true,
-            // //         searchable: true,
-            // //     },
-            // //     {
-            // //         data: 'district_id',
-            // //         name: 'district.district_name',
-            // //         render: function(data, type, row, meta) {
-            // //             return row.district ? '<span>' + row.district.district_name + '</span>' : '';
-            // //         },
-            // //         orderable: true,
-            // //         searchable: true,
-            // //     },
-            // //     {
-            // //         data: 'area_id',
-            // //         name: 'district.area',
-            // //         render: function(data, type, row, meta) {
-            // //             return row.area ? '<span>' + row.area.area_supervisor + '</span>' : '';
-            // //         },
-            // //         orderable: true,
-            // //         searchable: true,
-            // //     }
+                {
+                    data: 'branch_id',
+                    name: 'branch_id',
+                    render: function(data, type, row, meta) {
+                        return row.branch_id ? '<span>' + row.branch_id + '</span>' : '';
+                    },
+                    orderable: true,
+                    searchable: true,
+                },
+                {
+                    data: 'pension_type',
+                    name: 'pension_type',
+                    render: function(data, type, row, meta) {
+                        return row.pension_type ? '<span>' + row.pension_type + '</span>' : '';
+                    },
+                    orderable: true,
+                    searchable: true,
+                },
+                {
+                    data: 'pension_account_type',
+                    name: 'pension_account_type',
+                    render: function(data, type, row, meta) {
+                        return row.pension_account_type ? '<span>' + row.pension_account_type + '</span>' : '';
+                    },
+                    orderable: true,
+                    searchable: true,
+                },
+                {
+                    data: 'first_name',
+                    name: 'first_name',
+                    render: function(data, type, row, meta) {
+                        return row.first_name ? '<span>' + row.first_name + '</span>' : '';
+                    },
+                    orderable: true,
+                    searchable: true,
+                },
+                {
+                    data: 'middle_name',
+                    name: 'middle_name',
+                    render: function(data, type, row, meta) {
+                        return row.middle_name ? '<span>' + row.middle_name + '</span>' : '';
+                    },
+                    orderable: true,
+                    searchable: true,
+                },
+                {
+                    data: 'last_name',
+                    name: 'last_name',
+                    render: function(data, type, row, meta) {
+                        return row.last_name ? '<span>' + row.last_name + '</span>' : '';
+                    },
+                    orderable: true,
+                    searchable: true,
+                },
+                {
+                    data: 'suffix',
+                    name: 'suffix',
+                    render: function(data, type, row, meta) {
+                        return row.suffix ? '<span>' + row.suffix + '</span>' : '';
+                    },
+                    orderable: true,
+                    searchable: true,
+                }
 
-            // // ];
-            // dataTable.initialize(url, columns);
+            ];
+            dataTable.initialize(url, columns);
 
-            $('.balanceCurrency').inputmask({
-                'alias': 'currency',
-                allowMinus: false,
-                'prefix': "₱ ",
-                max: 999999999999.99,
+            $('#createValidateForm').validate({
+                rules: {
+                    'atm_type[]': {
+                        required: true
+                    },
+                    'atm_number[]': {
+                        required: true,
+                    },
+                    'atm_balance[]': {
+                        required: true
+                    },
+                    'bank_name[]': {
+                        required: true
+                    },
+                    'pin_code[]': {
+                        required: {
+                            depends: function(element) {
+                                // Check if the closest parent div .atm-details contains the value 'ATM' in the select
+                                return $(element).closest('.atm-details').find('select[name="atm_type[]"]').val() === 'ATM';
+                            }
+                        },
+                        minlength: 4,
+                        maxlength: 8,
+                        digits: true
+                    }
+                },
+                messages: {
+                    'atm_number[]': {
+                        required: "ATM number is required",
+                        remote: "ATM number already exists"  // Custom error message for existing ATM numbers
+                    },
+                    'pin_code[]': {
+                        required: "PIN code is required when ATM is selected.",
+                        minlength: "Please enter at least 4 digits",
+                        maxlength: "Please enter no more than 8 digits",
+                        digits: "Only numbers are allowed"
+                    }
+                },
+                errorElement: 'span',
+                errorPlacement: function(error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function(element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function(element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                },
+                submitHandler: function(form) {
+                    var hasRows = FetchingDatatableBody.children('tr').length > 0;
+                    if (hasRows) {
+                        Swal.fire({
+                            title: 'Confirmation',
+                            text: 'Are you sure you want to save this?',
+                            icon: 'question',
+                            showCancelButton: true,
+                            confirmButtonColor: "#007BFF",
+                            cancelButtonColor: "#6C757D",
+                            confirmButtonText: "Yes, Save it!"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                const currentPage = dataTable.table.page();
+                                $.ajax({
+                                    url: form.action,
+                                    type: form.method,
+                                    data: $(form).serialize(),
+                                    success: function(response) {
+                                        closeCreateModal();
+                                        Swal.fire({
+                                            title: 'Successfully Added!',
+                                            text: 'Branch is successfully added!',
+                                            icon: 'success',
+                                            showCancelButton: false,
+                                            showConfirmButton: true,
+                                            confirmButtonText: 'OK',
+                                            preConfirm: () => {
+                                                return new Promise(( resolve
+                                                ) => {
+                                                    Swal.fire({
+                                                        title: 'Please Wait...',
+                                                        allowOutsideClick: false,
+                                                        allowEscapeKey: false,
+                                                        showConfirmButton: false,
+                                                        showCancelButton: false,
+                                                        didOpen: () => {
+                                                            Swal.showLoading();
+                                                            // here the reload of datatable
+                                                            dataTable.table.ajax.reload( () =>
+                                                            {
+                                                                Swal.close();
+                                                                $(form)[0].reset();
+                                                                dataTable.table.page(currentPage).draw( false );
+                                                            },
+                                                            false );
+                                                        }
+                                                    })
+                                                });
+                                            }
+                                        });
+                                    },
+                                    error: function(xhr, status, error) {
+                                        var errorMessage =
+                                            'An error occurred. Please try again later.';
+                                        if (xhr.responseJSON && xhr.responseJSON
+                                            .error) {
+                                            errorMessage = xhr.responseJSON.error;
+                                        }
+                                        Swal.fire({
+                                            title: 'Error!',
+                                            text: errorMessage,
+                                            icon: 'error',
+                                        });
+                                    }
+                                })
+                            }
+                        })
+                    } else {
+
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Empty Record!',
+                            text: 'Table is empty, add row to proceed!',
+                        });
+                    }
+                }
             });
 
             $('#pension_number_type').on('change', function() {
@@ -398,6 +552,14 @@
                 $('#pension_type').select2({  dropdownParent: $('#createClientModal') });
             });
 
+
+
+        });
+
+
+
+
+        $(document).ready(function () {
             var maxRows = 5; // Maximum number of rows
             var rowCount = $('.atm-details').length; // Initial row count
 
@@ -419,67 +581,73 @@
                             <hr>
                             <div class="col-md-6">
                                 <div class="form-group mb-2 row align-items-center">
-                                <label class="col-form-label col-sm-4 fw-bold">Type</label>
-                                <div class="col-8">
-                                    <select name="atm_type[]" class="form-select" required>
-                                    <option value="" selected disabled>Type</option>
-                                    <option value="ATM">ATM</option>
-                                    <option value="Passbook">Passbook</option>
-                                    <option value="Sim Card">Sim Card</option>
-                                    </select>
+                                    <label class="col-form-label col-sm-4 fw-bold">Type</label>
+                                    <div class="col-8">
+                                        <select name="atm_type[]" class="form-select" required>
+                                        <option value="" selected disabled>Type</option>
+                                        <option value="ATM">ATM</option>
+                                        <option value="Passbook">Passbook</option>
+                                        <option value="Sim Card">Sim Card</option>
+                                        </select>
+                                    </div>
                                 </div>
-                                </div>
+
                                 <div class="form-group mb-2 row align-items-center">
-                                <label class="col-form-label col-sm-4 fw-bold">ATM / Passbook / Sim No.</label>
-                                <div class="col-8">
-                                    <input type="text" name="atm_number[]" class="atm_card_input_mask form-control" placeholder="ATM / Passbook / Sim No." required>
+                                    <label class="col-form-label col-sm-4 fw-bold">ATM / Passbook / Sim No.</label>
+                                    <div class="col-8">
+                                        <input type="text" name="atm_number[]" class="atm_card_input_mask form-control" placeholder="ATM / Passbook / Sim No." required>
+                                    </div>
                                 </div>
-                                </div>
+
                                 <div class="form-group mb-3 row align-items-center">
-                                <label class="col-form-label col-4 fw-bold">Balance</label>
-                                <div class="col-8">
-                                    <input type="text" name="atm_balance[]" class="balanceCurrency form-control" value="0" placeholder="Balance" required>
+                                    <label class="col-form-label col-4 fw-bold">Balance</label>
+                                    <div class="col-8">
+                                        <input type="text" name="atm_balance[]" class="balanceCurrency form-control" value="0" placeholder="Balance" required>
+                                    </div>
                                 </div>
-                                </div>
+
                                 <div class="form-group mb-2 row align-items-center">
-                                <label class="font-size col-form-label col-4 fw-bold">Banks</label>
-                                <div class="col-8">
-                                    <div class="form-group">
-                                    <select name="bank_id[]" id="bank_id" class="form-select">
-                                        <option value="" selected disabled>Banks</option>
-                                        @foreach ($DataBankLists as $bank)
-                                                <option value="{{ $bank->id }}">{{ $bank->bank_name }}</option>
-                                        @endforeach
-                                    </select>
+                                    <label class="font-size col-form-label col-4 fw-bold">Banks</label>
+                                    <div class="col-8">
+                                        <div class="form-group">
+                                            <select name="bank_id[]" id="bank_id" class="form-select">
+                                                <option value="" selected disabled>Banks</option>
+                                                @foreach ($DataBankLists as $bank)
+                                                        <option value="{{ $bank->id }}">{{ $bank->bank_name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            </div>
                             <div class="col-md-6">
                                 <div class="form-group mb-3 row align-items-center">
-                                <label class="col-form-label col-4 fw-bold">Pin Code</label>
-                                <div class="col-8">
-                                    <input type="number" name="pin_code[]" class="form-control" placeholder="PIN Code">
+                                    <label class="col-form-label col-4 fw-bold">Pin Code</label>
+                                    <div class="col-8">
+                                        <input type="number" name="pin_code[]" class="form-control" placeholder="PIN Code">
+                                    </div>
                                 </div>
-                                </div>
+
                                 <div class="form-group mb-3 row align-items-center">
-                                <label class="col-form-label col-4 fw-bold">Expiration Date</label>
-                                <div class="col-8">
-                                    <input type="month" name="expiration_date[]" class="form-control">
+                                    <label class="col-form-label col-4 fw-bold">Expiration Date</label>
+                                    <div class="col-8">
+                                        <input type="month" name="expiration_date[]" class="form-control">
+                                    </div>
                                 </div>
-                                </div>
+
                                 <div class="form-group mb-3 row align-items-center">
-                                <label class="col-form-label col-4 fw-bold">Remarks</label>
-                                <div class="col-8">
-                                    <input type="text" name="remarks[]" class="form-control" placeholder="Remarks" minlength="0" maxlength="100">
+                                    <label class="col-form-label col-4 fw-bold">Remarks</label>
+                                    <div class="col-8">
+                                        <input type="text" name="remarks[]" class="form-control" placeholder="Remarks" minlength="0" maxlength="100">
+                                    </div>
                                 </div>
+
+                                <div class="form-group mb-2 row align-items-center">
+                                    <label class="col-form-label col-4 fw-bold">Remove</label>
+                                    <div class="col-8">
+                                        <a href="#" class="btn btn-danger remove-atm-row">Remove</a>
+                                    </div>
                                 </div>
-                                <!-- <div class="form-group mb-2 row align-items-center">
-                                <label class="col-form-label col-4 fw-bold">Remove</label>
-                                <div class="col-8">
-                                    <a href="#" class="btn btn-danger remove-atm-row"><i class="fa-solid fa-trash"></i></a>
-                                </div>
-                                </div> -->
                             </div>
                             <hr class="mt-2 mb-2">
                         </div>`;
@@ -519,19 +687,17 @@
             // Function to apply card number input mask
             function applyCardNumberInputMask() {
                 $(".atm_card_input_mask").inputmask({
-                    mask: '9999-9999-9999-9999', // Custom mask for the card number
+                    mask: '9999-9999-9999-9999-9999', // Custom mask for the card number
                     placeholder: '', // Placeholder to show the expected format
                     showMaskOnHover: false,  // Hide the mask when the user is not interacting with the field
                     showMaskOnFocus: true,   // Show the mask when the field is focused
                     rightAlign: false       // Align the input to the left
                 });
             }
+        });
 
-            $('.pension_number_mask').inputmask('99-9999999-9', {
-                placeholder: "",  // Placeholder for the input
-                removeMaskOnSubmit: true  // Removes the mask when submitting the form
-            });
-
+        // Validating Existing Pension Number
+        $(document).ready(function () {
             $('#validatePensionNumber').validate({
                 rules: {
                     pension_number: { required: true },  // Rule for pension_number field
@@ -595,6 +761,22 @@
                 }
             });
         });
+
+        // Global Used Script in the Page
+            $(document).ready(function () {
+                $('.balanceCurrency').inputmask({
+                    'alias': 'currency',
+                    allowMinus: false,
+                    'prefix': "₱ ",
+                    max: 999999999999.99,
+                });
+
+                $('.pension_number_mask').inputmask('99-9999999-99', {
+                    placeholder: "",  // Placeholder for the input
+                    removeMaskOnSubmit: true  // Removes the mask when submitting the form
+                });
+            });
+        // Global Used Script in the Page
     </script>
 
 

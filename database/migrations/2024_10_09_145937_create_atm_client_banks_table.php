@@ -29,6 +29,7 @@ return new class extends Migration
             $table->string('collection_date')->nullable();
             $table->integer('cash_box_no')->nullable();
             $table->integer('safekeep_cash_box_no')->nullable();
+            $table->integer('replacement_count')->default(0);
 
             $table->enum('location',['Branch','Head Office','Released','Safekeep'])->nullable();
 
