@@ -33,14 +33,17 @@ class ClientContoller extends Controller
     {
         $userBranchId = Auth::user()->branch_id;
 
-        $query = ClientInformation::with('Branch', 'AtmClientBanks')
-                    ->latest('updated_at');
+        $branchData = ClientInformation::with('Branch', 'AtmClientBanks')->latest('updated_at')->get();
 
-        if (!empty($userBranchId) && $userBranchId != 0 ||  $userBranchId == NULL) {
-            $query->where('branch_id', $userBranchId);
-        }
 
-        $branchData = $query->get();
+        // $query = ClientInformation::with('Branch', 'AtmClientBanks')
+        //             ->latest('updated_at');
+
+        // if (!empty($userBranchId) && $userBranchId != 0 ||  $userBranchId == NULL) {
+        //     $query->where('branch_id', $userBranchId);
+        // }
+
+        // $branchData = $query->get();
 
         return DataTables::of($branchData)
             ->setRowId('id')
