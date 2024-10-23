@@ -295,7 +295,6 @@
 
             const dataTable = new ServerSideDataTable('#FetchingDatatable');
             var url = '{!! route('clients.data') !!}';
-
             const buttons = [{
                 text: 'Delete',
                 action: function(e, dt, node, config) {
@@ -303,7 +302,6 @@
                     alert('Custom button clicked!');
                 }
             }];
-
             const columns = [
                 {
                     data: null,
@@ -324,73 +322,70 @@
                     searchable: false,
                 },
                 {
-                    data: 'pension_number',
-                    name: 'pension_number',
+                    "data": function(row, type, set) {
+                        return (row.last_name ? row.last_name : '') + ', ' + (row.first_name ? row.first_name : '') + ' ' + (row.middle_name ? row.middle_name : '') + ' ' + (row.suffix ? row.suffix : '');
+                    }
+                },
+
+                {
+                    data: 'branch_id',
+                    name: 'branch_id',
                     render: function(data, type, row, meta) {
-                        return row.pension_number ? '<span>' + row.pension_number + '</span>' : '';
+                        return row.branch_id ? '<span>' + row.branch_id + '</span>' : '';
                     },
                     orderable: true,
                     searchable: true,
                 },
                 {
-                    data: 'pension_number',
-                    name: 'pension_number',
+                    data: 'pension_type',
+                    name: 'pension_type',
                     render: function(data, type, row, meta) {
-                        return row.pension_number ? '<span>' + row.pension_number + '</span>' : '';
+                        return row.pension_type ? '<span>' + row.pension_type + '</span>' : '';
                     },
                     orderable: true,
                     searchable: true,
                 },
                 {
-                    data: 'pension_number',
-                    name: 'pension_number',
+                    data: 'pension_account_type',
+                    name: 'pension_account_type',
                     render: function(data, type, row, meta) {
-                        return row.pension_number ? '<span>' + row.pension_number + '</span>' : '';
+                        return row.pension_account_type ? '<span>' + row.pension_account_type + '</span>' : '';
                     },
                     orderable: true,
                     searchable: true,
                 },
                 {
-                    data: 'pension_number',
-                    name: 'pension_number',
+                    data: 'first_name',
+                    name: 'first_name',
                     render: function(data, type, row, meta) {
-                        return row.pension_number ? '<span>' + row.pension_number + '</span>' : '';
+                        return row.first_name ? '<span>' + row.first_name + '</span>' : '';
                     },
                     orderable: true,
                     searchable: true,
                 },
                 {
-                    data: 'pension_number',
-                    name: 'pension_number',
+                    data: 'middle_name',
+                    name: 'middle_name',
                     render: function(data, type, row, meta) {
-                        return row.pension_number ? '<span>' + row.pension_number + '</span>' : '';
+                        return row.middle_name ? '<span>' + row.middle_name + '</span>' : '';
                     },
                     orderable: true,
                     searchable: true,
                 },
                 {
-                    data: 'pension_number',
-                    name: 'pension_number',
+                    data: 'last_name',
+                    name: 'last_name',
                     render: function(data, type, row, meta) {
-                        return row.pension_number ? '<span>' + row.pension_number + '</span>' : '';
+                        return row.last_name ? '<span>' + row.last_name + '</span>' : '';
                     },
                     orderable: true,
                     searchable: true,
                 },
                 {
-                    data: 'pension_number',
-                    name: 'pension_number',
+                    data: 'suffix',
+                    name: 'suffix',
                     render: function(data, type, row, meta) {
-                        return row.pension_number ? '<span>' + row.pension_number + '</span>' : '';
-                    },
-                    orderable: true,
-                    searchable: true,
-                },
-                {
-                    data: 'pension_number',
-                    name: 'pension_number',
-                    render: function(data, type, row, meta) {
-                        return row.pension_number ? '<span>' + row.pension_number + '</span>' : '';
+                        return row.suffix ? '<span>' + row.suffix + '</span>' : '';
                     },
                     orderable: true,
                     searchable: true,
