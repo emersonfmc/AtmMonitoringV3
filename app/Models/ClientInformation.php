@@ -17,8 +17,8 @@ class ClientInformation extends Model
         return $this->belongsTo(Branch::class, 'branch_id', 'id');
     }
 
-    public function DataPensionTypesLists()
+    public function AtmClientBanks()
     {
-        return $this->belongsTo(DataPensionTypesLists::class, 'pension_name_id', 'id');
+        return $this->hasMany(AtmClientBanks::class, 'client_information_id','id');
     }
 }
