@@ -131,7 +131,6 @@ class SettingsController extends Controller
         ]);
     }
 
-
     public function districts_page()
     {
         return view('pages.pages_backend.settings.district_page');
@@ -213,7 +212,6 @@ class SettingsController extends Controller
             'message' => 'District updated successfully!'  // Changed message to reflect update action
         ]);
     }
-
 
     public function area_page()
     {
