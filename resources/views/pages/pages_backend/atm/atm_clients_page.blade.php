@@ -29,7 +29,7 @@
                         <div class="col-md-8 text-start">
                             <h4 class="card-title">Clients</h4>
                             <p class="card-title-desc">
-                                Clients' financial assets are carefully monitored, including their ATM transactions, Passbook updates,
+                                Clients financial assets are carefully monitored, including their ATM transactions, Passbook updates,
                                 and SIM card management to ensure seamless and secure banking operations.
                             </p>
                         </div>
@@ -53,13 +53,14 @@
                                 <tr>
                                     <th>Action</th>
                                     <th>Clients</th>
-                                    <th>Reference No.</th>
                                     <th>Branch</th>
                                     <th>Pension No. / Type</th>
-                                    <th>ATM / Passbook / Simcard & Bank</th>
+                                    <th>ATM / Passbook / Simcard</th>
+                                    <th>Bank</th>
                                     <th>PIN Code</th>
-                                    <th>Type & Status</th>
-                                    <th>Action</th>
+                                    <th>Type</th>
+                                    <th>Status</th>
+
                                 </tr>
                             </thead>
                             <tbody>
@@ -83,7 +84,8 @@
                     <button type="button" class="btn-close closeCreateModal" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="#" id="createValidateForm">
+                    <form action="{{ route('clients.create') }}" method="POST" id="createValidateForm">
+                        @csrf
 
                         <div class="row">
                             <div class="col-md-3">
@@ -308,14 +310,19 @@
                     name: 'action',
                     render: function(data, type, row) {
                         return `
-                            <a href="#" class="text-warning editBtn me-2" data-id="${row.id}"
+                            <a href="#" class="text-warning editBtn me-1" data-id="${row.id}"
                                 data-bs-toggle="tooltip" data-bs-placement="top" title="Edit ">
                                 <i class="fas fa-pencil-alt me-2"></i>
                             </a>
 
-                            <a href="#" class="text-danger deleteBtn me-2" data-id="${row.id}"
+                            <a href="#" class="text-danger deleteBtn me-1" data-id="${row.id}"
                                 data-bs-toggle="tooltip" data-bs-placement="top" title="Delete ">
                                 <i class="fas fa-trash-alt me-2"></i>
+                            </a>
+
+                            <a href="#" class="text-info viewBtn me-1" data-id="${row.id}"
+                                data-bs-toggle="tooltip" data-bs-placement="top" title="View ">
+                                <i class="fas fa-eye me-2"></i>
                             </a>`;
                     },
                     orderable: false,
@@ -323,76 +330,198 @@
                 },
                 {
                     "data": function(row, type, set) {
-                        return (row.last_name ? row.last_name : '') + ', ' + (row.first_name ? row.first_name : '') + ' ' + (row.middle_name ? row.middle_name : '') + ' ' + (row.suffix ? row.suffix : '');
+                        const fullName = (row.last_name ? row.last_name : '') + ', ' +
+                                        (row.first_name ? row.first_name : '') + ' ' +
+                                        (row.middle_name ? row.middle_name : '') + ' ' +
+                                        (row.suffix ? row.suffix : '');
+
+                        // Format the created_at field if it exists
+                        const createdAtFormatted = row.created_at ? new Date(row.created_at).toLocaleString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        }) : '';
+
+                        return `<span class="fw-bold" style="font-size : 14px;">${fullName}</span><br>
+                                <span style="font-size:12px;">${createdAtFormatted}</span>`;
                     }
                 },
-
                 {
                     data: 'branch_id',
-                    name: 'branch_id',
+                    name: 'branch.branch_location',
                     render: function(data, type, row, meta) {
-                        return row.branch_id ? '<span>' + row.branch_id + '</span>' : '';
+                        return row.branch ? '<span>' + row.branch.branch_location + '</span>' : '';
                     },
                     orderable: true,
                     searchable: true,
                 },
                 {
-                    data: 'pension_type',
-                    name: 'pension_type',
+                    data: 'pension_number', // Correct field name
+                    name: 'pension_number', // Ensure it matches the database column
                     render: function(data, type, row, meta) {
-                        return row.pension_type ? '<span>' + row.pension_type + '</span>' : '';
+                        return `<span class="fw-bold text-primary h6 pension_number_mask_display">${row.pension_number}</span><br>
+                                <span class="fw-bold">${row.pension_type}</span><br>
+                                <span class="fw-bold text-success">${row.pension_account_type}</span>`;
                     },
                     orderable: true,
                     searchable: true,
                 },
                 {
-                    data: 'pension_account_type',
-                    name: 'pension_account_type',
-                    render: function(data, type, row, meta) {
-                        return row.pension_account_type ? '<span>' + row.pension_account_type + '</span>' : '';
-                    },
-                    orderable: true,
-                    searchable: true,
+                    data: null, // No direct data for ATM sequences; will be created from response
+                    render: function(data, type, row) {
+                        // Check if atm_client_banks exists and is an array
+                        if (data.atm_client_banks && Array.isArray(data.atm_client_banks)) {
+                            // Initialize an empty string for bank details
+                            let bankDetails = '';
+
+                            // Use each to loop through the sequences
+                            $.each(data.atm_client_banks, function(index, rows) {
+                                // Always display the bank_account_no
+                                bankDetails += `<span class="fw-bold h6" style="color : #4B9B43;">${rows.bank_account_no}</span>`;
+
+                                // Check if replacement_count is greater than 0
+                                if (rows.replacement_count > 0) {
+                                    bankDetails += ` / <span class="fw-bold h6 text-danger">${rows.replacement_count}</span>`;
+                                }
+
+                                // Add a line break after each entry
+                                bankDetails += `<br>`;
+                            });
+
+                            return bankDetails; // Return the concatenated bank details
+                        }
+                        return ''; // Return empty string if no bank details
+                    }
                 },
                 {
-                    data: 'first_name',
-                    name: 'first_name',
-                    render: function(data, type, row, meta) {
-                        return row.first_name ? '<span>' + row.first_name + '</span>' : '';
-                    },
-                    orderable: true,
-                    searchable: true,
+                    data: null, // No direct data for ATM sequences; will be created from response
+                    render: function(data, type, row) {
+                        // Check if atm_client_banks exists and is an array
+                        if (data.atm_client_banks && Array.isArray(data.atm_client_banks)) {
+                            // Initialize an empty string for group names
+                            let bankNames = '';
+
+                            // Use each to loop through the sequences
+                            $.each(data.atm_client_banks, function(index, rows) {
+                                bankNames += `<span class="fw-bold h6">${rows.bank_name}</span><br>`;
+                            });
+
+                            return bankNames; // Return the concatenated bank names
+                        }
+                        return ''; // Return empty string if no bank names
+                    }
                 },
                 {
-                    data: 'middle_name',
-                    name: 'middle_name',
-                    render: function(data, type, row, meta) {
-                        return row.middle_name ? '<span>' + row.middle_name + '</span>' : '';
-                    },
-                    orderable: true,
-                    searchable: true,
+                    data: null, // No direct data for ATM sequences; will be created from response
+                    render: function(data, type, row) {
+                        // Check if atm_client_banks exists and is an array
+                        if (data.atm_client_banks && Array.isArray(data.atm_client_banks)) {
+                            // Initialize an empty string for PincODE
+                            let PincODE = '';
+
+                            // Use each to loop through the sequences
+                            $.each(data.atm_client_banks, function(index, rows) {
+                                PincODE += `<a href="#" class="badge bg-danger view_pin_code"
+                                                data-pin="${rows.pin_no}"
+                                                data-bank_account_no="${rows.bank_account_no}">Encrypted
+                                            </a><br>`;
+                            });
+
+                            return PincODE; // Return the concatenated PIN display
+                        }
+                        return ''; // Return empty string if no bank names
+                    }
                 },
                 {
-                    data: 'last_name',
-                    name: 'last_name',
-                    render: function(data, type, row, meta) {
-                        return row.last_name ? '<span>' + row.last_name + '</span>' : '';
-                    },
-                    orderable: true,
-                    searchable: true,
+                    data: null, // No direct data for ATM sequences; will be created from response
+                    render: function(data, type, row) {
+                        // Check if atm_client_banks exists and is an array
+                        if (data.atm_client_banks && Array.isArray(data.atm_client_banks)) {
+                            // Initialize an empty string for bank types
+                            let bankTypes = '';
+
+                            // Use each to loop through the sequences
+                            $.each(data.atm_client_banks, function(index, rows) {
+                                let className;
+
+                                // Determine class based on atm_type
+                                if (rows.atm_type === 'ATM') {
+                                    className = 'fw-bold h6 text-primary';
+                                } else if (rows.atm_type === 'Passbook') {
+                                    className = 'fw-bold h6 text-danger';
+                                } else if (rows.atm_type === 'Sim Card') {
+                                    className = 'fw-bold h6 text-info';
+                                } else {
+                                    className = 'fw-bold h6'; // Default class if no match
+                                }
+
+                                bankTypes += `<span class="${className}">${rows.atm_type}</span><br>`;
+                            });
+
+                            return bankTypes; // Return the concatenated bank names
+                        }
+                        return ''; // Return empty string if no bank names
+                    }
                 },
                 {
-                    data: 'suffix',
-                    name: 'suffix',
-                    render: function(data, type, row, meta) {
-                        return row.suffix ? '<span>' + row.suffix + '</span>' : '';
-                    },
-                    orderable: true,
-                    searchable: true,
+                    data: null, // No direct data for ATM sequences; will be created from response
+                    render: function(data, type, row) {
+                        // Check if atm_client_banks exists and is an array
+                        if (data.atm_client_banks && Array.isArray(data.atm_client_banks)) {
+                            // Initialize an empty string for PincODE
+                            let AtmStatus = '';
+
+                            // Use each to loop through the sequences
+                            $.each(data.atm_client_banks, function(index, rows) {
+                                AtmStatus += `<span class="fw-bold h6">${rows.atm_status}</span><br>`;
+                            });
+
+                            return AtmStatus; // Return the concatenated PIN display
+                        }
+                        return ''; // Return empty string if no bank names
+                    }
                 }
 
             ];
-            dataTable.initialize(url, columns);
+            dataTable.initialize(url, columns, {
+                drawCallback: function() {
+                    // Apply Inputmask to the pension_number column after the table is drawn
+                    $('.pension_number_mask_display').inputmask('99-9999999-99', {
+                        placeholder: "",
+                        removeMaskOnSubmit: true
+                    });
+                }
+            });
+
+            $(document).on('click', '.view_pin_code', function(e) {
+                e.preventDefault(); // Prevent the default anchor behavior
+
+                const pinCode = $(this).data('pin'); // Get the PIN code from the data attribute
+                const bankAccountNo = $(this).data('bank_account_no'); // Get the bank account number
+
+                // SweetAlert confirmation
+                Swal.fire({
+                    icon: "question",
+                    title: 'Do you want to view the PIN code?',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes',
+                    cancelButtonText: 'No'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // If confirmed, show another SweetAlert with the PIN code and bank account number
+                        Swal.fire({
+                            title: 'PIN Code Details',
+                            html: `<br>
+                                <span class="fw-bold h3 text-dark">${pinCode}</span><br><br>
+                                <span class="fw-bold h4 text-primary">${bankAccountNo}</span><br>
+                            `,
+                            icon: 'info',
+                            confirmButtonText: 'Okay'
+                        });
+                    }
+                });
+            });
+
 
             $('#createValidateForm').validate({
                 rules: {
@@ -462,38 +591,65 @@
                                     type: form.method,
                                     data: $(form).serialize(),
                                     success: function(response) {
-                                        closeCreateModal();
-                                        Swal.fire({
-                                            title: 'Successfully Added!',
-                                            text: 'Branch is successfully added!',
-                                            icon: 'success',
-                                            showCancelButton: false,
-                                            showConfirmButton: true,
-                                            confirmButtonText: 'OK',
-                                            preConfirm: () => {
-                                                return new Promise(( resolve
-                                                ) => {
-                                                    Swal.fire({
-                                                        title: 'Please Wait...',
-                                                        allowOutsideClick: false,
-                                                        allowEscapeKey: false,
-                                                        showConfirmButton: false,
-                                                        showCancelButton: false,
-                                                        didOpen: () => {
-                                                            Swal.showLoading();
-                                                            // here the reload of datatable
-                                                            dataTable.table.ajax.reload( () =>
-                                                            {
-                                                                Swal.close();
-                                                                $(form)[0].reset();
-                                                                dataTable.table.page(currentPage).draw( false );
-                                                            },
-                                                            false );
-                                                        }
-                                                    })
-                                                });
-                                            }
-                                        });
+
+                                        if (typeof response === 'string') {
+                                            var res = JSON.parse(response);
+                                        } else {
+                                            var res = response; // If it's already an object
+                                        }
+
+                                        if (res.status === 'success')
+                                        {
+                                            closeCreateModal();
+                                            Swal.fire({
+                                                title: 'Successfully Added!',
+                                                text: 'Branch is successfully added!',
+                                                icon: 'success',
+                                                showCancelButton: false,
+                                                showConfirmButton: true,
+                                                confirmButtonText: 'OK',
+                                                preConfirm: () => {
+                                                    return new Promise(( resolve
+                                                    ) => {
+                                                        Swal.fire({
+                                                            title: 'Please Wait...',
+                                                            allowOutsideClick: false,
+                                                            allowEscapeKey: false,
+                                                            showConfirmButton: false,
+                                                            showCancelButton: false,
+                                                            didOpen: () => {
+                                                                Swal.showLoading();
+                                                                // here the reload of datatable
+                                                                dataTable.table.ajax.reload( () =>
+                                                                {
+                                                                    Swal.close();
+                                                                    $(form)[0].reset();
+                                                                    dataTable.table.page(currentPage).draw( false );
+                                                                },
+                                                                false );
+                                                            }
+                                                        })
+                                                    });
+                                                }
+                                            });
+                                        }
+                                        else if (res.status === 'error')
+                                        {
+                                            Swal.fire({
+                                                title: 'Error!',
+                                                text: res.message,
+                                                icon: 'error',
+                                            });
+                                        } else {
+                                            Swal.fire({
+                                                title: 'Error!',
+                                                text: 'Error Occurred Please Try Again',
+                                                icon: 'error',
+                                            });
+                                        }
+
+
+
                                     },
                                     error: function(xhr, status, error) {
                                         var errorMessage =
